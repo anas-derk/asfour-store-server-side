@@ -2,14 +2,14 @@
 
 const mongoose = require("mongoose");
 
-// Create User Schema
+// Create Admin Schema
 
 const adminSchema = mongoose.Schema({
     email: String,
     password: String,
 });
 
-// Create User Model From User Schema
+// Create Admin Model From Admin Schema
 
 const adminModel = mongoose.model("admin", adminSchema);
 
@@ -34,8 +34,20 @@ const productSchema = mongoose.Schema({
 
 const productModel = mongoose.model("product", productSchema);
 
+// Create User Schema
+
+const userSchema = mongoose.Schema({
+    email: String,
+    password: String,
+});
+
+// Create User Model From User Schema
+
+const userModel = mongoose.model("user", userSchema);
+
 module.exports = {
     mongoose,
     adminModel,
     productModel,
+    userModel,
 }

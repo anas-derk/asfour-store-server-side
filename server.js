@@ -37,11 +37,14 @@ app.listen(PORT, () => console.log(`The Server Is Running On: http://localhost:$
 
 /* Start Handle The Routes */
 
-const adminRouter = require("./routes/admin.router"),
-        productsRouter = require("./routes/products.router");
+const   adminRouter = require("./routes/admin.router"),
+        productsRouter = require("./routes/products.router"),
+        usersRouter = require("./routes/users.router");
 
 app.use("/admin", adminRouter);
 
 app.use("/products", productsRouter);
+
+app.use("/users", usersRouter);
 
 /* End Handle The Routes */
