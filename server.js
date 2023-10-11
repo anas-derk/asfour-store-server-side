@@ -29,7 +29,7 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 /* Start Running The Server */
 
-const PORT = process.env.PORT || 5300;
+const PORT = process.env.PORT || 5200;
 
 app.listen(PORT, () => console.log(`The Server Is Running On: http://localhost:${PORT}`));
 
