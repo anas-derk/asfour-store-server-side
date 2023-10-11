@@ -62,7 +62,7 @@ async function deleteProduct(productId) {
             _id: productId,
         });
         await mongoose.disconnect();
-        return productInfo.imageSrc;
+        return productInfo.imagePath;
     }
     catch (err) {
         // Disconnect To DB
@@ -75,11 +75,9 @@ async function updateProduct(productId, newData) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        await productModel.updateOne({_id: productId}, {
-            name: newData.name,
-            price: newData.price,
-        });
+        await productModel.updateOne({_id: productId}, {...newData});
         await mongoose.disconnect();
+        return "Updating Product Process It Successfuly ...";
     }
     catch (err) {
         // Disconnect To DB

@@ -55,7 +55,7 @@ async function deleteProduct(req, res) {
             const imagePath = await deleteProduct(productId);
             const { unlinkSync } = require("fs");
             unlinkSync(imagePath);
-            await res.json({});
+            await res.json("Deleting Product Process It Successfuly ...");
         }
         catch(err){
             await res.status(500).json(err);
@@ -70,8 +70,8 @@ async function putProduct(req, res) {
     else {
         const { updateProduct } = require("../models/products.model");
         try{
-            await updateProduct(productId, newProductData);
-            await res.json({});
+            const result = await updateProduct(productId, newProductData);
+            await res.json(result);
         }
         catch(err){
             await res.status(500).json(err);
