@@ -45,9 +45,20 @@ const userSchema = mongoose.Schema({
 
 const userModel = mongoose.model("user", userSchema);
 
+// Create Category Schema
+
+const categorySchema = mongoose.Schema({
+    name: String,
+});
+
+// Create Category Model From Category Schema
+
+const categoryModel = mongoose.model("category", categorySchema);
+
 module.exports = {
     mongoose,
     adminModel,
     productModel,
     userModel,
+    categoryModel,
 }

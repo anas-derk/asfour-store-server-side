@@ -14,7 +14,7 @@ async function addNewProduct(productInfo) {
     catch (err) {
         // Disconnect To DB
         await mongoose.disconnect();
-        throw Error("Sorry, Something Went Wrong !!");
+        throw Error(err);
     }
 }
 
@@ -35,7 +35,7 @@ async function getProductInfo(productId) {
     catch (err) {
         // Disconnect To DB
         await mongoose.disconnect();
-        throw Error("Sorry, Something Went Wrong !!");
+        throw Error(err);
     }
 }
 
@@ -50,7 +50,7 @@ async function getAllProducts() {
     catch (err) {
         // Disconnect To DB
         await mongoose.disconnect();
-        throw Error("Sorry, Something Went Wrong !!");
+        throw Error(err);
     }
 }
 
@@ -67,7 +67,7 @@ async function deleteProduct(productId) {
     catch (err) {
         // Disconnect To DB
         await mongoose.disconnect();
-        throw Error("Sorry, Something Went Wrong !!");
+        throw Error(err);
     }
 }
 
@@ -82,7 +82,7 @@ async function updateProduct(productId, newData) {
     catch (err) {
         // Disconnect To DB
         await mongoose.disconnect();
-        throw Error("Sorry, Something Went Wrong !!");
+        throw Error(err);
     }
 }
 
