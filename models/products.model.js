@@ -43,7 +43,7 @@ async function getAllProducts() {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        const allProducts = await productModel.find({});
+        const allProducts = await productModel.find({}).sort({ postOfDate: -1 });
         await mongoose.disconnect();
         return allProducts;
     }
