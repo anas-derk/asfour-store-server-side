@@ -20,6 +20,10 @@ const productSchema = mongoose.Schema({
     price: Number,
     description: String,
     category: String,
+    discount: {
+        type: Number,
+        default: 0,
+    },
     numberOfOrders: {
         type: Number,
         default: 0,
