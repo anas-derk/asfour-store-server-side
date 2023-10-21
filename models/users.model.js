@@ -39,6 +39,27 @@ async function createNewUser(email, password) {
     }
 }
 
+async function addNewFavoriteProduct(userId, productDetails) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        // Check If Email Is Exist
+        const user = await userModel.findOne({ email });
+        if (user) {
+            await userModel.updateOne({ _id: userId } , { $push: { favorite_products_list: productDetails } });
+            await mongoose.disconnect();
+            return "Ok !!, Adding New Favorite Product To This User Is Successfuly !!";
+        }
+        await mongoose.disconnect();
+        return "Sorry, The User Is Not Exist !!, Please Send Another User Id ..";
+    }
+    catch (err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function login(email, password) {
     try {
         // Connect To DB
@@ -68,7 +89,7 @@ async function login(email, password) {
 async function getUserInfo(userId) {
     try {
         // Connect To DB
-        await mongoose.connect(DB_URL);
+        await mongoose.connect(process.env.DB_URL);
         // Check If User Is Exist
         let user = await userModel.findById(userId);
         await mongoose.disconnect();
@@ -77,21 +98,37 @@ async function getUserInfo(userId) {
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
-        throw Error("Sorry, Error In Process, Please Repeated This Process !!");
+        throw Error(err);
     }
 }
 
 async function getAllUsers() {
     try {
         // Connect To DB
-        await mongoose.connect(DB_URL);
+        await mongoose.connect(process.env.DB_URL);
         const users = await userModel.find({});
         await mongoose.disconnect();
         return users;
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
-        throw Error("Sorry, Error In Process, Please Repeated This Process !!");
+        throw Error(err);
+    }
+}
+
+async function getFavoriteProducts(userId) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        // Check If User Is Exist
+        const user = await userModel.findById(userId);
+        await mongoose.disconnect();
+        if (user) return user.favorite_products_list;
+        return "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..";
+    } catch (err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
     }
 }
 
@@ -117,14 +154,16 @@ async function updateUserInfo(userId, newUserData) {
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
-        throw Error("Sorry, Error In Process, Please Repeated This Process !!");
+        throw Error(err);
     }
 }
 
 module.exports = {
     createNewUser,
+    addNewFavoriteProduct,
     login,
     getUserInfo,
     getAllUsers,
+    getFavoriteProducts,
     updateUserInfo,
 }

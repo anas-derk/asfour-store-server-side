@@ -25,6 +25,21 @@ async function createNewUser(req, res) {
     }
 }
 
+async function postNewFavoriteProduct(req, res) {
+    try{
+        const userId = req.params.userId;
+        if (!userId) await res.status(400).json("Sorry, Please Send User Id !!");
+        else {
+            const { addNewFavoriteProduct } = require("../models/users.model");
+            const result = await addNewFavoriteProduct(userId, req.body);
+            await res.json(result);
+        }
+    }
+    catch(err) {
+        await res.status(500).json(err);
+    }
+}
+
 async function login(req, res) {
     try{
         const   email = req.query.email,
@@ -54,7 +69,7 @@ async function login(req, res) {
 async function getUserInfo(req, res) {
     try{
         const userId = req.params.userId;
-        if (!userId) await res.status(500).json("Sorry, Please Send User Id !!");
+        if (!userId) await res.status(400).json("Sorry, Please Send User Id !!");
         else {
             const { getUserInfo } = require("../models/users.model");
             const result = await getUserInfo(userId);
@@ -77,11 +92,26 @@ async function getAllUsers(req, res) {
     }
 }
 
+async function getFavoriteProducts(req, res) {
+    try{
+        const userId = req.params.userId;
+        if (!userId) await res.status(400).json("Sorry, Please Send User Id !!");
+        else {
+            const { getFavoriteProducts } = require("../models/users.model");
+            const result = await getFavoriteProducts(userId);
+            await res.json(result);
+        }
+    }
+    catch(err){
+        await res.status(500).json(err);
+    }
+}
+
 async function putUserInfo(req, res) {
     try{
         const userId = req.params.userId;
         const newUserData = req.body;
-        if (!userId || Object.keys(newUserData).length === 0) res.status(500).json("Sorry, Please Send User Id And New User Data !!");
+        if (!userId || Object.keys(newUserData).length === 0) res.status(400).json("Sorry, Please Send User Id And New User Data !!");
         else {
             const { updateUserInfo } = require("../models/users.model");
             const result = await updateUserInfo(userId, newUserData);
@@ -95,8 +125,10 @@ async function putUserInfo(req, res) {
 
 module.exports = {
     createNewUser,
+    postNewFavoriteProduct,
     login,
     getUserInfo,
     getAllUsers,
+    getFavoriteProducts,
     putUserInfo,
 }
