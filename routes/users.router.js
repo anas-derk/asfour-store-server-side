@@ -16,4 +16,6 @@ usersRouter.get("/favorite-products/:userId", usersController.getFavoriteProduct
 
 usersRouter.put("/update-user-info/:userId", usersController.putUserInfo);
 
+usersRouter.delete("/favorite-product", usersController.deleteProductFromFavoriteUserProducts);
+
 module.exports = usersRouter;

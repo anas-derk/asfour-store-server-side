@@ -125,6 +125,23 @@ async function putUserInfo(req, res) {
     }
 }
 
+async function deleteProductFromFavoriteUserProducts(req, res) {
+    try{
+        const   userId = req.query.userId,
+                productId = req.query.productId;
+        if (!userId || !productId) await res.status(400).json("Sorry, Please Send User Id And Product Id !!");
+        else {
+            const { deleteProductFromFavoriteUserProducts } = require("../models/users.model");
+            const result = await deleteProductFromFavoriteUserProducts(userId, productId);
+            await res.json(result);
+        }
+    }
+    catch(err) {
+        console.log(err);
+        await res.status(500).json(err);
+    }
+}
+
 module.exports = {
     createNewUser,
     postNewFavoriteProduct,
@@ -133,4 +150,5 @@ module.exports = {
     getAllUsers,
     getFavoriteProducts,
     putUserInfo,
+    deleteProductFromFavoriteUserProducts,
 }

@@ -168,6 +168,32 @@ async function updateUserInfo(userId, newUserData) {
     }
 }
 
+async function deleteProductFromFavoriteUserProducts(userId, productId) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        // Check If Email Is Exist
+        const user = await userModel.findById(userId);
+        if (user) {
+            const newFavoriteProductsList = user.favorite_products_list.filter((favorite_product) => favorite_product._id != productId);
+            if (newFavoriteProductsList.length !== user.favorite_products_list.length) {
+                await userModel.updateOne({ _id: userId } , { $set: { favorite_products_list: newFavoriteProductsList } });
+                await mongoose.disconnect();
+                return "Ok !!, Deleting Favorite Product From This User Is Successfuly !!";
+            }
+            await mongoose.disconnect();
+            return "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..";
+        }
+        await mongoose.disconnect();
+        return "Sorry, The User Is Not Exist !!, Please Send Another User Id ..";
+    }
+    catch (err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 module.exports = {
     createNewUser,
     addNewFavoriteProduct,
@@ -176,4 +202,5 @@ module.exports = {
     getAllUsers,
     getFavoriteProducts,
     updateUserInfo,
+    deleteProductFromFavoriteUserProducts,
 }
