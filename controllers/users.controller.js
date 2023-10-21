@@ -27,15 +27,17 @@ async function createNewUser(req, res) {
 
 async function postNewFavoriteProduct(req, res) {
     try{
-        const userId = req.params.userId;
-        if (!userId) await res.status(400).json("Sorry, Please Send User Id !!");
+        const   userId = req.query.userId,
+                productId = req.query.productId;
+        if (!userId || !productId) await res.status(400).json("Sorry, Please Send User Id And Product Id !!");
         else {
             const { addNewFavoriteProduct } = require("../models/users.model");
-            const result = await addNewFavoriteProduct(userId, req.body);
+            const result = await addNewFavoriteProduct(userId, productId);
             await res.json(result);
         }
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(err);
     }
 }

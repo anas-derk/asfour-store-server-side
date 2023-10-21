@@ -1,6 +1,6 @@
 // Import Mongoose And User Model Object
 
-const { mongoose, userModel } = require("../models/all.models");
+const { mongoose, userModel, productModel } = require("../models/all.models");
 
 // require bcryptjs module for password encrypting
 
@@ -39,16 +39,26 @@ async function createNewUser(email, password) {
     }
 }
 
-async function addNewFavoriteProduct(userId, productDetails) {
+async function addNewFavoriteProduct(userId, productId) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
         // Check If Email Is Exist
-        const user = await userModel.findOne({ email });
+        const user = await userModel.findById(userId);
         if (user) {
-            await userModel.updateOne({ _id: userId } , { $push: { favorite_products_list: productDetails } });
+            const product = await productModel.findById(productId);
+            if (product) {
+                const favorite_productIndex = user.favorite_products_list.findIndex((favorite_product) => favorite_product._id == productId);
+                if (favorite_productIndex == -1) {
+                    await userModel.updateOne({ _id: userId } , { $push: { favorite_products_list: product } });
+                    await mongoose.disconnect();
+                    return "Ok !!, Adding New Favorite Product To This User Is Successfuly !!";
+                }
+                await mongoose.disconnect();
+                return "Sorry, The Product Are Already Exist !!, Please Send Another Product Id ..";
+            }
             await mongoose.disconnect();
-            return "Ok !!, Adding New Favorite Product To This User Is Successfuly !!";
+            return "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..";
         }
         await mongoose.disconnect();
         return "Sorry, The User Is Not Exist !!, Please Send Another User Id ..";

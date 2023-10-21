@@ -4,7 +4,7 @@ const usersController = require("../controllers/users.controller");
 
 usersRouter.post("/create-new-user", usersController.createNewUser);
 
-usersRouter.post("/add-favorite-product/:userId", usersController.postNewFavoriteProduct);
+usersRouter.post("/add-favorite-product", usersController.postNewFavoriteProduct);
 
 usersRouter.get("/login", usersController.login);
 
