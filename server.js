@@ -42,7 +42,7 @@ const   adminRouter = require("./routes/admin.router"),
         usersRouter = require("./routes/users.router"),
         categoriesRouter = require("./routes/categories.router");
 
-app.use("/admin", adminRouter);
+app.use("/admins", adminRouter);
 
 app.use("/products", productsRouter);
 
