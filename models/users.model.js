@@ -179,7 +179,10 @@ async function deleteProductFromFavoriteUserProducts(userId, productId) {
             if (newFavoriteProductsList.length !== user.favorite_products_list.length) {
                 await userModel.updateOne({ _id: userId } , { $set: { favorite_products_list: newFavoriteProductsList } });
                 await mongoose.disconnect();
-                return "Ok !!, Deleting Favorite Product From This User Is Successfuly !!";
+                return {
+                    msg: "Ok !!, Deleting Favorite Product From This User Is Successfuly !!",
+                    newFavoriteProductsList: newFavoriteProductsList,
+                };
             }
             await mongoose.disconnect();
             return "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..";
