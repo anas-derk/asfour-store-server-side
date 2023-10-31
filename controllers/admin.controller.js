@@ -24,6 +24,22 @@ async function getAdminLogin(req, res) {
     }
 }
 
+async function getAdminUserInfo(req, res) {
+    try{
+        const userId = req.params.userId;
+        if (!userId) await res.status(400).json("Sorry, Please Send Admin User Id !!");
+        else {
+            const { getAdminUserInfo } = require("../models/admin.model");
+            const result = await getAdminUserInfo(userId);
+            await res.json(result);
+        }
+    }
+    catch(err){
+        await res.status(500).json(err);
+    }
+}
+
 module.exports = {
     getAdminLogin,
+    getAdminUserInfo,
 }

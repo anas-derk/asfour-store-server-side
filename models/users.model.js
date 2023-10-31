@@ -104,7 +104,7 @@ async function getUserInfo(userId) {
         let user = await userModel.findById(userId);
         await mongoose.disconnect();
         if (user) return user;
-        return "Sorry, The User Is Not Exist !!, Please Enter Another Email ..";
+        return "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..";
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();

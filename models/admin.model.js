@@ -31,6 +31,23 @@ async function adminLogin(email, password) {
     }
 }
 
+async function getAdminUserInfo(userId) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        // Check If User Is Exist
+        let user = await adminModel.findById(userId);
+        await mongoose.disconnect();
+        if (user) return user;
+        return "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..";
+    } catch (err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 module.exports = {
     adminLogin,
+    getAdminUserInfo,
 }
