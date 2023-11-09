@@ -1,10 +1,10 @@
 async function postNewProduct(req, res) {
     try {
-        const bodyData = req.body;
-        const productImagePath = req.file.path;
+        const productImages = Object.assign({}, req.files);
         const productInfo = {
-            ...Object.assign({}, bodyData),
-            imagePath: productImagePath,
+            ...Object.assign({}, req.body),
+            imagePath: productImages.productImage[0].path,
+            galleryImagesPaths: productImages.galleryImages.map((galleryImage) => galleryImage.path),
         };
         if (Object.keys(productInfo).length === 0) await res.status(400).json("Sorry, Please Send Product Info");
         else {

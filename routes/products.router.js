@@ -13,7 +13,10 @@ const storage = multer.diskStorage({
     },
 });
 
-productsRouter.post("/add-new-product", multer({ storage }).single("image"), productsController.postNewProduct);
+productsRouter.post("/add-new-product", multer({ storage }).fields([
+    { name: "productImage", maxCount: 1 },
+    { name: "galleryImages", maxCount: 10 },
+]), productsController.postNewProduct);
 
 productsRouter.get("/product-info/:productId", productsController.getProductInfo);
 

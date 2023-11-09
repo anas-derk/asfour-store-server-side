@@ -33,6 +33,7 @@ const productSchema = mongoose.Schema({
         default: Date.now(),
     },
     imagePath: String,
+    galleryImagesPaths: Array,
 });
 
 // Create Product Model From Product Schema
