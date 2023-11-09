@@ -62,7 +62,7 @@ async function deleteProduct(productId) {
             _id: productId,
         });
         await mongoose.disconnect();
-        return productInfo.imagePath;
+        return [productInfo.imagePath, ...productInfo.galleryImagesPaths];
     }
     catch (err) {
         // Disconnect To DB

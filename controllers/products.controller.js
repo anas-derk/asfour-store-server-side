@@ -52,9 +52,11 @@ async function deleteProduct(req, res) {
         if (!productId) await res.status(400).json("Sorry, Please Send User Id !!");
         else {
             const { deleteProduct } = require("../models/products.model");
-            const imagePath = await deleteProduct(productId);
+            const productImagePaths = await deleteProduct(productId);
             const { unlinkSync } = require("fs");
-            unlinkSync(imagePath);
+            for(let productImagePath of productImagePaths) {
+                unlinkSync(productImagePath);
+            }
             await res.json("Deleting Product Process It Successfuly ...");
         }
     }
