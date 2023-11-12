@@ -76,7 +76,7 @@ async function deleteImageFromProductGallery(productId, galleryImagePath) {
         await mongoose.connect(process.env.DB_URL);
         const productData = await productModel.findById(productId);
         await productModel.updateOne({ _id: productId }, {
-            galleryImagesPaths: productData.galleryImagesPaths.filter((path) => galleryImagePath === path)
+            galleryImagesPaths: productData.galleryImagesPaths.filter((path) => galleryImagePath !== path)
         });
         await mongoose.disconnect();
     }

@@ -69,6 +69,7 @@ async function deleteImageFromProductGallery(req, res) {
     try{
         const productId = req.params.productId,
             galleryImagePath = req.query.galleryImagePath;
+        console.log(productId, galleryImagePath);
         if (!productId || !galleryImagePath) await res.status(400).json("Sorry, Please Send Product Id And Gallery Image Path !!");
         else {
             const { deleteImageFromProductGallery } = require("../models/products.model");
@@ -79,6 +80,7 @@ async function deleteImageFromProductGallery(req, res) {
         }
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(err);
     }
 }
