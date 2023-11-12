@@ -18,6 +18,23 @@ async function addNewProduct(productInfo) {
     }
 }
 
+async function addingNewImagesToProductGallery(productId, newGalleryImagePaths) {
+    try{
+        await mongoose.connect(process.env.DB_URL);
+        await productModel.updateOne({ _id: productId },
+        {
+            $push: {
+                galleryImagesPaths: newGalleryImagePaths,
+            }
+        });
+        await mongoose.disconnect();
+    }
+    catch(err) {
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function getProductInfo(productId) {
     try {
         // Connect To DB
@@ -120,6 +137,7 @@ async function updateProductGalleryImage(productId, oldGalleryImagePath, newGall
 
 module.exports = {
     addNewProduct,
+    addingNewImagesToProductGallery,
     getProductInfo,
     deleteProduct,
     deleteImageFromProductGallery,
