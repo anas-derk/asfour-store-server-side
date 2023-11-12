@@ -111,7 +111,7 @@ async function putProductGalleryImage(req, res) {
             await updateProductGalleryImage(productId, oldGalleryImagePath, newGalleryImagePath);
             const { unlinkSync } = require("fs");
             unlinkSync(oldGalleryImagePath);
-            await res.json("Updating Product Gallery Image Has Been Successfuly ...");
+            await res.json(newGalleryImagePath);
         }
     }
     catch(err){
