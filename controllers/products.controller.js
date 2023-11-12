@@ -65,6 +65,24 @@ async function deleteProduct(req, res) {
     }
 }
 
+async function deleteImageFromProductGallery(req, res) {
+    try{
+        const productId = req.params.productId,
+            galleryImagePath = req.query.galleryImagePath;
+        if (!productId || !galleryImagePath) await res.status(400).json("Sorry, Please Send Product Id And Gallery Image Path !!");
+        else {
+            const { deleteImageFromProductGallery } = require("../models/products.model");
+            await deleteImageFromProductGallery(productId, galleryImagePath);
+            const { unlinkSync } = require("fs");
+            unlinkSync(galleryImagePath);
+            await res.json("Deleting Product Gallery Image Has Been Successfuly ...");
+        }
+    }
+    catch(err) {
+        await res.status(500).json(err);
+    }
+}
+
 async function putProduct(req, res) {
     try{
         const productId = req.params.productId;
@@ -85,6 +103,7 @@ module.exports = {
     postNewProduct,
     getProductInfo,
     deleteProduct,
+    deleteImageFromProductGallery,
     getAllProducts,
     putProduct,
 }

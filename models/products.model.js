@@ -71,6 +71,21 @@ async function deleteProduct(productId) {
     }
 }
 
+async function deleteImageFromProductGallery(productId, galleryImagePath) {
+    try{
+        await mongoose.connect(process.env.DB_URL);
+        const productData = await productModel.findById(productId);
+        await productModel.updateOne({ _id: productId }, {
+            galleryImagesPaths: productData.galleryImagesPaths.filter((path) => galleryImagePath === path)
+        });
+        await mongoose.disconnect();
+    }
+    catch(err) {
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function updateProduct(productId, newData) {
     try {
         // Connect To DB
@@ -90,6 +105,7 @@ module.exports = {
     addNewProduct,
     getProductInfo,
     deleteProduct,
+    deleteImageFromProductGallery,
     getAllProducts,
     updateProduct,
 }
