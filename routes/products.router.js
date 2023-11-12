@@ -28,4 +28,6 @@ productsRouter.delete("/gallery-images/:productId", productsController.deleteIma
 
 productsRouter.put("/:productId", productsController.putProduct);
 
+productsRouter.put("/update-product-gallery-image/:productId", multer({ storage }).single("productGalleryImage") , productsController.putProductGalleryImage);
+
 module.exports = productsRouter;
