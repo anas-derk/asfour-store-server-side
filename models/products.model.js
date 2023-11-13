@@ -21,11 +21,10 @@ async function addNewProduct(productInfo) {
 async function addingNewImagesToProductGallery(productId, newGalleryImagePaths) {
     try{
         await mongoose.connect(process.env.DB_URL);
+        const productDetails = await productModel.findById(productId);
         await productModel.updateOne({ _id: productId },
         {
-            $push: {
-                galleryImagesPaths: newGalleryImagePaths,
-            }
+            galleryImagesPaths: productDetails.galleryImagesPaths.concat(newGalleryImagePaths),
         });
         await mongoose.disconnect();
     }
