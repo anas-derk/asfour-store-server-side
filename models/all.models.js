@@ -34,6 +34,8 @@ const productSchema = mongoose.Schema({
     },
     imagePath: String,
     galleryImagesPaths: Array,
+    startDiscountPeriod: Date,
+    endDiscountPeriod: Date,
 });
 
 // Create Product Model From Product Schema
