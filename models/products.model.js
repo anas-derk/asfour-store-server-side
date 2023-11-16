@@ -134,6 +134,22 @@ async function updateProductGalleryImage(productId, oldGalleryImagePath, newGall
     }
 }
 
+async function updateProductImage(productId, newProductImagePath) {
+    try{
+        await mongoose.connect(process.env.DB_URL);
+        const { imagePath } = await productModel.findById(productId);
+        await productModel.updateOne({ _id: productId }, {
+            imagePath: newProductImagePath,
+        });
+        await mongoose.disconnect();
+        return imagePath;
+    }
+    catch(err) {
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 module.exports = {
     addNewProduct,
     addingNewImagesToProductGallery,
@@ -143,4 +159,5 @@ module.exports = {
     getAllProducts,
     updateProduct,
     updateProductGalleryImage,
+    updateProductImage,
 }

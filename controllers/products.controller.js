@@ -122,13 +122,31 @@ async function putProductGalleryImage(req, res) {
         const productId = req.params.productId,
             oldGalleryImagePath = req.query.oldGalleryImagePath,
             newGalleryImagePath = req.file.path;
-        if (!productId || !oldGalleryImagePath) await res.status(400).json("Sorry, Please Send Product Id And Gallery Image Path !!");
+        if (!productId || !oldGalleryImagePath) await res.status(400).json("Sorry, Please Send Product Id And Gallery Image !!");
         else {
             const { updateProductGalleryImage } = require("../models/products.model");
             await updateProductGalleryImage(productId, oldGalleryImagePath, newGalleryImagePath);
             const { unlinkSync } = require("fs");
             unlinkSync(oldGalleryImagePath);
             await res.json(newGalleryImagePath);
+        }
+    }
+    catch(err){
+        await res.status(500).json(err);
+    }
+}
+
+async function putProductImage(req, res) {
+    try{
+        const productId = req.params.productId,
+            newProductImagePath = req.file.path;
+        if (!productId || !newProductImagePath) await res.status(400).json("Sorry, Please Send Product Id And New Image !!");
+        else {
+            const { updateProductImage } = require("../models/products.model");
+            const oldImagePath = await updateProductImage(productId, newProductImagePath);
+            const { unlinkSync } = require("fs");
+            unlinkSync(oldImagePath);
+            await res.json(newProductImagePath);
         }
     }
     catch(err){
@@ -145,4 +163,5 @@ module.exports = {
     getAllProducts,
     putProduct,
     putProductGalleryImage,
+    putProductImage,
 }

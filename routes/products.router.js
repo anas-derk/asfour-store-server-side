@@ -32,4 +32,6 @@ productsRouter.put("/:productId", productsController.putProduct);
 
 productsRouter.put("/update-product-gallery-image/:productId", multer({ storage }).single("productGalleryImage") , productsController.putProductGalleryImage);
 
+productsRouter.put("/update-product-image/:productId", multer({ storage }).single("productImage") , productsController.putProductImage);
+
 module.exports = productsRouter;
