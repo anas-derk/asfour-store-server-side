@@ -47,10 +47,22 @@ const productModel = mongoose.model("product", productSchema);
 const userSchema = mongoose.Schema({
     email: String,
     password: String,
+    first_name: {
+        type: String,
+        default: "",
+    },
+    last_name: {
+        type: String,
+        default: "",
+    },
+    preview_name: {
+        type: String,
+        default: "",
+    },
     favorite_products_list: {
         type: Array,
         default: [],
-    }
+    },
 });
 
 // Create User Model From User Schema

@@ -121,6 +121,7 @@ async function putUserInfo(req, res) {
         }
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(err);
     }
 }

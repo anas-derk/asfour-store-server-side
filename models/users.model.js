@@ -145,22 +145,12 @@ async function getFavoriteProducts(userId) {
 async function updateUserInfo(userId, newUserData) {
     try {
         // Connect To DB
-        await mongoose.connect(DB_URL);
-        if (newUserData.password !== "") {
-            const encrypted_password = await bcrypt.hash(newUserData.password, 10);
-            await userModel.updateOne({ _id: userId }, {
-                email: newUserData.email,
-                password: encrypted_password,
-                country: newUserData.country,
-            });
-        } else {
-            await userModel.updateOne({ _id: userId }, {
-                email: newUserData.email,
-                country: newUserData.country,
-            });
-        }
+        await mongoose.connect(process.env.DB_URL);
+        await userModel.updateOne({ _id: userId }, {
+            ...newUserData,
+        });
         await mongoose.disconnect();
-        return "Update Process Successful ...";
+        return "Updating User Info Process Has Been Successfuly ...";
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
