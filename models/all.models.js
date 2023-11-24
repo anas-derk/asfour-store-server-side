@@ -63,8 +63,90 @@ const userSchema = mongoose.Schema({
         type: Array,
         default: [],
     },
-    billing_address: {},
-    shipping_address: {},
+    billing_address: {
+        first_name: {
+            type: String,
+            default: "",
+        },
+        last_name: {
+            type: String,
+            default: "",
+        },
+        company_name: {
+            type: String,
+            default: "",
+        },
+        country: {
+            type: String,
+            default: "",
+        },
+        street_address: {
+            type: String,
+            default: "",
+        },
+        apartment_number: {
+            type: Number,
+            default: 1,
+        },
+        city: {
+            type: String,
+            default: "",
+        },
+        postal_code: {
+            type: Number,
+            default: 1,
+        },
+        phone_number: {
+            type: Number,
+            default: 1,
+        },
+        email: {
+            type: String,
+            default: "",
+        },
+    },
+    shipping_address: {
+        first_name: {
+            type: String,
+            default: "",
+        },
+        last_name: {
+            type: String,
+            default: "",
+        },
+        company_name: {
+            type: String,
+            default: "",
+        },
+        country: {
+            type: String,
+            default: "",
+        },
+        street_address: {
+            type: String,
+            default: "",
+        },
+        apartment_number: {
+            type: Number,
+            default: 1,
+        },
+        city: {
+            type: String,
+            default: "",
+        },
+        postal_code: {
+            type: Number,
+            default: 1,
+        },
+        phone_number: {
+            type: Number,
+            default: 1,
+        },
+        email: {
+            type: String,
+            default: "",
+        },
+    },
 });
 
 // Create User Model From User Schema
