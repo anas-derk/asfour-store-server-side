@@ -63,6 +63,8 @@ const userSchema = mongoose.Schema({
         type: Array,
         default: [],
     },
+    billing_address: {},
+    shipping_address: {},
 });
 
 // Create User Model From User Schema

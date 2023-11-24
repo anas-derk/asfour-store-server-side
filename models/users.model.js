@@ -18,12 +18,10 @@ async function createNewUser(email, password) {
             await mongoose.disconnect();
             return "Sorry, Can't Create User Because it is Exist !!!";
         } else {
-            // Encrypting The Password
-            const encrypted_password = await bcrypt.hash(password, 10);
             // Create New Document From User Schema
             const newUser = new userModel({
                 email,
-                password: encrypted_password,
+                password: await bcrypt.hash(password, 10),
             });
             // Save The New User As Document In User Collection
             await newUser.save();
@@ -146,11 +144,32 @@ async function updateUserInfo(userId, newUserData) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        await userModel.updateOne({ _id: userId }, {
-            ...newUserData,
-        });
-        await mongoose.disconnect();
-        return "Updating User Info Process Has Been Successfuly ...";
+        if (newUserData.password && newUserData.newPassword) {
+            const userInfo = await userModel.findById(userId);
+            if (userInfo) {
+                const isTruePassword = await bcrypt.compare(newUserData.password, userInfo.password);
+                if (isTruePassword) {
+                    await userModel.updateOne({ _id: userId }, {
+                        ...newUserData,
+                        password: await bcrypt.hash(newUserData.newPassword, 10),
+                    });
+                    await mongoose.disconnect();
+                    return "Updating User Info Process Has Been Successfuly ...";
+                } else {
+                    await mongoose.disconnect();
+                    return "Sorry, This Password Is Uncorrect !!";
+                }
+            } else {
+                await mongoose.disconnect();
+                return "Sorry, Invalid User Id";
+            }
+        } else {
+            await userModel.updateOne({ _id: userId }, {
+                ...newUserData,
+            });
+            await mongoose.disconnect();
+            return "Updating User Info Process Has Been Successfuly ...";
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
