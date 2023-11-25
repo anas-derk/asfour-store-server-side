@@ -193,6 +193,21 @@ async function updateUserInfo(userId, newUserData) {
     }
 }
 
+async function updateVerificationStatus(email) {
+    try{
+        await mongoose.connect(process.env.DB_URL);
+        const userInfo = await userModel.findOne({ email });
+        await userModel.updateOne({ email }, { isVerified: true });
+        await mongoose.disconnect();
+        return userInfo._id;
+    }
+    catch(err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function deleteProductFromFavoriteUserProducts(userId, productId) {
     try {
         // Connect To DB
@@ -231,5 +246,6 @@ module.exports = {
     getAllUsers,
     getFavoriteProducts,
     updateUserInfo,
+    updateVerificationStatus,
     deleteProductFromFavoriteUserProducts,
 }

@@ -152,6 +152,22 @@ async function putUserInfo(req, res) {
     }
 }
 
+async function putVerificationStatus(req, res) {
+    try{
+        const email = req.query.email;
+        if (!email) res.status(400).json("Sorry, Please Send User Email !!");
+        else {
+            const { updateVerificationStatus } = require("../models/users.model");
+            const result = await updateVerificationStatus(email);
+            await res.json(result);
+        }
+    }
+    catch(err) {
+        console.log(err);
+        await res.status(500).json(err);
+    }
+}
+
 async function deleteProductFromFavoriteUserProducts(req, res) {
     try{
         const   userId = req.query.userId,
@@ -178,5 +194,6 @@ module.exports = {
     getAllUsers,
     getFavoriteProducts,
     putUserInfo,
+    putVerificationStatus,
     deleteProductFromFavoriteUserProducts,
 }
