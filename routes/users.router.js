@@ -6,6 +6,8 @@ usersRouter.post("/create-new-user", usersController.createNewUser);
 
 usersRouter.post("/add-favorite-product", usersController.postNewFavoriteProduct);
 
+usersRouter.post("/send-account-verification-code", usersController.postAccountVerificationCode);
+
 usersRouter.get("/login", usersController.login);
 
 usersRouter.get("/user-info/:userId", usersController.getUserInfo);

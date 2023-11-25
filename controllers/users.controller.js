@@ -8,7 +8,7 @@ async function createNewUser(req, res) {
         if (email.length > 0 && password.length > 0) {
             // Check If Email Valid
             if (isEmail(email)) {
-                const { createNewUser } = require("../models/users.model");
+                const { createNewUser, isExistUser } = require("../models/users.model");
                 const result = await createNewUser(email.toLowerCase(), password);
                 await res.json(result);
             }
@@ -34,6 +34,32 @@ async function postNewFavoriteProduct(req, res) {
             const { addNewFavoriteProduct } = require("../models/users.model");
             const result = await addNewFavoriteProduct(userId, productId);
             await res.json(result);
+        }
+    }
+    catch(err) {
+        console.log(err);
+        await res.status(500).json(err);
+    }
+}
+
+async function postAccountVerificationCode(req, res) {
+    try{
+        const userEmail = req.query.email;
+        const { isEmail } = require("../global/functions");
+        if (!userEmail) await res.status(400).json("Sorry, Please Send The Email !!");
+        else {
+            if (!isEmail(userEmail)) {
+                await res.status(400).json("Sorry, Please Send Valid Email !!");
+            } else {
+                const { isExistUser } = require("../models/users.model");
+                if (isExistUser(userEmail) === "Sorry, The User Is Not Exist !!, Please Enter Another User Email ..") {
+                    await res.status(400).json("Sorry, Please Send Exist Email !!");
+                } else {
+                    const { sendCodeToUserEmail } = require("../global/functions");
+                    const verificationCode = await sendCodeToUserEmail(userEmail);
+                    await res.json(verificationCode);
+                }
+            }
         }
     }
     catch(err) {
@@ -146,6 +172,7 @@ async function deleteProductFromFavoriteUserProducts(req, res) {
 module.exports = {
     createNewUser,
     postNewFavoriteProduct,
+    postAccountVerificationCode,
     login,
     getUserInfo,
     getAllUsers,

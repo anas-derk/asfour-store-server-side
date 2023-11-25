@@ -47,6 +47,10 @@ const productModel = mongoose.model("product", productSchema);
 const userSchema = mongoose.Schema({
     email: String,
     password: String,
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
     first_name: {
         type: String,
         default: "",

@@ -110,6 +110,22 @@ async function getUserInfo(userId) {
     }
 }
 
+async function isExistUser(email) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        // Check If User Is Exist
+        let user = await userModel.findOne({ email });
+        await mongoose.disconnect();
+        if (user) return user;
+        return "Sorry, The User Is Not Exist !!, Please Enter Another User Email ..";
+    } catch (err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function getAllUsers() {
     try {
         // Connect To DB
@@ -211,6 +227,7 @@ module.exports = {
     addNewFavoriteProduct,
     login,
     getUserInfo,
+    isExistUser,
     getAllUsers,
     getFavoriteProducts,
     updateUserInfo,
