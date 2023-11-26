@@ -25,7 +25,7 @@ const { compile } = require("ejs");
 function sendCodeToUserEmail(email) {
     const CodeGenerator = require('node-code-generator');
     const generator = new CodeGenerator();
-    const generatedCode = generator.generateCodes("###**#**")[0];
+    const generatedCode = generator.generateCodes("####")[0];
     const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_template.ejs"), "utf-8");
     const compiledTemplate = compile(templateContent);
     const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ generatedCode });
