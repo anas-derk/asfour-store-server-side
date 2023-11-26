@@ -18,16 +18,23 @@ function transporterObj() {
     return transporter;
 }
 
+const { join } = require("path");
+const { readFileSync } = require("fs");
+const { compile } = require("ejs");
+
 function sendCodeToUserEmail(email) {
     const CodeGenerator = require('node-code-generator');
     const generator = new CodeGenerator();
     const generatedCode = generator.generateCodes("###**#**")[0];
+    const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_template.ejs"), "utf-8");
+    const compiledTemplate = compile(templateContent);
+    const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ generatedCode });
     // إعداد الرسالة قبل إرسالها
     const mailConfigurations = {
         from: "info@asfourintlco.com",
         to: email,
-        subject: "رسالة التحقق من البريد الالكتروني الخاص بحسابك على موقع مستر فيكس",
-        text: `مرحباً بك في خدمة التحقق من أنك صاحب البريد الالكتروني في مستر فيكس \n الكود هو: ${generatedCode}`,
+        subject: "Account Verification Code On Asfour International Store",
+        html: htmlContentAfterCompilingEjsTemplateFile,
     };
     return new Promise((resolve, reject) => {
         // إرسال رسالة الكود إلى الإيميل
