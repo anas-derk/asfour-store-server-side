@@ -51,9 +51,10 @@ async function postAccountVerificationCode(req, res) {
             if (!isEmail(userEmail)) {
                 await res.status(400).json("Sorry, Please Send Valid Email !!");
             } else {
-                const { isExistUser } = require("../models/users.model");
-                if (isExistUser(userEmail) === "Sorry, The User Is Not Exist !!, Please Enter Another User Email ..") {
-                    await res.status(400).json("Sorry, Please Send Exist Email !!");
+                const { isExistUserAndVerificationEmail } = require("../models/users.model");
+                const result = await isExistUserAndVerificationEmail(userEmail);
+                if (result === "Sorry, The User Is Not Exist !!, Please Enter Another User Email .." || result === "Sorry, The Email For This User Has Been Verified !!") {
+                    await res.status(400).json(result);
                 } else {
                     const { sendCodeToUserEmail } = require("../global/functions");
                     const verificationCode = await sendCodeToUserEmail(userEmail);

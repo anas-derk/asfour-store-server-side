@@ -110,14 +110,17 @@ async function getUserInfo(userId) {
     }
 }
 
-async function isExistUser(email) {
+async function isExistUserAndVerificationEmail(email) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
         // Check If User Is Exist
-        let user = await userModel.findOne({ email });
+        const user = await userModel.findOne({ email });
         await mongoose.disconnect();
-        if (user) return user;
+        if (user) {
+            if (!user.isVerified) return user;
+            return "Sorry, The Email For This User Has Been Verified !!";
+        };
         return "Sorry, The User Is Not Exist !!, Please Enter Another User Email ..";
     } catch (err) {
         // Disconnect In DB
@@ -242,7 +245,7 @@ module.exports = {
     addNewFavoriteProduct,
     login,
     getUserInfo,
-    isExistUser,
+    isExistUserAndVerificationEmail,
     getAllUsers,
     getFavoriteProducts,
     updateUserInfo,
