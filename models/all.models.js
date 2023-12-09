@@ -167,10 +167,159 @@ const categorySchema = mongoose.Schema({
 
 const categoryModel = mongoose.model("category", categorySchema);
 
+// Create Order Schema
+
+const orderSchema = mongoose.Schema({
+    paymentReference: {
+        type: String,
+        default: "none",
+    },
+    order_amount: {
+        type: Number,
+        default: 0,
+    },
+    checkout_status: {
+        type: String,
+        default: "checkout_incomplete",
+    },
+    status: {
+        type: String,
+        default: "pending",
+    },
+    billing_address: {
+        first_name: {
+            type: String,
+            default: "none",
+        },
+        last_name: {
+            type: String,
+            default: "none",
+        },
+        company_name: {
+            type: String,
+            default: "none",
+        },
+        country: {
+            type: String,
+            default: "none",
+        },
+        street_address: {
+            type: String,
+            default: "none",
+        },
+        apartment_number: {
+            type: Number,
+            default: 1,
+        },
+        city: {
+            type: String,
+            default: "none",
+        },
+        postal_code: {
+            type: Number,
+            default: 0,
+        },
+        phone: {
+            type: Number,
+            default: 0,
+        },
+        email: {
+            type: String,
+            default: "none",
+        },
+    },
+    shipping_address: {
+        first_name: {
+            type: String,
+            default: "none",
+        },
+        last_name: {
+            type: String,
+            default: "none",
+        },
+        company_name: {
+            type: String,
+            default: "none",
+        },
+        country: {
+            type: String,
+            default: "none",
+        },
+        street_address: {
+            type: String,
+            default: "none",
+        },
+        apartment_number: {
+            type: Number,
+            default: 1,
+        },
+        city: {
+            type: String,
+            default: "none",
+        },
+        postal_code: {
+            type: Number,
+            default: 0,
+        },
+        phone: {
+            type: Number,
+            default: 0,
+        },
+        email: {
+            type: String,
+            default: "none",
+        },
+    },
+    order_products: [{
+        reference: {
+            type: String,
+            default: "none",
+        },
+        quantity: {
+            type: Number,
+            default: 0,
+        },
+        name: {
+            type: String,
+            default: "none",
+        },
+        unit_price: {
+            type: Number,
+            default: 0,
+        },
+        total_amount: {
+            type: Number,
+            default: 0,
+        },
+        image_url: {
+            type: String,
+            default: "none",
+        },
+    }],
+    added_date: {
+        type: Date,
+        default: Date.now(),
+    },
+    orderNumber: Number,
+    requestNotes: {
+        type: String,
+        default: "",
+    },
+    isReturned: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+// Create Order Model From Order Schema
+
+const orderModel = mongoose.model("order", orderSchema);
+
 module.exports = {
     mongoose,
     adminModel,
     productModel,
     userModel,
     categoryModel,
+    orderModel,
 }
