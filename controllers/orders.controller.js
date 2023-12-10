@@ -12,13 +12,13 @@ async function postNewOrder(req, res) {
 async function postNewPayment(req, res) {
     try{
         const { post } = require("axios");
-        const res = await post("https://sandboxapi.upayments.com/api/v1/charge", req.body, {
+        const response = await post("https://sandboxapi.upayments.com/api/v1/charge", req.body, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${process.env.UPAYMENTS_TOKEN}`
             },
-        })
-        await res.json(result);
+        });
+        await res.json(await response.data);
     }
     catch(err) {
         console.log(err);
