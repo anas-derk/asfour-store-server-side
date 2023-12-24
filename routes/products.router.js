@@ -22,7 +22,9 @@ productsRouter.post("/adding-new-images-to-product-gallery/:productId", multer({
 
 productsRouter.get("/product-info/:productId", productsController.getProductInfo);
 
-productsRouter.get("/all-products", productsController.getAllProducts);
+productsRouter.get("/products-count", productsController.getProductsCount);
+
+productsRouter.get("/all-products-inside-the-page", productsController.getAllProductsInsideThePage);
 
 productsRouter.delete("/:productId", productsController.deleteProduct);
 

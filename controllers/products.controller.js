@@ -21,9 +21,9 @@ async function postNewProduct(req, res) {
 }
 
 async function postNewImagesToProductGallery(req, res) {
-    try{
-        const   productId = req.params.productId,
-                newGalleryImagePaths = req.files.map(file => file.path);
+    try {
+        const productId = req.params.productId,
+            newGalleryImagePaths = req.files.map(file => file.path);
         if (!productId || newGalleryImagePaths.length === 0) await res.json("Sorry, Please Send Product Id And New Images !!");
         else {
             const { addingNewImagesToProductGallery } = require("../models/products.model");
@@ -31,14 +31,14 @@ async function postNewImagesToProductGallery(req, res) {
             await res.json(newGalleryImagePaths);
         }
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
         await res.status(500).json(err);
     }
 }
 
 async function getProductInfo(req, res) {
-    try{
+    try {
         const productId = req.params.productId;
         if (!productId) await res.status(400).json("Sorry, Please Send User Id !!");
         else {
@@ -47,43 +47,52 @@ async function getProductInfo(req, res) {
             await res.json(result);
         }
     }
-    catch(err){
+    catch (err) {
         await res.status(500).json(err);
     }
 }
 
-async function getAllProducts(req, res) {
-    try{
-        const { getAllProducts } = require("../models/products.model");
-        const result = await getAllProducts();
-        await res.json(result);
+async function getProductsCount(req, res) {
+    try {
+        const { getProductsCount } = require("../models/products.model");
+        await res.json(await getProductsCount());
     }
-    catch(err){
+    catch (err) {
+        await res.status(500).json(err);
+    }
+}
+
+async function getAllProductsInsideThePage(req, res) {
+    try {
+        const { getAllProductsInsideThePage } = require("../models/products.model");
+        await res.json(await getAllProductsInsideThePage(req.query.pageNumber, req.query.pageSize));
+    }
+    catch (err) {
         await res.status(500).json(err);
     }
 }
 
 async function deleteProduct(req, res) {
-    try{
+    try {
         const productId = req.params.productId;
         if (!productId) await res.status(400).json("Sorry, Please Send User Id !!");
         else {
             const { deleteProduct } = require("../models/products.model");
             const productImagePaths = await deleteProduct(productId);
             const { unlinkSync } = require("fs");
-            for(let productImagePath of productImagePaths) {
+            for (let productImagePath of productImagePaths) {
                 unlinkSync(productImagePath);
             }
             await res.json("Deleting Product Process It Successfuly ...");
         }
     }
-    catch(err) {
+    catch (err) {
         await res.status(500).json(err);
     }
 }
 
 async function deleteImageFromProductGallery(req, res) {
-    try{
+    try {
         const productId = req.params.productId,
             galleryImagePath = req.query.galleryImagePath;
         if (!productId || !galleryImagePath) await res.status(400).json("Sorry, Please Send Product Id And Gallery Image Path !!");
@@ -95,14 +104,14 @@ async function deleteImageFromProductGallery(req, res) {
             await res.json("Deleting Product Gallery Image Has Been Successfuly ...");
         }
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
         await res.status(500).json(err);
     }
 }
 
 async function putProduct(req, res) {
-    try{
+    try {
         const productId = req.params.productId;
         const newProductData = req.body;
         if (!productId) await res.status(400).json("Sorry, Please Send User Id !!");
@@ -112,13 +121,13 @@ async function putProduct(req, res) {
             await res.json(result);
         }
     }
-    catch(err) {
+    catch (err) {
         await res.status(500).json(err);
     }
 }
 
 async function putProductGalleryImage(req, res) {
-    try{
+    try {
         const productId = req.params.productId,
             oldGalleryImagePath = req.query.oldGalleryImagePath,
             newGalleryImagePath = req.file.path;
@@ -131,13 +140,13 @@ async function putProductGalleryImage(req, res) {
             await res.json(newGalleryImagePath);
         }
     }
-    catch(err){
+    catch (err) {
         await res.status(500).json(err);
     }
 }
 
 async function putProductImage(req, res) {
-    try{
+    try {
         const productId = req.params.productId,
             newProductImagePath = req.file.path;
         if (!productId || !newProductImagePath) await res.status(400).json("Sorry, Please Send Product Id And New Image !!");
@@ -149,7 +158,7 @@ async function putProductImage(req, res) {
             await res.json(newProductImagePath);
         }
     }
-    catch(err){
+    catch (err) {
         await res.status(500).json(err);
     }
 }
@@ -157,10 +166,11 @@ async function putProductImage(req, res) {
 module.exports = {
     postNewProduct,
     postNewImagesToProductGallery,
+    getProductsCount,
+    getAllProductsInsideThePage,
     getProductInfo,
     deleteProduct,
     deleteImageFromProductGallery,
-    getAllProducts,
     putProduct,
     putProductGalleryImage,
     putProductImage,

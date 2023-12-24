@@ -55,13 +55,28 @@ async function getProductInfo(productId) {
     }
 }
 
-async function getAllProducts() {
+async function getProductsCount() {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        const allProducts = await productModel.find({}).sort({ postOfDate: -1 });
+        const productsCount = await productModel.countDocuments({});
         await mongoose.disconnect();
-        return allProducts;
+        return productsCount;
+    }
+    catch (err) {
+        // Disconnect To DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
+async function getAllProductsInsideThePage(pageNumber, pageSize) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        const productsCount = await productModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize);
+        await mongoose.disconnect();
+        return productsCount;
     }
     catch (err) {
         // Disconnect To DB
@@ -154,9 +169,10 @@ module.exports = {
     addNewProduct,
     addingNewImagesToProductGallery,
     getProductInfo,
+    getProductsCount,
+    getAllProductsInsideThePage,
     deleteProduct,
     deleteImageFromProductGallery,
-    getAllProducts,
     updateProduct,
     updateProductGalleryImage,
     updateProductImage,
