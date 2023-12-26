@@ -76,7 +76,7 @@ async function getOrderDetails(req, res) {
 async function postNewOrder(req, res) {
     try{
         const { postNewOrder } = require("../models/orders.model");
-        const result = await postNewOrder();
+        const result = await postNewOrder(req.body);
         await res.json(result);
     }
     catch(err) {
@@ -84,7 +84,7 @@ async function postNewOrder(req, res) {
     }
 }
 
-async function postNewPayment(req, res) {
+async function postNewUPaymentsPayment(req, res) {
     try{
         const { post } = require("axios");
         const response = await post("https://sandboxapi.upayments.com/api/v1/charge", req.body, {
@@ -96,7 +96,7 @@ async function postNewPayment(req, res) {
         await res.json(await response.data);
     }
     catch(err) {
-        console.log(err);
+        console.log(err.response.data);
         await res.status(500).json(err);
     }
 }
@@ -104,12 +104,26 @@ async function postNewPayment(req, res) {
 async function putOrder(req, res) {
     try{
         const orderId = req.params.orderId;
-        console.log(orderId);
         const newOrderDetails = req.body;
         if (!orderId) await res.status(400).json("Please Send Order Id !!");
         else {
             const { updateOrder } = require("../models/orders.model");
             await updateOrder(orderId, newOrderDetails);
+            await res.json("Updating Order Details Has Been Successfuly !!");
+        }
+    }
+    catch(err){
+        await res.status(500).json(err);
+    }
+}
+
+async function putUPaymentsOrder(req, res) {
+    try{
+        const orderId = req.params.orderId;
+        if (!orderId) await res.status(400).json("Please Send Order Id !!");
+        else {
+            const { updateUPaymentsOrder } = require("../models/orders.model");
+            await updateUPaymentsOrder(orderId);
             await res.json("Updating Order Details Has Been Successfuly !!");
         }
     }
@@ -124,6 +138,7 @@ module.exports = {
     getOrdersCount,
     getOrderDetails,
     postNewOrder,
-    postNewPayment,
+    postNewUPaymentsPayment,
     putOrder,
+    putUPaymentsOrder,
 }

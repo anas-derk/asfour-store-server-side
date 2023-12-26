@@ -220,8 +220,8 @@ const orderSchema = mongoose.Schema({
             default: 0,
         },
         phone: {
-            type: Number,
-            default: 0,
+            type: String,
+            default: "",
         },
         email: {
             type: String,
@@ -262,8 +262,8 @@ const orderSchema = mongoose.Schema({
             default: 0,
         },
         phone: {
-            type: Number,
-            default: 0,
+            type: String,
+            default: "",
         },
         email: {
             type: String,
@@ -271,10 +271,6 @@ const orderSchema = mongoose.Schema({
         },
     },
     order_products: [{
-        reference: {
-            type: String,
-            default: "none",
-        },
         quantity: {
             type: Number,
             default: 0,
@@ -287,11 +283,15 @@ const orderSchema = mongoose.Schema({
             type: Number,
             default: 0,
         },
+        discount: {
+            type: Number,
+            default: 0,
+        },
         total_amount: {
             type: Number,
             default: 0,
         },
-        image_url: {
+        image_path: {
             type: String,
             default: "none",
         },

@@ -44,15 +44,15 @@ async function getOrderDetails(orderId) {
     }
 }
 
-async function postNewOrder() {
+async function postNewOrder(orderDetails) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
         const ordersCount = await orderModel.countDocuments();
-        const newOrder = new orderModel({ orderNumber: ordersCount + 1 });
-        const orderDetails = await newOrder.save();
+        const newOrder = new orderModel({ ...orderDetails, orderNumber: ordersCount + 1 });
+        const { _id, orderNumber } = await newOrder.save();
         await mongoose.disconnect();
-        return { msg: "Creating New Order Has Been Successfuly !!", orderId: orderDetails._id, orderNumber: orderDetails.orderNumber };
+        return { msg: "Creating New Order Has Been Successfuly !!", orderId: _id, orderNumber: orderNumber };
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -76,10 +76,27 @@ async function updateOrder(orderId, newOrderDetails) {
     }
 }
 
+async function updateUPaymentsOrder(orderId) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        await orderModel.updateOne({
+            _id: orderId,
+        }, { checkout_status: "checkout_successful" });
+        await mongoose.disconnect();
+        return orderNumber;
+    } catch (err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 module.exports = {
     getAllOrdersInsideThePage,
     getOrdersCount,
     getOrderDetails,
     postNewOrder,
     updateOrder,
+    updateUPaymentsOrder,
 }
