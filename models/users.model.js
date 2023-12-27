@@ -87,8 +87,6 @@ async function login(email, password) {
         }
     }
     catch (err) {
-        console.log(err);
-        // Disconnect In DB
         await mongoose.disconnect();
         throw Error(err);
     }
