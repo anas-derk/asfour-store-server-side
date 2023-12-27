@@ -16,4 +16,10 @@ ordersRouter.post("/update-order/:orderId", ordersController.putOrder);
 
 ordersRouter.post("/update-upayments-order/:orderId", ordersController.putUPaymentsOrder);
 
+ordersRouter.put("/products/update-product/:orderId/:productId", ordersController.putOrderProduct);
+
+ordersRouter.delete("/delete-order/:orderId", ordersController.deleteOrder);
+
+ordersRouter.delete("/products/delete-product/:orderId/:productId", ordersController.deleteProductFromOrder);
+
 module.exports = ordersRouter;

@@ -132,6 +132,54 @@ async function putUPaymentsOrder(req, res) {
     }
 }
 
+async function putOrderProduct(req, res) {
+    try{
+        const   orderId = req.params.orderId,
+                productId = req.params.productId;
+        const newOrderProductDetails = req.body;
+        if (!orderId || !productId) await res.status(400).json("Please Send Order Id And Product Id !!");
+        else {
+            const { updateOrderProduct } = require("../models/orders.model");
+            const result = await updateOrderProduct(orderId, productId, newOrderProductDetails);
+            await res.json(result);
+        }
+    }
+    catch(err){
+        await res.status(500).json(err);
+    }
+}
+
+async function deleteOrder(req, res) {
+    try{
+        const orderId = req.params.orderId;
+        if (!orderId) await res.status(400).json("Please Send Order Id !!");
+        else {
+            const { deleteOrder } = require("../models/orders.model");
+            const result = await deleteOrder(orderId);
+            await res.json(result);
+        }
+    }
+    catch(err){
+        await res.status(500).json(err);
+    }
+}
+
+async function deleteProductFromOrder(req, res) {
+    try{
+        const   orderId = req.params.orderId,
+                productId = req.params.productId;
+        if (!orderId || !productId) await res.status(400).json("Please Send Order Id And Product Id !!");
+        else {
+            const { deleteProductFromOrder } = require("../models/orders.model");
+            const result = await deleteProductFromOrder(orderId, productId);
+            await res.json(result);
+        }
+    }
+    catch(err){
+        await res.status(500).json(err);
+    }
+}
+
 module.exports = {
     getAllOrdersInsideThePage,
     getFiltersObject,
@@ -141,4 +189,7 @@ module.exports = {
     postNewUPaymentsPayment,
     putOrder,
     putUPaymentsOrder,
+    putOrderProduct,
+    deleteOrder,
+    deleteProductFromOrder,
 }
