@@ -116,7 +116,7 @@ async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
 async function deleteOrder(orderId){
     try{
         await mongoose.connect(process.env.DB_URL);
-        await orderModel.deleteOne({ _id: orderId });
+        await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
         return "Deleting This Order Has Been Successfuly !!";
     }
     catch(err){

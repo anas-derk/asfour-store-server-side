@@ -309,6 +309,10 @@ const orderSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    isDeleted: {
+        default: false,
+        type: Boolean,
+    }
 });
 
 // Create Order Model From Order Schema
