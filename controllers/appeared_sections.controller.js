@@ -1,3 +1,13 @@
+async function getAllSections(req, res) {
+    try{
+        const { getAllSections } = require("../models/appeared_sections.model");
+        await res.json(await getAllSections());
+    }
+    catch(err) {
+        await res.status(500).json(err);
+    }
+}
+
 async function putSectionStatus(req, res) {
     try{
         const sectionId = req.params.sectionId;
@@ -15,4 +25,5 @@ async function putSectionStatus(req, res) {
 
 module.exports = {
     putSectionStatus,
+    getAllSections,
 }

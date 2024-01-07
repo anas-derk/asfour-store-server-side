@@ -2,6 +2,20 @@
 
 const { mongoose, appearedSectionsModel } = require("../models/all.models");
 
+async function getAllSections() {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        const allSections = await appearedSectionsModel.find({});
+        await mongoose.disconnect();
+        return allSections;
+    } catch (err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function changeSectionStatus(sectionId) {
     try {
         // Connect To DB
@@ -17,4 +31,5 @@ async function changeSectionStatus(sectionId) {
 
 module.exports = {
     changeSectionStatus,
+    getAllSections,
 }
