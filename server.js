@@ -41,7 +41,8 @@ const   adminRouter = require("./routes/admin.router"),
         productsRouter = require("./routes/products.router"),
         usersRouter = require("./routes/users.router"),
         categoriesRouter = require("./routes/categories.router"),
-        ordersRouter = require("./routes/orders.router");
+        ordersRouter = require("./routes/orders.router"),
+        brandsRouter = require("./routes/brands.router");
 
 app.use("/admins", adminRouter);
 
@@ -52,5 +53,7 @@ app.use("/users", usersRouter);
 app.use("/categories", categoriesRouter);
 
 app.use("/orders", ordersRouter);
+
+app.use("/brands", brandsRouter);
 
 /* End Handle The Routes */

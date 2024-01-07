@@ -319,6 +319,17 @@ const orderSchema = mongoose.Schema({
 
 const orderModel = mongoose.model("order", orderSchema);
 
+// Create Brand Schema
+
+const brandSchema = mongoose.Schema({
+    imagePath: String,
+    title: String,
+});
+
+// Create Brand Model From Brand Schema
+
+const brandModel = mongoose.model("brand", brandSchema);
+
 module.exports = {
     mongoose,
     adminModel,
@@ -326,4 +337,5 @@ module.exports = {
     userModel,
     categoryModel,
     orderModel,
+    brandModel,
 }
