@@ -17,7 +17,7 @@ const admin_user_model = mongoose.model("admin", admin_user_schema);
 
 const bcrypt = require("bcryptjs");
 
-let userInfo = {
+const userInfo = {
     email: "admin@gmail.com",
     password: "12345678",
 };
@@ -36,11 +36,11 @@ async function create_admin_user_account() {
             let new_admin_user = new admin_user_model(userInfo);
             await new_admin_user.save();
             await mongoose.disconnect();
-            return "Ok !!, Create Admin Account Is Successfuly !!";
+            return "Ok !!, Create Admin Account Has Been Successfuly !!";
         }
     } catch(err) {
         await mongoose.disconnect();
-        throw Error("Sorry, Error In Process, Please Repeated This Process !!");
+        throw Error(err);
     }
 }
 
