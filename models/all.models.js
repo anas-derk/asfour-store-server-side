@@ -330,6 +330,20 @@ const brandSchema = mongoose.Schema({
 
 const brandModel = mongoose.model("brand", brandSchema);
 
+// Create Appeared Sections Schema
+
+const appearedSectionsSchema = mongoose.Schema({
+    sectionName: String,
+    isAppeared: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+// Create Appeared Sections Model From Appeared Sections Schema
+
+const appearedSectionsModel = mongoose.model("appeared_sections", appearedSectionsSchema);
+
 module.exports = {
     mongoose,
     adminModel,
@@ -338,4 +352,5 @@ module.exports = {
     categoryModel,
     orderModel,
     brandModel,
+    appearedSectionsModel,
 }
