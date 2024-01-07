@@ -8,22 +8,20 @@ async function getAllSections(req, res) {
     }
 }
 
-async function putSectionStatus(req, res) {
+async function putSectionsStatus(req, res) {
     try{
-        const sectionId = req.params.sectionId;
-        if (!sectionId) await res.status(400).json("Invalid Request, Please Send Section Id !!");
-        else {
-            const { changeSectionStatus } = require("../models/appeared_sections.model");
-            await changeSectionStatus(sectionId);
-            await res.json("Change Section Status Has Been Successfuly !!");
-        }
+        const sectionsStatus = req.body.sectionsStatus;
+        const { updateSectionsStatus } = require("../models/appeared_sections.model");
+        await updateSectionsStatus(sectionsStatus);
+        await res.json("Change Sections Status Has Been Successfuly !!");
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(err);
     }
 }
 
 module.exports = {
-    putSectionStatus,
+    putSectionsStatus,
     getAllSections,
 }

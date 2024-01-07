@@ -16,11 +16,14 @@ async function getAllSections() {
     }
 }
 
-async function changeSectionStatus(sectionId) {
+async function updateSectionsStatus(sectionsStatus) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        await appearedSectionsModel.updateOne({ _id: sectionId });
+        console.log(sectionsStatus);
+        for (let i = 0; i < 3; i++) {
+            await appearedSectionsModel.updateOne({ _id: sectionsStatus[i]._id }, { isAppeared: sectionsStatus[i].isAppeared });
+        }
         await mongoose.disconnect();
     } catch (err) {
         // Disconnect In DB
@@ -30,6 +33,6 @@ async function changeSectionStatus(sectionId) {
 }
 
 module.exports = {
-    changeSectionStatus,
+    updateSectionsStatus,
     getAllSections,
 }

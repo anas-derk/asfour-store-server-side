@@ -4,6 +4,6 @@ const appearedSectionsController = require("../controllers/appeared_sections.con
 
 appearedSectionsRouter.get("/all-sections", appearedSectionsController.getAllSections);
 
-appearedSectionsRouter.put("/:sectionId", appearedSectionsController.putSectionStatus);
+appearedSectionsRouter.put("/update-sections-status", appearedSectionsController.putSectionsStatus);
 
 module.exports = appearedSectionsRouter;
