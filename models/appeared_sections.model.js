@@ -20,7 +20,6 @@ async function updateSectionsStatus(sectionsStatus) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        console.log(sectionsStatus);
         for (let i = 0; i < 3; i++) {
             await appearedSectionsModel.updateOne({ _id: sectionsStatus[i]._id }, { isAppeared: sectionsStatus[i].isAppeared });
         }

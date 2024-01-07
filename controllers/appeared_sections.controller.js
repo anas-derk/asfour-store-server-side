@@ -16,7 +16,6 @@ async function putSectionsStatus(req, res) {
         await res.json("Change Sections Status Has Been Successfuly !!");
     }
     catch(err) {
-        console.log(err);
         await res.status(500).json(err);
     }
 }
