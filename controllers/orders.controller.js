@@ -74,6 +74,7 @@ async function getOrderDetails(req, res) {
 }
 
 async function postNewOrder(req, res) {
+    console.log(req.body);
     try{
         const { postNewOrder } = require("../models/orders.model");
         const result = await postNewOrder(req.body);
