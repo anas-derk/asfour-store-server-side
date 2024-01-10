@@ -170,9 +170,9 @@ const categoryModel = mongoose.model("category", categorySchema);
 // Create Order Schema
 
 const orderSchema = mongoose.Schema({
-    paymentReference: {
+    customerUserId: {
         type: String,
-        default: "none",
+        default: "",
     },
     order_amount: {
         type: Number,
@@ -312,7 +312,7 @@ const orderSchema = mongoose.Schema({
     isDeleted: {
         default: false,
         type: Boolean,
-    }
+    },
 });
 
 // Create Order Model From Order Schema
