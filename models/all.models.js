@@ -170,7 +170,7 @@ const categoryModel = mongoose.model("category", categorySchema);
 // Create Order Schema
 
 const orderSchema = mongoose.Schema({
-    customerUserId: {
+    customerId: {
         type: String,
         default: "",
     },
