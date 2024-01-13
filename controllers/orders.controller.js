@@ -84,23 +84,6 @@ async function postNewOrder(req, res) {
     }
 }
 
-async function postNewUPaymentsPayment(req, res) {
-    try{
-        const { post } = require("axios");
-        const response = await post("https://sandboxapi.upayments.com/api/v1/charge", req.body, {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.UPAYMENTS_TOKEN}`
-            },
-        });
-        await res.json(await response.data);
-    }
-    catch(err) {
-        console.log(err.response.data);
-        await res.status(500).json(err);
-    }
-}
-
 async function putOrder(req, res) {
     try{
         const orderId = req.params.orderId;
@@ -109,21 +92,6 @@ async function putOrder(req, res) {
         else {
             const { updateOrder } = require("../models/orders.model");
             await updateOrder(orderId, newOrderDetails);
-            await res.json("Updating Order Details Has Been Successfuly !!");
-        }
-    }
-    catch(err){
-        await res.status(500).json(err);
-    }
-}
-
-async function putUPaymentsOrder(req, res) {
-    try{
-        const orderId = req.params.orderId;
-        if (!orderId) await res.status(400).json("Please Send Order Id !!");
-        else {
-            const { updateUPaymentsOrder } = require("../models/orders.model");
-            await updateUPaymentsOrder(orderId);
             await res.json("Updating Order Details Has Been Successfuly !!");
         }
     }
@@ -186,9 +154,7 @@ module.exports = {
     getOrdersCount,
     getOrderDetails,
     postNewOrder,
-    postNewUPaymentsPayment,
     putOrder,
-    putUPaymentsOrder,
     putOrderProduct,
     deleteOrder,
     deleteProductFromOrder,

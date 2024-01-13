@@ -76,22 +76,6 @@ async function updateOrder(orderId, newOrderDetails) {
     }
 }
 
-async function updateUPaymentsOrder(orderId) {
-    try {
-        // Connect To DB
-        await mongoose.connect(process.env.DB_URL);
-        await orderModel.updateOne({
-            _id: orderId,
-        }, { checkout_status: "checkout_successful" });
-        await mongoose.disconnect();
-        return orderNumber;
-    } catch (err) {
-        // Disconnect In DB
-        await mongoose.disconnect();
-        throw Error(err);
-    }
-}
-
 async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
     try {
         // Connect To DB
