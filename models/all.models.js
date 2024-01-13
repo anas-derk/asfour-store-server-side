@@ -82,7 +82,7 @@ const userSchema = mongoose.Schema({
         },
         country: {
             type: String,
-            default: "",
+            default: "Kuwait",
         },
         street_address: {
             type: String,
@@ -124,7 +124,7 @@ const userSchema = mongoose.Schema({
         },
         country: {
             type: String,
-            default: "",
+            default: "Kuwait",
         },
         street_address: {
             type: String,
