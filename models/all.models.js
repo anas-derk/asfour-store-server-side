@@ -101,8 +101,8 @@ const userSchema = mongoose.Schema({
             default: 1,
         },
         phone_number: {
-            type: Number,
-            default: 1,
+            type: String,
+            default: "0096560048235",
         },
         email: {
             type: String,
@@ -143,8 +143,8 @@ const userSchema = mongoose.Schema({
             default: 1,
         },
         phone_number: {
-            type: Number,
-            default: 1,
+            type: String,
+            default: "0096560048235",
         },
         email: {
             type: String,
