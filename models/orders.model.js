@@ -131,7 +131,6 @@ module.exports = {
     getOrderDetails,
     postNewOrder,
     updateOrder,
-    updateUPaymentsOrder,
     updateOrderProduct,
     deleteOrder,
     deleteProductFromOrder,
