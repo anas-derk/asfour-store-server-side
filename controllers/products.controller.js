@@ -3,8 +3,8 @@ async function postNewProduct(req, res) {
         const productImages = Object.assign({}, req.files);
         const productInfo = {
             ...Object.assign({}, req.body),
-            imagePath: productImages.productImage[0].path,
-            galleryImagesPaths: productImages.galleryImages.map((galleryImage) => galleryImage.path),
+            imagePath: productImages.productImage[0].path.replace(/\\/g, '/'),
+            galleryImagesPaths: productImages.galleryImages.map((galleryImage) => galleryImage.path.replace(/\\/g, '/')),
         };
         if (Object.keys(productInfo).length === 0) await res.status(400).json("Sorry, Please Send Product Info");
         else {
