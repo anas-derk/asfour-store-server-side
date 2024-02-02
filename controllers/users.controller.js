@@ -8,7 +8,7 @@ async function createNewUser(req, res) {
         if (email.length > 0 && password.length > 0) {
             // Check If Email Valid
             if (isEmail(email)) {
-                const { createNewUser, isExistUser } = require("../models/users.model");
+                const { createNewUser } = require("../models/users.model");
                 const result = await createNewUser(email.toLowerCase(), password);
                 await res.json(result);
             }

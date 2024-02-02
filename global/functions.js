@@ -11,21 +11,20 @@ function transporterObj() {
         secure: true,
         requireTLS: true,
         auth: {
-            user: "info@asfourintlco.com",
-            pass: "Asfour@intlco3853",
+            user: process.env.BUSSINESS_EMAIL,
+            pass: process.env.BUSSINESS_EMAIL_PASS,
         }
     });
     return transporter;
 }
 
-const { join } = require("path");
-const { readFileSync } = require("fs");
-const { compile } = require("ejs");
-
 function sendCodeToUserEmail(email) {
     const CodeGenerator = require('node-code-generator');
     const generator = new CodeGenerator();
     const generatedCode = generator.generateCodes("####")[0];
+    const { join } = require("path");
+    const { readFileSync } = require("fs");
+    const { compile } = require("ejs");
     const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_template.ejs"), "utf-8");
     const compiledTemplate = compile(templateContent);
     const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ generatedCode });
