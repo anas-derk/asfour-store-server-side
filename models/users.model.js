@@ -159,11 +159,14 @@ async function getFavoriteProducts(userId) {
 
 async function isUserAccountExist(email) {
     try {
-        await mongoose.connect(DB_URL);
+        await mongoose.connect(process.env.DB_URL);
         const user = await userModel.findOne({ email });
         if (user) {
             await mongoose.disconnect();
-            return user._id;
+            return {
+                _id: user._id,
+                isVerified: user.isVerified,
+            };
         }
     } catch (err) {
         await mongoose.disconnect();
@@ -225,10 +228,10 @@ async function updateVerificationStatus(email) {
 
 async function resetUserPassword(userId, newPassword) {
     try {
-        await mongoose.connect(DB_URL);
+        await mongoose.connect(process.env.DB_URL);
         const newEncryptedPassword = await bcrypt.hash(newPassword, 10);
         await userModel.updateOne({ _id: userId }, { password: newEncryptedPassword });
-        return "لقد تمّت عملية إعادة تعيين كلمة المرور الخاصة بك بنجاح !!";
+        return "Reseting Password Process Has Been Successfully !!";
     } catch (err) {
         await mongoose.disconnect();
         throw Error(err);

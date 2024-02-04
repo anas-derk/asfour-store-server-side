@@ -131,7 +131,11 @@ async function getForgetPassword(req, res) {
                 if (result) {
                     const { sendCodeToUserEmail } = require("../global/functions");
                     const generatedCode = await sendCodeToUserEmail(email);
-                    await res.json(generatedCode[0]);
+                    await res.json({
+                        _id: result._id,
+                        isVerified: result.isVerified,
+                        code: generatedCode,
+                    });
                 } else await res.json("Sorry, This Email Is Not Exist !!");
             }
             else await res.status(400).json("Sorry, Invalid Email !!");
@@ -139,6 +143,7 @@ async function getForgetPassword(req, res) {
         else await res.status(400).json("Sorry, Please Send Email !!");
     }
     catch(err) {
+        console.log(err)
         await res.status(500).json(err);
     }
 }
