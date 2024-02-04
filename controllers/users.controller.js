@@ -202,6 +202,7 @@ async function putResetPassword(req, res) {
         if (!userId) await res.status(400).json("Sorry, Please Send All Required Fields !!");
         else {
             const newPassword = req.query.newPassword;
+            console.log(newPassword);
             const { resetUserPassword } = require("../models/users.model");
             const result = await resetUserPassword(userId, newPassword);
             await res.json(result);
