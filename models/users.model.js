@@ -157,6 +157,20 @@ async function getFavoriteProducts(userId) {
     }
 }
 
+async function isUserAccountExist(email) {
+    try {
+        await mongoose.connect(DB_URL);
+        const user = await userModel.findOne({ email });
+        if (user) {
+            await mongoose.disconnect();
+            return user._id;
+        }
+    } catch (err) {
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function updateUserInfo(userId, newUserData) {
     try {
         // Connect To DB
@@ -209,6 +223,18 @@ async function updateVerificationStatus(email) {
     }
 }
 
+async function resetUserPassword(userId, newPassword) {
+    try {
+        await mongoose.connect(DB_URL);
+        const newEncryptedPassword = await bcrypt.hash(newPassword, 10);
+        await userModel.updateOne({ _id: userId }, { password: newEncryptedPassword });
+        return "لقد تمّت عملية إعادة تعيين كلمة المرور الخاصة بك بنجاح !!";
+    } catch (err) {
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function deleteProductFromFavoriteUserProducts(userId, productId) {
     try {
         // Connect To DB
@@ -243,10 +269,12 @@ module.exports = {
     addNewFavoriteProduct,
     login,
     getUserInfo,
+    isUserAccountExist,
     isExistUserAndVerificationEmail,
     getAllUsers,
     getFavoriteProducts,
     updateUserInfo,
     updateVerificationStatus,
+    resetUserPassword,
     deleteProductFromFavoriteUserProducts,
 }

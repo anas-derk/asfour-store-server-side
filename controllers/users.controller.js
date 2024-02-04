@@ -120,6 +120,29 @@ async function getAllUsers(req, res) {
     }
 }
 
+async function getForgetPassword(req, res) {
+    try{
+        const email = req.query.email;
+        if (email) {
+            const { isEmail } = require("../global/functions");
+            if (isEmail(email)) {
+                const { isUserAccountExist } = require("../models/users.model");
+                const result = await isUserAccountExist(email);
+                if (result) {
+                    const { sendCodeToUserEmail } = require("../global/functions");
+                    const generatedCode = await sendCodeToUserEmail(email);
+                    await res.json(generatedCode[0]);
+                } else await res.json("Sorry, This Email Is Not Exist !!");
+            }
+            else await res.status(400).json("Sorry, Invalid Email !!");
+        }
+        else await res.status(400).json("Sorry, Please Send Email !!");
+    }
+    catch(err) {
+        await res.status(500).json(err);
+    }
+}
+
 async function getFavoriteProducts(req, res) {
     try{
         const userId = req.params.userId;
@@ -168,6 +191,22 @@ async function putVerificationStatus(req, res) {
     }
 }
 
+async function putResetPassword(req, res) {
+    try{
+        const userId = req.params.userId;
+        if (!userId) await res.status(400).json("Sorry, Please Send All Required Fields !!");
+        else {
+            const newPassword = req.query.newPassword;
+            const { resetUserPassword } = require("../models/users.model");
+            const result = await resetUserPassword(userId, newPassword);
+            await res.json(result);
+        }
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 async function deleteProductFromFavoriteUserProducts(req, res) {
     try{
         const   userId = req.query.userId,
@@ -193,7 +232,9 @@ module.exports = {
     getUserInfo,
     getAllUsers,
     getFavoriteProducts,
+    getForgetPassword,
     putUserInfo,
     putVerificationStatus,
+    putResetPassword,
     deleteProductFromFavoriteUserProducts,
 }

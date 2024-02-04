@@ -16,9 +16,13 @@ usersRouter.get("/all-users", usersController.getAllUsers);
 
 usersRouter.get("/favorite-products/:userId", usersController.getFavoriteProducts);
 
+usersRouter.get("/forget-password", usersController.getForgetPassword);
+
 usersRouter.put("/update-user-info/:userId", usersController.putUserInfo);
 
 usersRouter.put("/update-verification-status", usersController.putVerificationStatus);
+
+usersRouter.put("/reset-password/:userId", usersController.putResetPassword);
 
 usersRouter.delete("/favorite-product", usersController.deleteProductFromFavoriteUserProducts);
 
