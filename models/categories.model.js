@@ -42,11 +42,6 @@ async function deleteCategory(categoryId) {
         if (deletingDetails.deletedCount > 0) {
             const newCategoiesList = await categoryModel.find({});
             await mongoose.disconnect();
-            console.log({
-                msg: "Deleting Category Process Has Been Successfuly ...",
-                isError: false,
-                newCategoiesList,
-            })
             return {
                 msg: "Deleting Category Process Has Been Successfuly ...",
                 isError: false,
