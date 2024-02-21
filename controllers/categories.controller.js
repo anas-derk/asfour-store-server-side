@@ -30,8 +30,7 @@ async function deleteCategory(req, res) {
         if (!categoryId) await res.status(400).json("Sorry, Please Send Category Id !!");
         else {
             const { deleteCategory } = require("../models/categories.model");
-            await deleteCategory(categoryId);
-            await res.json("Deleting Category Process It Successfuly ...");
+            await res.json(await deleteCategory(categoryId));
         }
     }
     catch(err) {

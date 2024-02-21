@@ -36,11 +36,28 @@ async function deleteCategory(categoryId) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        await categoryModel.deleteOne({
+        const deletingDetails = await categoryModel.deleteOne({
             _id: categoryId,
         });
+        if (deletingDetails.deletedCount > 0) {
+            const newCategoiesList = await categoryModel.find({});
+            await mongoose.disconnect();
+            console.log({
+                msg: "Deleting Category Process Has Been Successfuly ...",
+                isError: false,
+                newCategoiesList,
+            })
+            return {
+                msg: "Deleting Category Process Has Been Successfuly ...",
+                isError: false,
+                newCategoiesList,
+            };
+        }
         await mongoose.disconnect();
-        return "Deleting Category Process It Successfuly ...";
+        return {
+            msg: "Sorry, This Category Id Is Not Exist !!",
+            isError: true,
+        };
     }
     catch (err) {
         // Disconnect To DB
