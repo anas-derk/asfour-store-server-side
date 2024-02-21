@@ -17,6 +17,7 @@ async function addNewCategory(categoryName) {
         throw Error(err);
     }
 }
+
 async function getAllCategories() {
     try {
         // Connect To DB
