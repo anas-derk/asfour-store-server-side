@@ -40,8 +40,21 @@ async function deleteBrand(brandId) {
         const brandInfo = await brandModel.findOneAndDelete({
             _id: brandId,
         });
+        if (brandInfo) {
+            const newBrandsList = await brandModel.find({});
+            await mongoose.disconnect();
+            return {
+                deletedBrandPath: brandInfo.imagePath,
+                isError: false,
+                msg: "Deleting Brand Process Has Been Successfuly ...",
+                newBrandsList,
+            };
+        }
         await mongoose.disconnect();
-        return brandInfo.imagePath;
+        return {
+            msg: "Sorry, This Brand Id Is Not Exist !!",
+            isError: true,
+        };
     }
     catch (err) {
         // Disconnect To DB

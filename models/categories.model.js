@@ -51,8 +51,8 @@ async function deleteCategory(categoryId) {
         }
         await mongoose.disconnect();
         return {
-            msg: "Sorry, This Category Id Is Not Exist !!",
             isError: true,
+            msg: "Sorry, This Category Id Is Not Exist !!",
         };
     }
     catch (err) {

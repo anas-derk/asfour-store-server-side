@@ -26,10 +26,12 @@ async function deleteBrand(req, res) {
         if (!brandId) await res.status(400).json("Sorry, Please Send Brand Id !!");
         else {
             const { deleteBrand } = require("../models/brands.model");
-            const deletedBrandImagePath = await deleteBrand(brandId);
-            const { unlinkSync } = require("fs");
-            unlinkSync(deletedBrandImagePath);
-            await res.json("Deleting Brand Process Has Been Successfuly ...");
+            const result = await deleteBrand(brandId);
+            if (!result.isError) {
+                const { unlinkSync } = require("fs");
+                unlinkSync(result.deletedBrandPath);
+            }
+            await res.json(result);
         }
     }
     catch(err) {
