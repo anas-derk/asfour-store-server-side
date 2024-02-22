@@ -78,9 +78,26 @@ async function updateBrandInfo(brandId, newBrandTitle) {
     }
 }
 
+async function updateBrandImage(brandId, newBrandImagePath) {
+    try{
+        await mongoose.connect(process.env.DB_URL);
+        const { imagePath } = await brandModel.findById(brandId);
+        await brandModel.updateOne({ _id: brandId }, {
+            imagePath: newBrandImagePath,
+        });
+        await mongoose.disconnect();
+        return imagePath;
+    }
+    catch(err) {
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 module.exports = {
     addNewBrand,
     getAllBrands,
     deleteBrand,
     updateBrandInfo,
+    updateBrandImage,
 }

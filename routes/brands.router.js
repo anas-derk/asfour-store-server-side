@@ -21,4 +21,6 @@ brandsRouter.delete("/:brandId", brandsController.deleteBrand);
 
 brandsRouter.put("/:brandId", brandsController.putBrandInfo);
 
+brandsRouter.put("/update-brand-image/:brandId", multer({ storage }).single("brandImage") , brandsController.putBrandImage);
+
 module.exports = brandsRouter;

@@ -55,9 +55,29 @@ async function putBrandInfo(req, res) {
     }
 }
 
+async function putBrandImage(req, res) {
+    try {
+        const brandId = req.params.brandId,
+            newBrandImagePath = req.file.path;
+        if (!brandId || !newBrandImagePath) await res.status(400).json("Sorry, Please Send Brand Id And New Image !!");
+        else {
+            const { updateBrandImage } = require("../models/brands.model");
+            const oldImagePath = await updateBrandImage(brandId, newBrandImagePath);
+            const { unlinkSync } = require("fs");
+            unlinkSync(oldImagePath);
+            await res.json(newBrandImagePath);
+        }
+    }
+    catch (err) {
+        console.log(err)
+        await res.status(500).json(err);
+    }
+}
+
 module.exports = {
     postNewBrand,
     getAllBrands,
     deleteBrand,
     putBrandInfo,
+    putBrandImage,
 }
