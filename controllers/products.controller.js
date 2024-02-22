@@ -78,15 +78,19 @@ async function deleteProduct(req, res) {
         if (!productId) await res.status(400).json("Sorry, Please Send User Id !!");
         else {
             const { deleteProduct } = require("../models/products.model");
-            const productImagePaths = await deleteProduct(productId);
-            const { unlinkSync } = require("fs");
-            for (let productImagePath of productImagePaths) {
-                unlinkSync(productImagePath);
+            const result = await deleteProduct(productId);
+            if(!result.isError) {
+                const { unlinkSync } = require("fs");
+                unlinkSync(result.deletedProductPath);
+                for (let productImagePath of result.galleryImagePathsForDeletedProduct) {
+                    unlinkSync(productImagePath);
+                }
             }
-            await res.json("Deleting Product Process It Successfuly ...");
+            await res.json(result);
         }
     }
     catch (err) {
+        console.log(err);
         await res.status(500).json(err);
     }
 }

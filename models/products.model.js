@@ -93,7 +93,18 @@ async function deleteProduct(productId) {
             _id: productId,
         });
         await mongoose.disconnect();
-        return [productInfo.imagePath, ...productInfo.galleryImagesPaths];
+        if (productInfo) {
+            return {
+                deletedProductPath: productInfo.imagePath,
+                galleryImagePathsForDeletedProduct: productInfo.galleryImagesPaths,
+                isError: false,
+                msg: "Deleting Product Process Has Been Successfuly ...",
+            };
+        }
+        return {
+            msg: "Sorry, This Product Id Is Not Exist !!",
+            isError: true,
+        };
     }
     catch (err) {
         // Disconnect To DB
