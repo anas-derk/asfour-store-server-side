@@ -123,7 +123,7 @@ async function updateProduct(productId, newData) {
         await mongoose.connect(process.env.DB_URL);
         await productModel.updateOne({ _id: productId }, { ...newData });
         await mongoose.disconnect();
-        return "Updating Product Process It Successfuly ...";
+        return "Updating Product Process Has Been Successfuly ...";
     }
     catch (err) {
         // Disconnect To DB
