@@ -37,6 +37,14 @@ async function postNewImagesToProductGallery(req, res) {
     }
 }
 
+function getFiltersObject(filters) {
+    let filtersObject = {};
+    for (let objectKey in filters) {
+        if (objectKey === "category") filtersObject[objectKey] = filters[objectKey];
+    }
+    return filtersObject;
+}
+
 async function getProductInfo(req, res) {
     try {
         const productId = req.params.productId;
@@ -54,8 +62,16 @@ async function getProductInfo(req, res) {
 
 async function getProductsCount(req, res) {
     try {
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "pageNumber" &&
+                objectKey !== "pageSize" &&
+                objectKey !== "category"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
         const { getProductsCount } = require("../models/products.model");
-        await res.json(await getProductsCount());
+        await res.json(await getProductsCount(getFiltersObject(filters)));
     }
     catch (err) {
         await res.status(500).json(err);
@@ -64,8 +80,16 @@ async function getProductsCount(req, res) {
 
 async function getAllProductsInsideThePage(req, res) {
     try {
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "pageNumber" &&
+                objectKey !== "pageSize" &&
+                objectKey !== "category"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
         const { getAllProductsInsideThePage } = require("../models/products.model");
-        await res.json(await getAllProductsInsideThePage(req.query.pageNumber, req.query.pageSize));
+        await res.json(await getAllProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch (err) {
         await res.status(500).json(err);

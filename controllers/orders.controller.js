@@ -1,3 +1,16 @@
+function getFiltersObject(filters) {
+    let filtersObject = {};
+    for (let objectKey in filters) {
+        if (objectKey === "orderNumber") filtersObject[objectKey] = Number(filters[objectKey]);
+        if (objectKey === "_id") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "status") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "customerName") filtersObject[`billing_address.given_name`] = filters[objectKey];
+        if (objectKey === "email") filtersObject[`billing_address.email`] = filters[objectKey];
+        if (objectKey === "customerId") filtersObject[objectKey] = filters[objectKey];
+    }
+    return filtersObject;
+}
+
 async function getAllOrdersInsideThePage(req, res) {
     try{
         const filters = req.query;
@@ -20,19 +33,6 @@ async function getAllOrdersInsideThePage(req, res) {
     catch(err) {
         await res.status(500).json(err);
     }
-}
-
-function getFiltersObject(filters) {
-    let filtersObject = {};
-    for (let objectKey in filters) {
-        if (objectKey === "orderNumber") filtersObject[objectKey] = Number(filters[objectKey]);
-        if (objectKey === "_id") filtersObject[objectKey] = filters[objectKey];
-        if (objectKey === "status") filtersObject[objectKey] = filters[objectKey];
-        if (objectKey === "customerName") filtersObject[`billing_address.given_name`] = filters[objectKey];
-        if (objectKey === "email") filtersObject[`billing_address.email`] = filters[objectKey];
-        if (objectKey === "customerId") filtersObject[objectKey] = filters[objectKey];
-    }
-    return filtersObject;
 }
 
 async function getOrdersCount(req, res) {
