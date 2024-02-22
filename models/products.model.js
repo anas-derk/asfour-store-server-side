@@ -55,11 +55,11 @@ async function getProductInfo(productId) {
     }
 }
 
-async function getProductsCount() {
+async function getProductsCount(filters) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        const productsCount = await productModel.countDocuments({});
+        const productsCount = await productModel.countDocuments(filters);
         await mongoose.disconnect();
         return productsCount;
     }
@@ -70,11 +70,11 @@ async function getProductsCount() {
     }
 }
 
-async function getAllProductsInsideThePage(pageNumber, pageSize) {
+async function getAllProductsInsideThePage(pageNumber, pageSize, filters) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        const productsCount = await productModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize);
+        const productsCount = await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize);
         await mongoose.disconnect();
         return productsCount;
     }
