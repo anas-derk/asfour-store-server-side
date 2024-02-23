@@ -15,7 +15,9 @@ const storage = multer.diskStorage({
 
 brandsRouter.post("/add-new-brand", multer({ storage }).single("brandImg"), brandsController.postNewBrand);
 
-brandsRouter.get("/all-brands", brandsController.getAllBrands);
+brandsRouter.get("/brands-count", brandsController.getBrandsCount);
+
+brandsRouter.get("/all-brands-inside-the-page", brandsController.getAllBrandsInsideThePage);
 
 brandsRouter.delete("/:brandId", brandsController.deleteBrand);
 

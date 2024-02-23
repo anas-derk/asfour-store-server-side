@@ -10,12 +10,36 @@ async function postNewBrand(req, res) {
     }
 }
 
-async function getAllBrands(req, res) {
-    try{
-        const { getAllBrands } = require("../models/brands.model");
-        await res.json(await getAllBrands());
+async function getBrandsCount(req, res) {
+    try {
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "pageNumber" &&
+                objectKey !== "pageSize"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
+        const { getBrandsCount } = require("../models/brands.model");
+        await res.json(await getBrandsCount(filters));
     }
-    catch(err) {
+    catch (err) {
+        await res.status(500).json(err);
+    }
+}
+
+async function getAllBrandsInsideThePage(req, res) {
+    try {
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "pageNumber" &&
+                objectKey !== "pageSize"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
+        const { getAllBrandsInsideThePage } = require("../models/brands.model");
+        await res.json(await getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize));
+    }
+    catch (err) {
         await res.status(500).json(err);
     }
 }
@@ -76,7 +100,8 @@ async function putBrandImage(req, res) {
 
 module.exports = {
     postNewBrand,
-    getAllBrands,
+    getBrandsCount,
+    getAllBrandsInsideThePage,
     deleteBrand,
     putBrandInfo,
     putBrandImage,

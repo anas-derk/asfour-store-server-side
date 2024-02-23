@@ -18,13 +18,28 @@ async function addNewBrand(brandInfo) {
     }
 }
 
-async function getAllBrands() {
+async function getBrandsCount(filters) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        const allBrands = await brandModel.find({});
+        const brandsCount = await brandModel.countDocuments(filters);
         await mongoose.disconnect();
-        return allBrands;
+        return brandsCount;
+    }
+    catch (err) {
+        // Disconnect To DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
+async function getAllBrandsInsideThePage(pageNumber, pageSize) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        const brandsListInsideThePage = await brandModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize);
+        await mongoose.disconnect();
+        return brandsListInsideThePage;
     }
     catch (err) {
         // Disconnect To DB
@@ -96,7 +111,8 @@ async function updateBrandImage(brandId, newBrandImagePath) {
 
 module.exports = {
     addNewBrand,
-    getAllBrands,
+    getBrandsCount,
+    getAllBrandsInsideThePage,
     deleteBrand,
     updateBrandInfo,
     updateBrandImage,
