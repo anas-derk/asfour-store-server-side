@@ -13,11 +13,34 @@ async function postNewCategory(req, res) {
     }
 }
 
-async function getAllCategories(req, res) {
+async function getCategoriesCount(req, res) {
     try {
-        const { getAllCategories } = require("../models/categories.model");
-        const result = await getAllCategories();
-        await res.json(result);
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "pageNumber" &&
+                objectKey !== "pageSize"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
+        const { getCategoriesCount } = require("../models/categories.model");
+        await res.json(await getCategoriesCount(filters));
+    }
+    catch (err) {
+        await res.status(500).json(err);
+    }
+}
+
+async function getAllCategoriesInsideThePage(req, res) {
+    try {
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "pageNumber" &&
+                objectKey !== "pageSize"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
+        const { getAllCategoriesInsideThePage } = require("../models/categories.model");
+        await res.json(await getAllCategoriesInsideThePage(filters.pageNumber, filters.pageSize));
     }
     catch (err) {
         await res.status(500).json(err);
@@ -56,7 +79,8 @@ async function putCategory(req, res) {
 
 module.exports = {
     postNewCategory,
-    getAllCategories,
+    getCategoriesCount,
+    getAllCategoriesInsideThePage,
     deleteCategory,
     putCategory,
 }
