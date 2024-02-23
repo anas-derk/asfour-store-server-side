@@ -10,6 +10,16 @@ async function postNewBrand(req, res) {
     }
 }
 
+async function getAllBrands(req, res) {
+    try{
+        const { getAllBrands } = require("../models/brands.model");
+        await res.json(await getAllBrands());
+    }
+    catch(err) {
+        await res.status(500).json(err);
+    }
+}
+
 async function getBrandsCount(req, res) {
     try {
         const filters = req.query;
@@ -101,6 +111,7 @@ async function putBrandImage(req, res) {
 module.exports = {
     postNewBrand,
     getBrandsCount,
+    getAllBrands,
     getAllBrandsInsideThePage,
     deleteBrand,
     putBrandInfo,
