@@ -18,6 +18,21 @@ async function addNewCategory(categoryName) {
     }
 }
 
+async function getAllCategories() {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        const allCategories = await categoryModel.find({});
+        await mongoose.disconnect();
+        return allCategories;
+    }
+    catch (err) {
+        // Disconnect To DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function getCategoriesCount(filters) {
     try {
         // Connect To DB
@@ -94,6 +109,7 @@ async function updateCategory(categoryId, newCategoryName) {
 
 module.exports = {
     addNewCategory,
+    getAllCategories,
     getCategoriesCount,
     getAllCategoriesInsideThePage,
     deleteCategory,

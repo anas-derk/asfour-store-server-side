@@ -13,6 +13,17 @@ async function postNewCategory(req, res) {
     }
 }
 
+async function getAllCategories(req, res) {
+    try {
+        const { getAllCategories } = require("../models/categories.model");
+        const result = await getAllCategories();
+        await res.json(result);
+    }
+    catch (err) {
+        await res.status(500).json(err);
+    }
+}
+
 async function getCategoriesCount(req, res) {
     try {
         const filters = req.query;
@@ -79,6 +90,7 @@ async function putCategory(req, res) {
 
 module.exports = {
     postNewCategory,
+    getAllCategories,
     getCategoriesCount,
     getAllCategoriesInsideThePage,
     deleteCategory,
