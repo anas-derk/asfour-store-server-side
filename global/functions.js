@@ -20,7 +20,7 @@ function transporterObj(bussinessEmailPassword) {
 
 async function sendCodeToUserEmail(email) {
     const { getPasswordForBussinessEmail } = require("../models/global_passwords.model");
-    const result = await getPasswordForBussinessEmail(email);
+    const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
     if (result !== "Sorry, Email Incorrect !!") {
         const CodeGenerator = require('node-code-generator');
         const generator = new CodeGenerator();
@@ -40,10 +40,11 @@ async function sendCodeToUserEmail(email) {
         };
         return new Promise((resolve, reject) => {
             // إرسال رسالة الكود إلى الإيميل
-            transporterObj().sendMail(mailConfigurations, function (error, info) {
+            transporterObj(result).sendMail(mailConfigurations, function (error, info) {
                 // في حالة حدث خطأ في الإرسال أرجع خطأ
                 if (error) reject(error);
                 // في حالة لم يحدث خطأ أعد الكود المولد
+                console.log(generatedCode)
                 resolve(generatedCode);
             });
         });
