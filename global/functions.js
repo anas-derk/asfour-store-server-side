@@ -44,7 +44,6 @@ async function sendCodeToUserEmail(email) {
                 // في حالة حدث خطأ في الإرسال أرجع خطأ
                 if (error) reject(error);
                 // في حالة لم يحدث خطأ أعد الكود المولد
-                console.log(generatedCode)
                 resolve(generatedCode);
             });
         });
