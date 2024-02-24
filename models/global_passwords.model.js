@@ -6,6 +6,27 @@ const { mongoose, globalPasswordModel } = require("./all.models");
 
 const cryptoJS = require("crypto-js");
 
+async function getPasswordForBussinessEmail(email){
+    try{
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        // Check If Email Is Exist
+        const user = await globalPasswordModel.findOne({ email });
+        if (user) {
+            // Check From Password
+            const bytes = cryptoJS.AES.decrypt(user.password, process.env.secretKey);
+            const decryptedPassword = bytes.toString(cryptoJS.enc.Utf8);
+            return decryptedPassword;
+        }
+        await mongoose.disconnect();
+        return "Sorry, Email Incorrect !!";
+    }
+    catch(err){
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function changeBussinessEmailPassword(email, password, newPassword) {
     try {
         // Connect To DB
@@ -34,5 +55,6 @@ async function changeBussinessEmailPassword(email, password, newPassword) {
 }
 
 module.exports = {
+    getPasswordForBussinessEmail,
     changeBussinessEmailPassword,
 }
