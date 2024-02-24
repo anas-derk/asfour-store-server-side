@@ -43,7 +43,8 @@ const   adminRouter = require("./routes/admin.router"),
         categoriesRouter = require("./routes/categories.router"),
         ordersRouter = require("./routes/orders.router"),
         brandsRouter = require("./routes/brands.router"),
-        appearedSectionsRouter = require("./routes/appeared_sections.router");
+        appearedSectionsRouter = require("./routes/appeared_sections.router"),
+        globalPasswordsRouter = require("./routes/global_passwords");
 
 app.use("/admins", adminRouter);
 
@@ -58,5 +59,7 @@ app.use("/orders", ordersRouter);
 app.use("/brands", brandsRouter);
 
 app.use("/appeared-sections", appearedSectionsRouter);
+
+app.use("/global-passwords", globalPasswordsRouter);
 
 /* End Handle The Routes */

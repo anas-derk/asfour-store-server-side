@@ -9,7 +9,7 @@ async function putChangeBussinessEmailPassword(req, res) {
         if (email.length > 0 && password.length > 0 && newPassword.length > 0) {
             // Check If Email Valid
             if (isEmail(email)) {
-                const { changeBussinessEmailPassword } = require("../models/global_password.model");
+                const { changeBussinessEmailPassword } = require("../models/global_passwords.model");
                 const result = await changeBussinessEmailPassword(email.toLowerCase(), password, newPassword);
                 await res.json(result);
             } else
