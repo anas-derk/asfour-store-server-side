@@ -344,6 +344,17 @@ const appearedSectionsSchema = mongoose.Schema({
 
 const appearedSectionsModel = mongoose.model("appeared_sections", appearedSectionsSchema);
 
+// Create Global Password Schema
+
+const globalPasswordSchema = mongoose.Schema({
+    email: String,
+    password: String,
+});
+
+// Create Global Password Model From Global Password Schema
+
+const globalPasswordModel = mongoose.model("gloabal_password", globalPasswordSchema);
+
 module.exports = {
     mongoose,
     adminModel,
@@ -353,4 +364,5 @@ module.exports = {
     orderModel,
     brandModel,
     appearedSectionsModel,
+    globalPasswordModel,
 }
