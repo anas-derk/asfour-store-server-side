@@ -148,15 +148,42 @@ async function getForgetPassword(req, res) {
     }
 }
 
-async function getFavoriteProducts(req, res) {
-    try{
-        const userId = req.params.userId;
-        if (!userId) await res.status(400).json("Sorry, Please Send User Id !!");
-        else {
-            const { getFavoriteProducts } = require("../models/users.model");
-            const result = await getFavoriteProducts(userId);
-            await res.json(result);
+function getFiltersObject(filters) {
+    let filtersObject = {};
+    for (let objectKey in filters) {
+        if (objectKey === "customerId") filtersObject[objectKey] = filters[objectKey];
+    }
+    return filtersObject;
+}
+
+async function getFavoriteProductsCount(req, res) {
+    try {
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "customerId"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
         }
+        const { getFavoriteProductsCount } = require("../models/users.model");
+        await res.json(await getFavoriteProductsCount(getFiltersObject(filters)));
+    }
+    catch (err) {
+        await res.status(500).json(err);
+    }
+}
+
+async function getAllFavoriteProductsInsideThePage(req, res) {
+    try{
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "pageNumber" &&
+                objectKey !== "pageSize" &&
+                objectKey !== "customerId"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
+        const { getAllFavoriteProductsInsideThePage } = require("../models/users.model");
+        await res.json(await getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err){
         await res.status(500).json(err);
@@ -236,7 +263,8 @@ module.exports = {
     login,
     getUserInfo,
     getAllUsers,
-    getFavoriteProducts,
+    getFavoriteProductsCount,
+    getAllFavoriteProductsInsideThePage,
     getForgetPassword,
     putUserInfo,
     putVerificationStatus,

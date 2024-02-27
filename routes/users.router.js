@@ -14,7 +14,9 @@ usersRouter.get("/user-info/:userId", usersController.getUserInfo);
 
 usersRouter.get("/all-users", usersController.getAllUsers);
 
-usersRouter.get("/favorite-products/:userId", usersController.getFavoriteProducts);
+usersRouter.get("/favorite-products-count", usersController.getFavoriteProductsCount);
+
+usersRouter.get("/all-favorite-products-inside-the-page", usersController.getAllFavoriteProductsInsideThePage);
 
 usersRouter.get("/forget-password", usersController.getForgetPassword);
 

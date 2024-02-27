@@ -139,17 +139,36 @@ async function getAllUsers() {
     }
 }
 
-async function getFavoriteProducts(userId) {
+async function getFavoriteProductsCount(filters) {
     try {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
-        // Check If User Is Exist
-        const user = await userModel.findById(userId);
+        const user = await userModel.findOne({ _id: filters.customerId });
+        if (user){
+            await mongoose.disconnect();
+            return user.favorite_products_list.length;
+        }
+    }
+    catch (err) {
+        // Disconnect To DB
         await mongoose.disconnect();
-        if (user) return user.favorite_products_list;
-        return "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..";
-    } catch (err) {
-        // Disconnect In DB
+        throw Error(err);
+    }
+}
+
+async function getAllFavoriteProductsInsideThePage(pageNumber, pageSize, filters) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        const user = await userModel.findOne({ _id: filters.customerId });
+        if (user) {
+            await mongoose.disconnect();
+            const beginSliceIndex = (pageNumber - 1) * pageSize;
+            return user.favorite_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize);
+        }
+    }
+    catch (err) {
+        // Disconnect To DB
         await mongoose.disconnect();
         throw Error(err);
     }
@@ -273,7 +292,8 @@ module.exports = {
     isUserAccountExist,
     isExistUserAndVerificationEmail,
     getAllUsers,
-    getFavoriteProducts,
+    getFavoriteProductsCount,
+    getAllFavoriteProductsInsideThePage,
     updateUserInfo,
     updateVerificationStatus,
     resetUserPassword,
