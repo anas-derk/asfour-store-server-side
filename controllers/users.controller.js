@@ -172,6 +172,22 @@ async function getFavoriteProductsCount(req, res) {
     }
 }
 
+async function getWalletProductsCount(req, res) {
+    try {
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "customerId"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
+        const { getWalletProductsCount } = require("../models/users.model");
+        await res.json(await getWalletProductsCount(getFiltersObject(filters)));
+    }
+    catch (err) {
+        await res.status(500).json(err);
+    }
+}
+
 async function getAllFavoriteProductsInsideThePage(req, res) {
     try{
         const filters = req.query;
@@ -184,6 +200,24 @@ async function getAllFavoriteProductsInsideThePage(req, res) {
         }
         const { getAllFavoriteProductsInsideThePage } = require("../models/users.model");
         await res.json(await getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+    }
+    catch(err){
+        await res.status(500).json(err);
+    }
+}
+
+async function getAllWalletProductsInsideThePage(req, res) {
+    try{
+        const filters = req.query;
+        for (let objectKey in filters) {
+            if (
+                objectKey !== "pageNumber" &&
+                objectKey !== "pageSize" &&
+                objectKey !== "customerId"
+            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+        }
+        const { getAllWalletProductsInsideThePage } = require("../models/users.model");
+        await res.json(await getAllWalletProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err){
         await res.status(500).json(err);
@@ -251,7 +285,22 @@ async function deleteProductFromFavoriteUserProducts(req, res) {
         }
     }
     catch(err) {
-        console.log(err);
+        await res.status(500).json(err);
+    }
+}
+
+async function deleteProductFromUserProductsWallet(req, res) {
+    try{
+        const   userId = req.query.userId,
+                productId = req.query.productId;
+        if (!userId || !productId) await res.status(400).json("Sorry, Please Send User Id And Product Id !!");
+        else {
+            const { deleteProductFromUserProductsWallet } = require("../models/users.model");
+            const result = await deleteProductFromUserProductsWallet(userId, productId);
+            await res.json(result);
+        }
+    }
+    catch(err) {
         await res.status(500).json(err);
     }
 }
@@ -264,10 +313,13 @@ module.exports = {
     getUserInfo,
     getAllUsers,
     getFavoriteProductsCount,
+    getWalletProductsCount,
     getAllFavoriteProductsInsideThePage,
+    getAllWalletProductsInsideThePage,
     getForgetPassword,
     putUserInfo,
     putVerificationStatus,
     putResetPassword,
     deleteProductFromFavoriteUserProducts,
+    deleteProductFromUserProductsWallet,
 }

@@ -67,6 +67,10 @@ const userSchema = mongoose.Schema({
         type: Array,
         default: [],
     },
+    products_wallet: {
+        type: Array,
+        default: [],
+    },
     billing_address: {
         first_name: {
             type: String,

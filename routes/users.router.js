@@ -16,7 +16,11 @@ usersRouter.get("/all-users", usersController.getAllUsers);
 
 usersRouter.get("/favorite-products-count", usersController.getFavoriteProductsCount);
 
+usersRouter.get("/wallet-products-count", usersController.getWalletProductsCount);
+
 usersRouter.get("/all-favorite-products-inside-the-page", usersController.getAllFavoriteProductsInsideThePage);
+
+usersRouter.get("/all-wallet-products-inside-the-page", usersController.getAllWalletProductsInsideThePage);
 
 usersRouter.get("/forget-password", usersController.getForgetPassword);
 
@@ -27,5 +31,7 @@ usersRouter.put("/update-verification-status", usersController.putVerificationSt
 usersRouter.put("/reset-password/:userId", usersController.putResetPassword);
 
 usersRouter.delete("/favorite-product", usersController.deleteProductFromFavoriteUserProducts);
+
+usersRouter.delete("/wallet-product", usersController.deleteProductFromUserProductsWallet);
 
 module.exports = usersRouter;

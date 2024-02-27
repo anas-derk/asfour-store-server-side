@@ -156,6 +156,23 @@ async function getFavoriteProductsCount(filters) {
     }
 }
 
+async function getWalletProductsCount(filters) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        const user = await userModel.findOne({ _id: filters.customerId });
+        if (user){
+            await mongoose.disconnect();
+            return user.products_wallet.length;
+        }
+    }
+    catch (err) {
+        // Disconnect To DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 async function getAllFavoriteProductsInsideThePage(pageNumber, pageSize, filters) {
     try {
         // Connect To DB
@@ -165,6 +182,24 @@ async function getAllFavoriteProductsInsideThePage(pageNumber, pageSize, filters
             await mongoose.disconnect();
             const beginSliceIndex = (pageNumber - 1) * pageSize;
             return user.favorite_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize);
+        }
+    }
+    catch (err) {
+        // Disconnect To DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
+async function getAllWalletProductsInsideThePage(pageNumber, pageSize, filters) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        const user = await userModel.findOne({ _id: filters.customerId });
+        if (user) {
+            await mongoose.disconnect();
+            const beginSliceIndex = (pageNumber - 1) * pageSize;
+            return user.products_wallet.slice(beginSliceIndex, beginSliceIndex + pageSize);
         }
     }
     catch (err) {
@@ -284,6 +319,35 @@ async function deleteProductFromFavoriteUserProducts(userId, productId) {
     }
 }
 
+async function deleteProductFromUserProductsWallet(userId, productId) {
+    try {
+        // Connect To DB
+        await mongoose.connect(process.env.DB_URL);
+        // Check If Email Is Exist
+        const user = await userModel.findById(userId);
+        if (user) {
+            const newProductsWallet = user.products_wallet.filter((wallet_product) => wallet_product._id != productId);
+            if (newProductsWallet.length !== user.products_wallet.length) {
+                await userModel.updateOne({ _id: userId } , { $set: { products_wallet: newProductsWallet } });
+                await mongoose.disconnect();
+                return {
+                    msg: "Ok !!, Deleting Wallet Product From This User Is Successfuly !!",
+                    newProductsWallet: newProductsWallet,
+                };
+            }
+            await mongoose.disconnect();
+            return "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..";
+        }
+        await mongoose.disconnect();
+        return "Sorry, The User Is Not Exist !!, Please Send Another User Id ..";
+    }
+    catch (err) {
+        // Disconnect In DB
+        await mongoose.disconnect();
+        throw Error(err);
+    }
+}
+
 module.exports = {
     createNewUser,
     addNewFavoriteProduct,
@@ -293,9 +357,12 @@ module.exports = {
     isExistUserAndVerificationEmail,
     getAllUsers,
     getFavoriteProductsCount,
+    getWalletProductsCount,
     getAllFavoriteProductsInsideThePage,
+    getAllWalletProductsInsideThePage,
     updateUserInfo,
     updateVerificationStatus,
     resetUserPassword,
     deleteProductFromFavoriteUserProducts,
+    deleteProductFromUserProductsWallet,
 }
