@@ -163,7 +163,7 @@ async function getWalletProductsCount(filters) {
         const user = await userModel.findOne({ _id: filters.customerId });
         if (user){
             await mongoose.disconnect();
-            return user.products_wallet.length;
+            return user.wallet_products_list.length;
         }
     }
     catch (err) {
@@ -199,7 +199,7 @@ async function getAllWalletProductsInsideThePage(pageNumber, pageSize, filters) 
         if (user) {
             await mongoose.disconnect();
             const beginSliceIndex = (pageNumber - 1) * pageSize;
-            return user.products_wallet.slice(beginSliceIndex, beginSliceIndex + pageSize);
+            return user.wallet_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize);
         }
     }
     catch (err) {
