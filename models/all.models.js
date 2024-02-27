@@ -67,7 +67,7 @@ const userSchema = mongoose.Schema({
         type: Array,
         default: [],
     },
-    products_wallet: {
+    wallet_products_list: {
         type: Array,
         default: [],
     },

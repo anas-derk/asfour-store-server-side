@@ -1,6 +1,6 @@
 // Import Mongoose And Order Model Object
 
-const { mongoose, orderModel } = require("../models/all.models");
+const { mongoose, orderModel, userModel } = require("../models/all.models");
 
 async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
     try {
@@ -51,6 +51,24 @@ async function postNewOrder(orderDetails) {
         const ordersCount = await orderModel.countDocuments();
         const newOrder = new orderModel({ ...orderDetails, orderNumber: ordersCount + 1 });
         const { _id, orderNumber } = await newOrder.save();
+        if (orderDetails.customerId) {
+            const user = await userModel.findOne({ _id: orderDetails.customerId });
+            if (user) {
+                for (let i = 0; i < orderDetails.order_products.length; i++) {
+                    const wallet_productIndex = user.wallet_products_list.findIndex((wallet_product) => wallet_product.productId == orderDetails.order_products[i].productId);
+                    if (wallet_productIndex == -1) {
+                        user.wallet_products_list.push({
+                            productId: orderDetails.order_products[i].productId,
+                            name: orderDetails.order_products[i].name,
+                            price: orderDetails.order_products[i].unit_price,
+                            discount: orderDetails.order_products[i].discount,
+                            imagePath: orderDetails.order_products[i].image_path,
+                        });
+                    }
+                }
+                await userModel.updateOne({ _id: orderDetails.customerId } , { wallet_products_list: user.wallet_products_list });
+            }
+        }
         await mongoose.disconnect();
         return { msg: "Creating New Order Has Been Successfuly !!", orderId: _id, orderNumber: orderNumber };
     } catch (err) {
