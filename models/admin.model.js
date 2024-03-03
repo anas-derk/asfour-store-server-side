@@ -2,10 +2,6 @@
 
 const { mongoose, adminModel } = require("../models/all.models");
 
-// require bcryptjs module for password encrypting
-
-const bcrypt = require("bcryptjs");
-
 async function adminLogin(email, password) {
     try {
         // Connect To DB
@@ -13,14 +9,16 @@ async function adminLogin(email, password) {
         // Check If Email Is Exist
         let user = await adminModel.findOne({ email });
         if (user) {
+            // require bcryptjs module for password encrypting
+            const { compare } = require("bcryptjs");
             // Check From Password
-            let isTruePassword = await bcrypt.compare(password, user.password);
+            let isTruePassword = await compare(password, user.password);
             await mongoose.disconnect();
             if (isTruePassword) return user;
-            else return "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!";
+            return "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!";
         }
         else {
-            mongoose.disconnect();
+            await mongoose.disconnect();
             return "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!";
         }
     }

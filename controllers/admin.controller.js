@@ -13,14 +13,26 @@ async function getAdminLogin(req, res) {
                 await res.json(result);
             } else {
                 // Return Error Msg If Email Is Not Valid
-                await res.status(400).json("Error, This Is Not Email Valid !!");
+                await res.status(400).json({
+                    msg: "Error, This Is Not Email Valid !!",
+                    error: true,
+                    data: {},
+                });
             }
         } else {
-            await res.status(400).json("Error, Please Enter Email And Password Or Rest Input !!");
+            await res.status(400).json({
+                msg: "Error, Please Enter Email And Password Or Rest Input !!",
+                error: true,
+                data: {},
+            });
         }
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json({
+            msg: err.message,
+            error: true,
+            data: {},
+        });
     }
 }
 
