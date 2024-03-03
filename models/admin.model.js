@@ -49,12 +49,12 @@ async function getAdminUserInfo(userId) {
         const user = await adminModel.findById(userId);
         await mongoose.disconnect();
         if (user) return {
-            msg: `Get Admin Info For Id: ${data._id} Process Has Been Successfully !!`,
+            msg: `Get Admin Info For Id: ${user._id} Process Has Been Successfully !!`,
             error: false,
-            data: result,
+            data: user,
         }
         return {
-            msg: "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..",
+            msg: "Sorry, The User Is Not Exist, Please Enter Another User Id !!",
             error: true,
             data: {},
         }

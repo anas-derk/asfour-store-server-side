@@ -16,7 +16,9 @@ async function getAdminLogin(req, res) {
                         ...result,
                         data: {
                             ...result.data,
-                            token: sign(result.data._id, process.env.secretKey),
+                            token: sign(result.data, process.env.secretKey, {
+                                expiresIn: "1h",
+                            }),
                         }
                     });
                     return;
@@ -60,11 +62,11 @@ async function getAdminUserInfo(req, res) {
         }
         const { verify } = require("jsonwebtoken");
         const data = verify(token, process.env.secretKey);
-        console.log(data);
         const { getAdminUserInfo } = require("../models/admin.model");
         await res.json(await getAdminUserInfo(data._id));
     }
     catch(err){
+        console.log(err);
         await res.status(500).json({
             msg: err.message,
             error: true,
