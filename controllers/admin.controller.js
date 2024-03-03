@@ -66,7 +66,6 @@ async function getAdminUserInfo(req, res) {
         await res.json(await getAdminUserInfo(data._id));
     }
     catch(err){
-        console.log(err);
         await res.status(500).json({
             msg: err.message,
             error: true,
