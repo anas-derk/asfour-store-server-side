@@ -6,7 +6,10 @@ async function addNewCategory(categoryName) {
     try{
         await mongoose.connect(process.env.DB_URL);
         const category = await categoryModel.findOne({ name: categoryName });
-        if (category) return "Sorry, This Cateogry Is Already Exist !!";
+        if (category) {
+            await mongoose.disconnect();
+            return "Sorry, This Cateogry Is Already Exist !!";
+        }
         const newCategory = new categoryModel({ name: categoryName });
         await newCategory.save();
         await mongoose.disconnect();

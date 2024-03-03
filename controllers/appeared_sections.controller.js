@@ -31,7 +31,7 @@ async function putSectionsStatus(req, res) {
         await res.status(500).json({
             msg: err.message,
             error: true,
-            data: [],
+            data: {},
         });
     }
 }

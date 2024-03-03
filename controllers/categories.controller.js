@@ -5,7 +5,11 @@ async function postNewCategory(req, res) {
         else {
             const { addNewCategory } = require("../models/categories.model");
             const result = await addNewCategory(categoryName);
-            await res.json(result);
+            await res.json({
+                msg: result,
+                error: result === "Sorry, This Cateogry Is Already Exist !!",
+                data: {},
+            });
         }
     }
     catch(err) {

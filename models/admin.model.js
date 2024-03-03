@@ -7,19 +7,31 @@ async function adminLogin(email, password) {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
         // Check If Email Is Exist
-        let user = await adminModel.findOne({ email });
+        const user = await adminModel.findOne({ email });
         if (user) {
             // require bcryptjs module for password encrypting
             const { compare } = require("bcryptjs");
             // Check From Password
-            let isTruePassword = await compare(password, user.password);
+            const isTruePassword = await compare(password, user.password);
             await mongoose.disconnect();
-            if (isTruePassword) return user;
-            return "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!";
+            if (isTruePassword) return {
+                msg: "Admin Logining Process Has Been Successfully !!",
+                error: false,
+                data: {
+                    _id: user._id,
+                },
+            };
+            return {
+                msg: "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!",
+                error: true,
+                data: {},
+            }
         }
-        else {
-            await mongoose.disconnect();
-            return "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!";
+        await mongoose.disconnect();
+        return {
+            msg: "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!",
+            error: true,
+            data: {},
         }
     }
     catch (err) {
@@ -34,10 +46,18 @@ async function getAdminUserInfo(userId) {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
         // Check If User Is Exist
-        let user = await adminModel.findById(userId);
+        const user = await adminModel.findById(userId);
         await mongoose.disconnect();
-        if (user) return user;
-        return "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..";
+        if (user) return {
+            msg: `Get Admin Info For Id: ${data._id} Process Has Been Successfully !!`,
+            error: false,
+            data: result,
+        }
+        return {
+            msg: "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..",
+            error: true,
+            data: {},
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
