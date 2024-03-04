@@ -8,7 +8,11 @@ async function getAllSections() {
         await mongoose.connect(process.env.DB_URL);
         const allSections = await appearedSectionsModel.find({});
         await mongoose.disconnect();
-        return allSections;
+        return {
+            msg: "Get All Sections Process Has Been Successfully !!",
+            error: false,
+            data: allSections,
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -24,6 +28,11 @@ async function updateSectionsStatus(sectionsStatus) {
             await appearedSectionsModel.updateOne({ _id: sectionsStatus[i]._id }, { isAppeared: sectionsStatus[i].isAppeared });
         }
         await mongoose.disconnect();
+        return {
+            msg: "Updating Section Status Has Been Successfully !!",
+            error: false,
+            data: {},
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();

@@ -8,12 +8,20 @@ async function addNewCategory(categoryName) {
         const category = await categoryModel.findOne({ name: categoryName });
         if (category) {
             await mongoose.disconnect();
-            return "Sorry, This Cateogry Is Already Exist !!";
+            return {
+                msg: "Sorry, This Cateogry Is Already Exist !!",
+                error: true,
+                data: {},
+            }
         }
         const newCategory = new categoryModel({ name: categoryName });
         await newCategory.save();
         await mongoose.disconnect();
-        return "Adding New Category Process It Successfuly ...";
+        return {
+            msg: "Adding New Category Process Has Been Successfuly ...",
+            error: false,
+            data: {},
+        }
     }
     catch(err){
         await mongoose.disconnect();
@@ -27,7 +35,11 @@ async function getAllCategories() {
         await mongoose.connect(process.env.DB_URL);
         const allCategories = await categoryModel.find({});
         await mongoose.disconnect();
-        return allCategories;
+        return {
+            msg: "Get All Categories Process Has Been Successfully !!",
+            error: false,
+            data: allCategories,
+        }
     }
     catch (err) {
         // Disconnect To DB
@@ -42,7 +54,11 @@ async function getCategoriesCount(filters) {
         await mongoose.connect(process.env.DB_URL);
         const categoriesCount = await categoryModel.countDocuments(filters);
         await mongoose.disconnect();
-        return categoriesCount;
+        return {
+            msg: "Get All Categories Process Has Been Successfully !!",
+            error: false,
+            data: categoriesCount,
+        }
     }
     catch (err) {
         // Disconnect To DB
@@ -57,7 +73,11 @@ async function getAllCategoriesInsideThePage(pageNumber, pageSize) {
         await mongoose.connect(process.env.DB_URL);
         const categoriesListInsideThePage = await categoryModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize);
         await mongoose.disconnect();
-        return categoriesListInsideThePage;
+        return {
+            msg: `Get All Categories Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: categoriesListInsideThePage,
+        }
     }
     catch (err) {
         // Disconnect To DB
@@ -78,14 +98,15 @@ async function deleteCategory(categoryId) {
             await mongoose.disconnect();
             return {
                 msg: "Deleting Category Process Has Been Successfuly ...",
-                isError: false,
-                newCategoiesList,
+                error: false,
+                data: newCategoiesList,
             };
         }
         await mongoose.disconnect();
         return {
-            isError: true,
             msg: "Sorry, This Category Id Is Not Exist !!",
+            error: true,
+            data: {},
         };
     }
     catch (err) {
@@ -101,7 +122,11 @@ async function updateCategory(categoryId, newCategoryName) {
         await mongoose.connect(process.env.DB_URL);
         await categoryModel.updateOne( { _id: categoryId } , { name: newCategoryName });
         await mongoose.disconnect();
-        return "Updating Category Process It Successfuly ...";
+        return {
+            msg: "Updating Category Process Has Been Successfuly !!",
+            error: false,
+            data: {},
+        }
     }
     catch (err) {
         // Disconnect To DB

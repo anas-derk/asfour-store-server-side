@@ -9,7 +9,11 @@ async function addNewBrand(brandInfo) {
         const newBrandInfo = new brandModel(brandInfo);
         await newBrandInfo.save();
         await mongoose.disconnect();
-        return "Adding New Brand Process Has Been Successfuly ...";
+        return {
+            msg: "Adding New Brand Process Has Been Successfuly ...",
+            error: false,
+            data: {},
+        };
     }
     catch (err) {
         // Disconnect To DB

@@ -51,7 +51,16 @@ async function sendCodeToUserEmail(email) {
     return result;
 }
 
+function getResponseObject(msg, isError, data) {
+    return {
+        msg,
+        error: isError,
+        data,
+    }
+}
+
 module.exports = {
     isEmail,
-    sendCodeToUserEmail
+    sendCodeToUserEmail,
+    getResponseObject,
 }

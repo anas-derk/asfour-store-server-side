@@ -16,7 +16,7 @@ async function createNewUser(email, password) {
         const user = await userModel.findOne({ email });
         if (user) {
             await mongoose.disconnect();
-            return "Sorry, Can't Create User Because it is Exist !!!";
+            return "Sorry, Can't Create User Because it is Exist !!";
         } else {
             // Create New Document From User Schema
             const newUser = new userModel({
@@ -27,7 +27,7 @@ async function createNewUser(email, password) {
             await newUser.save();
             // Disconnect In DB
             await mongoose.disconnect();
-            return "Ok !!, Create New User Is Successfuly !!";
+            return "Ok !!, Create New User Process Has Been Successfuly !!";
         }
     }
     catch (err) {
@@ -50,16 +50,32 @@ async function addNewFavoriteProduct(userId, productId) {
                 if (favorite_productIndex == -1) {
                     await userModel.updateOne({ _id: userId } , { $push: { favorite_products_list: product } });
                     await mongoose.disconnect();
-                    return "Ok !!, Adding New Favorite Product To This User Is Successfuly !!";
+                    return {
+                        msg: "Ok !!, Adding New Favorite Product To This User Process Has Been Successfuly !!",
+                        error: false,
+                        data: {},
+                    };
                 }
                 await mongoose.disconnect();
-                return "Sorry, The Product Are Already Exist !!, Please Send Another Product Id ..";
+                return {
+                    msg: "Sorry, The Product Are Already Exist !!, Please Send Another Product Id !!",
+                    error: true,
+                    data: {},
+                };
             }
             await mongoose.disconnect();
-            return "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..";
+            return {
+                msg: "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..",
+                error: true,
+                data: {},
+            };
         }
         await mongoose.disconnect();
-        return "Sorry, The User Is Not Exist !!, Please Send Another User Id ..";
+        return {
+            msg: "Sorry, The User Is Not Exist !!, Please Send Another User Id ..",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         // Disconnect In DB
@@ -78,11 +94,23 @@ async function login(email, password) {
             // Check From Password
             const isTruePassword = await bcrypt.compare(password, user.password);
             await mongoose.disconnect();
-            if (isTruePassword) return user;
-            return "Sorry, Email Or Password Incorrect !!";
+            if (isTruePassword) return {
+                msg: "Logining Process Has Been Successfully !!",
+                error: false,
+                data: user,
+            };
+            return {
+                msg: "Sorry, Email Or Password Incorrect !!",
+                error: true,
+                data: {},
+            };
         }
         await mongoose.disconnect();
-        return "Sorry, Email Or Password Incorrect !!";
+        return {
+            msg: "Sorry, Email Or Password Incorrect !!",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         await mongoose.disconnect();
@@ -95,10 +123,18 @@ async function getUserInfo(userId) {
         // Connect To DB
         await mongoose.connect(process.env.DB_URL);
         // Check If User Is Exist
-        let user = await userModel.findById(userId);
+        const user = await userModel.findById(userId);
         await mongoose.disconnect();
-        if (user) return user;
-        return "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..";
+        if (user) return {
+            msg: "Get User Info Process Has Been Successfully !!",
+            error: false,
+            data: user,
+        };
+        if (user) return {
+            msg: "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..",
+            error: true,
+            data: {},
+        };
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -114,10 +150,22 @@ async function isExistUserAndVerificationEmail(email) {
         const user = await userModel.findOne({ email });
         await mongoose.disconnect();
         if (user) {
-            if (!user.isVerified) return user;
-            return "Sorry, The Email For This User Has Been Verified !!";
+            if (!user.isVerified) return {
+                msg: "This User Is Exist !!",
+                error: false,
+                data: user,
+            };
+            return {
+                msg: "Sorry, The Email For This User Has Been Verified !!",
+                error: true,
+                data: {},
+            };
         };
-        return "Sorry, The User Is Not Exist !!, Please Enter Another User Email ..";
+        return {
+            msg: "Sorry, The User Is Not Exist !!, Please Enter Another User Email ..",
+            error: true,
+            data: {},
+        };
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -131,7 +179,11 @@ async function getAllUsers() {
         await mongoose.connect(process.env.DB_URL);
         const users = await userModel.find({});
         await mongoose.disconnect();
-        return users;
+        return {
+            msg: "Get All Users Process Has Been Successfully !!",
+            error: false,
+            data: users,
+        };
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -146,8 +198,18 @@ async function getFavoriteProductsCount(filters) {
         const user = await userModel.findOne({ _id: filters.customerId });
         if (user){
             await mongoose.disconnect();
-            return user.favorite_products_list.length;
+            return {
+                msg: "Get Favorite Products Count Process Has Been Successfully !!",
+                error: false,
+                data: user.favorite_products_list.length,
+            };
         }
+        await mongoose.disconnect();
+        return {
+            msg: "Sorry, This User Is Not Found !!",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         // Disconnect To DB
@@ -163,8 +225,18 @@ async function getWalletProductsCount(filters) {
         const user = await userModel.findOne({ _id: filters.customerId });
         if (user){
             await mongoose.disconnect();
-            return user.wallet_products_list.length;
+            return {
+                msg: "Get Wallet Products Count Process Has Been Successfully !!",
+                error: false,
+                data: user.wallet_products_list.length,
+            };
         }
+        await mongoose.disconnect();
+        return {
+            msg: "Sorry, This User Is Not Found !!",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         // Disconnect To DB
@@ -181,8 +253,18 @@ async function getAllFavoriteProductsInsideThePage(pageNumber, pageSize, filters
         if (user) {
             await mongoose.disconnect();
             const beginSliceIndex = (pageNumber - 1) * pageSize;
-            return user.favorite_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize);
+            return {
+                msg: `Get Favorite Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+                error: false,
+                data: user.favorite_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize),
+            };
         }
+        await mongoose.disconnect();
+        return {
+            msg: "Sorry, This User Is Not Found !!",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         // Disconnect To DB
@@ -199,8 +281,18 @@ async function getAllWalletProductsInsideThePage(pageNumber, pageSize, filters) 
         if (user) {
             await mongoose.disconnect();
             const beginSliceIndex = (pageNumber - 1) * pageSize;
-            return user.wallet_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize);
+            return {
+                msg: `Get Wallet Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+                error: false,
+                data: user.wallet_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize),
+            };
         }
+        await mongoose.disconnect();
+        return {
+            msg: "Sorry, This User Is Not Found !!",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         // Disconnect To DB
@@ -216,10 +308,20 @@ async function isUserAccountExist(email) {
         if (user) {
             await mongoose.disconnect();
             return {
-                _id: user._id,
-                isVerified: user.isVerified,
+                msg: "User Is Exist !!",
+                error: false,
+                data: {
+                    _id: user._id,
+                    isVerified: user.isVerified,
+                },
             };
         }
+        await mongoose.disconnect();
+        return {
+            msg: "Sorry, This User Is Not Found !!",
+            error: true,
+            data: {},
+        };
     } catch (err) {
         await mongoose.disconnect();
         throw Error(err);
@@ -240,22 +342,35 @@ async function updateUserInfo(userId, newUserData) {
                         password: await bcrypt.hash(newUserData.newPassword, 10),
                     });
                     await mongoose.disconnect();
-                    return "Updating User Info Process Has Been Successfuly ...";
-                } else {
-                    await mongoose.disconnect();
-                    return "Sorry, This Password Is Uncorrect !!";
+                    return {
+                        msg: "Updating User Info Process Has Been Successfuly !!",
+                        error: false,
+                        data: {},
+                    };
                 }
-            } else {
                 await mongoose.disconnect();
-                return "Sorry, Invalid User Id";
+                return {
+                    msg: "Sorry, This Password Is Uncorrect !!",
+                    error: true,
+                    data: {},
+                };
             }
-        } else {
-            await userModel.updateOne({ _id: userId }, {
-                ...newUserData,
-            });
             await mongoose.disconnect();
-            return "Updating User Info Process Has Been Successfuly ...";
+            return {
+                msg: "Sorry, This User Is Not Found !!",
+                error: true,
+                data: {},
+            };
         }
+        await userModel.updateOne({ _id: userId }, {
+            ...newUserData,
+        });
+        await mongoose.disconnect();
+        return {
+            msg: "Updating User Info Process Has Been Successfuly !!",
+            error: false,
+            data: {},
+        };
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -269,7 +384,11 @@ async function updateVerificationStatus(email) {
         const userInfo = await userModel.findOne({ email });
         await userModel.updateOne({ email }, { isVerified: true });
         await mongoose.disconnect();
-        return userInfo._id;
+        return {
+            msg: "Updating Verification Status Process Has Been Successfully !!",
+            error: false,
+            data: userInfo._id,
+        };
     }
     catch(err) {
         // Disconnect In DB
@@ -283,7 +402,11 @@ async function resetUserPassword(userId, newPassword) {
         await mongoose.connect(process.env.DB_URL);
         const newEncryptedPassword = await bcrypt.hash(newPassword, 10);
         await userModel.updateOne({ _id: userId }, { password: newEncryptedPassword });
-        return "Reseting Password Process Has Been Successfully !!";
+        return {
+            msg: "Reseting Password Process Has Been Successfully !!",
+            error: false,
+            data: {},
+        };
     } catch (err) {
         await mongoose.disconnect();
         throw Error(err);
@@ -303,14 +426,23 @@ async function deleteProductFromFavoriteUserProducts(userId, productId) {
                 await mongoose.disconnect();
                 return {
                     msg: "Ok !!, Deleting Favorite Product From This User Is Successfuly !!",
-                    newFavoriteProductsList: newFavoriteProductsList,
+                    error: false,
+                    data: newFavoriteProductsList,
                 };
             }
             await mongoose.disconnect();
-            return "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..";
+            return {
+                msg: "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..",
+                error: true,
+                data: {},
+            };
         }
         await mongoose.disconnect();
-        return "Sorry, The User Is Not Exist !!, Please Send Another User Id ..";
+        return {
+            msg: "Sorry, The User Is Not Exist !!, Please Send Another User Id ..",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         // Disconnect In DB
@@ -332,14 +464,23 @@ async function deleteProductFromUserProductsWallet(userId, productId) {
                 await mongoose.disconnect();
                 return {
                     msg: "Ok !!, Deleting Wallet Product From This User Is Successfuly !!",
-                    newProductsWallet: newProductsWallet,
+                    error: false,
+                    data: newProductsWallet,
                 };
             }
             await mongoose.disconnect();
-            return "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..";
+            return {
+                msg: "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..",
+                error: true,
+                data: {},
+            };
         }
         await mongoose.disconnect();
-        return "Sorry, The User Is Not Exist !!, Please Send Another User Id ..";
+        return {
+            msg: "Sorry, The User Is Not Exist !!, Please Send Another User Id ..",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         // Disconnect In DB

@@ -1,3 +1,5 @@
+const { getResponseObject } = require("../global/functions");
+
 async function getAdminLogin(req, res) {
     try{
         const   email = req.query.email,
@@ -27,25 +29,13 @@ async function getAdminLogin(req, res) {
                 return;
             }
             // Return Error Msg If Email Is Not Valid
-            await res.status(400).json({
-                msg: "Error, This Is Not Email Valid !!",
-                error: true,
-                data: {},
-            });
+            await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
             return;
         }
-        await res.status(400).json({
-            msg: "Error, Please Enter Email And Password Or Rest Input !!",
-            error: true,
-            data: {},
-        });
+        await res.status(400).json(getResponseObject("Error, Please Enter Email And Password Or Rest Input !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -53,11 +43,7 @@ async function getAdminUserInfo(req, res) {
     try{
         const token = req.headers.authorization;
         if (!token) {
-            await res.status(400).json({
-                msg: "Sorry, Please Send JWT For User !!",
-                error: true,
-                data: {},
-            });
+            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
             return;
         }
         const { verify } = require("jsonwebtoken");
@@ -66,11 +52,7 @@ async function getAdminUserInfo(req, res) {
         await res.json(await getAdminUserInfo(data._id));
     }
     catch(err){
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 

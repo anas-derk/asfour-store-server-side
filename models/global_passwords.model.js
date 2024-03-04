@@ -16,10 +16,18 @@ async function getPasswordForBussinessEmail(email){
             // Check From Password
             const bytes = cryptoJS.AES.decrypt(user.password, process.env.secretKey);
             const decryptedPassword = bytes.toString(cryptoJS.enc.Utf8);
-            return decryptedPassword;
+            return {
+                msg: "Get Password For Bussiness Email Process Has Been Successfully !!",
+                error: false,
+                data: decryptedPassword,
+            }
         }
         await mongoose.disconnect();
-        return "Sorry, Email Incorrect !!";
+        return {
+            msg: "Sorry, Email Incorrect !!",
+            error: true,
+            data: {},
+        }
     }
     catch(err){
         await mongoose.disconnect();
@@ -41,12 +49,25 @@ async function changeBussinessEmailPassword(email, password, newPassword) {
                 let encrypted_password = cryptoJS.AES.encrypt(newPassword, process.env.secretKey).toString();
                 await globalPasswordModel.updateOne({ password: encrypted_password });
                 await mongoose.disconnect();
-                return "Changing Global Password Process Has Been Successfully !!";
+                return {
+                    msg: "Changing Global Password Process Has Been Successfully !!",
+                    error: false,
+                    data: {},
+                }
             }
-            return "Sorry, Email Or Password Incorrect !!";
+            await mongoose.disconnect();
+            return {
+                msg: "Sorry, Email Or Password Incorrect !!",
+                error: true,
+                data: {},
+            }
         }
         await mongoose.disconnect();
-        return "Sorry, Email Or Password Incorrect !!";
+        return {
+            msg: "Sorry, Email Or Password Incorrect !!",
+            error: true,
+            data: {},
+        }
     }
     catch (err) {
         await mongoose.disconnect();

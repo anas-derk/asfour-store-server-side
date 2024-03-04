@@ -8,7 +8,11 @@ async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
         await mongoose.connect(process.env.DB_URL);
         const orders = await orderModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ orderNumber: -1 });
         await mongoose.disconnect();
-        return orders;
+        return {
+            msg: `Get All Orders Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: orders,
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -22,7 +26,11 @@ async function getOrdersCount(filters) {
         await mongoose.connect(process.env.DB_URL);
         const ordersCount = await orderModel.countDocuments(filters);
         await mongoose.disconnect();
-        return ordersCount;
+        return {
+            msg: "Get Orders Count Process Has Been Successfully !!",
+            error: false,
+            data: ordersCount,
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -36,7 +44,11 @@ async function getOrderDetails(orderId) {
         await mongoose.connect(process.env.DB_URL);
         const order = await orderModel.findById(orderId);
         await mongoose.disconnect();
-        return order;
+        return {
+            msg: `Get Details For Order: ${orderId} Process Has Been Successfully !!`,
+            error: false,
+            data: order,
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -70,7 +82,14 @@ async function postNewOrder(orderDetails) {
             }
         }
         await mongoose.disconnect();
-        return { msg: "Creating New Order Has Been Successfuly !!", orderId: _id, orderNumber: orderNumber };
+        return {
+            msg: "Creating New Order Has Been Successfuly !!",
+            error: false,
+            data: {
+                orderId: _id,
+                orderNumber: orderNumber
+            },
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -86,7 +105,11 @@ async function updateOrder(orderId, newOrderDetails) {
             _id: orderId,
         }, { ...newOrderDetails });
         await mongoose.disconnect();
-        return orderNumber;
+        return {
+            msg: `Update Details For Order That : ( Id: ${ orderId }) Process Has Been Successfully !!`,
+            error: false,
+            data: orderNumber,
+        };
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -107,7 +130,11 @@ async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
         const { calcOrderAmount } = require("../global/functions");
         await orderModel.updateOne({ _id: orderId }, { order_lines, order_amount: calcOrderAmount(order_lines) });
         await mongoose.disconnect();
-        return "Updating Order Details Has Been Successfuly !!";
+        return {
+            msg: "Updating Order Details Process Has Been Successfuly !!",
+            error: false,
+            data: {},
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();
@@ -119,7 +146,11 @@ async function deleteOrder(orderId){
     try{
         await mongoose.connect(process.env.DB_URL);
         await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
-        return "Deleting This Order Has Been Successfuly !!";
+        return {
+            msg: "Deleting This Order Has Been Successfuly !!",
+            error: false,
+            data: {},
+        }
     }
     catch(err){
         await mongoose.disconnect();
@@ -135,7 +166,11 @@ async function deleteProductFromOrder(orderId, productId) {
         const newOrderLines = order_lines.filter((order_line) => order_line._id == productId);
         await orderModel.updateOne({ _id: orderId }, { order_lines: newOrderLines });
         await mongoose.disconnect();
-        return "Deleting Product From Order Has Been Successfuly !!";
+        return {
+            msg: "Deleting Product From Order Has Been Successfuly !!",
+            error: false,
+            data: {},
+        }
     } catch (err) {
         // Disconnect In DB
         await mongoose.disconnect();

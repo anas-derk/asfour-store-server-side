@@ -1,5 +1,16 @@
 async function postNewCategory(req, res) {
     try{
+        const token = req.headers.authorization;
+        if (!token) {
+            await res.status(400).json({
+                msg: "Sorry, Please Send JWT For User !!",
+                error: true,
+                data: {},
+            });
+            return;
+        }
+        const { verify } = require("jsonwebtoken");
+        verify(token, process.env.secretKey);
         const categoryName = req.body.categoryName;
         if (!categoryName) await res.status(400).json("Please Send Category Name !!");
         else {
@@ -13,18 +24,25 @@ async function postNewCategory(req, res) {
         }
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json({
+            msg: err.message,
+            error: true,
+            data: {},
+        });
     }
 }
 
 async function getAllCategories(req, res) {
     try {
         const { getAllCategories } = require("../models/categories.model");
-        const result = await getAllCategories();
-        await res.json(result);
+        await res.json(await getAllCategories());
     }
     catch (err) {
-        await res.status(500).json(err);
+        await res.status(500).json({
+            msg: err.message,
+            error: true,
+            data: {},
+        });
     }
 }
 
@@ -35,13 +53,24 @@ async function getCategoriesCount(req, res) {
             if (
                 objectKey !== "pageNumber" &&
                 objectKey !== "pageSize"
-            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+            ) {
+                await res.status(400).json({
+                    msg: "Invalid Request, Please Send Valid Keys !!",
+                    error: true,
+                    data: {},
+                });
+                return;
+            }
         }
         const { getCategoriesCount } = require("../models/categories.model");
         await res.json(await getCategoriesCount(filters));
     }
     catch (err) {
-        await res.status(500).json(err);
+        await res.status(500).json({
+            msg: err.message,
+            error: true,
+            data: {},
+        });
     }
 }
 
@@ -52,43 +81,93 @@ async function getAllCategoriesInsideThePage(req, res) {
             if (
                 objectKey !== "pageNumber" &&
                 objectKey !== "pageSize"
-            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+            ) {
+                await res.status(400).json({
+                    msg: "Invalid Request, Please Send Valid Keys !!",
+                    error: true,
+                    data: {},
+                });
+                return;
+            }
         }
         const { getAllCategoriesInsideThePage } = require("../models/categories.model");
         await res.json(await getAllCategoriesInsideThePage(filters.pageNumber, filters.pageSize));
     }
     catch (err) {
-        await res.status(500).json(err);
+        await res.status(500).json({
+            msg: err.message,
+            error: true,
+            data: {},
+        });
     }
 }
 
 async function deleteCategory(req, res) {
     try{
-        const categoryId = req.params.categoryId;
-        if (!categoryId) await res.status(400).json("Sorry, Please Send Category Id !!");
-        else {
-            const { deleteCategory } = require("../models/categories.model");
-            await res.json(await deleteCategory(categoryId));
+        const token = req.headers.authorization;
+        if (!token) {
+            await res.status(400).json({
+                msg: "Sorry, Please Send JWT For User !!",
+                error: true,
+                data: {},
+            });
+            return;
         }
+        const { verify } = require("jsonwebtoken");
+        verify(token, process.env.secretKey);
+        const categoryId = req.params.categoryId;
+        if (!categoryId) {
+            await res.status(400).json({
+                msg: "Sorry, Please Send Category Id !!",
+                error: true,
+                data: {},
+            });
+            return;
+        }
+        const { deleteCategory } = require("../models/categories.model");
+        await res.json(await deleteCategory(categoryId));
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json({
+            msg: err.message,
+            error: true,
+            data: {},
+        });
     }
 }
 
 async function putCategory(req, res) {
     try{
+        const token = req.headers.authorization;
+        if (!token) {
+            await res.status(400).json({
+                msg: "Sorry, Please Send JWT For User !!",
+                error: true,
+                data: {},
+            });
+            return;
+        }
+        const { verify } = require("jsonwebtoken");
+        verify(token, process.env.secretKey);
         const categoryId = req.params.categoryId;
         const newCategoryName = req.body.newCategoryName;
-        if (!categoryId || !newCategoryName) await res.status(400).json("Sorry, Please Send Category Id, New Catergory Name !!");
-        else {
-            const { updateCategory } = require("../models/categories.model");
-            const result = await updateCategory(categoryId, newCategoryName);
-            await res.json(result);
+        if (!categoryId || !newCategoryName) {
+            await res.status(400).json({
+                msg: "Sorry, Please Send Category Id, New Catergory Name !!",
+                error: true,
+                data: {},
+            });
+            return;
         }
+        const { updateCategory } = require("../models/categories.model");
+        await res.json(await updateCategory(categoryId, newCategoryName));
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json({
+            msg: err.message,
+            error: true,
+            data: {},
+        });
     }
 }
 

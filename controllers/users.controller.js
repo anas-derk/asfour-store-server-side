@@ -1,3 +1,5 @@
+const { getResponseObject } = require("../global/functions");
+
 async function createNewUser(req, res) {
     try {
         const email = req.body.email,
@@ -9,19 +11,17 @@ async function createNewUser(req, res) {
             // Check If Email Valid
             if (isEmail(email)) {
                 const { createNewUser } = require("../models/users.model");
-                const result = await createNewUser(email.toLowerCase(), password);
-                await res.json(result);
+                await res.json(await createNewUser(email.toLowerCase(), password));
+                return;
             }
-            else {
-                // Return Error Msg If Email Is Not Valid
-                await res.status(400).json("Error, This Is Not Email Valid !!");
-            }
-        } else {
-            await res.status(400).json("Error, Please Enter Email And Password Or Rest Input !!");
+            // Return Error Msg If Email Is Not Valid
+            await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+            return;
         }
+        await res.status(400).json(getResponseObject("Error, Please Send Email And Password Or Rest Input !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -29,16 +29,15 @@ async function postNewFavoriteProduct(req, res) {
     try{
         const   userId = req.query.userId,
                 productId = req.query.productId;
-        if (!userId || !productId) await res.status(400).json("Sorry, Please Send User Id And Product Id !!");
-        else {
-            const { addNewFavoriteProduct } = require("../models/users.model");
-            const result = await addNewFavoriteProduct(userId, productId);
-            await res.json(result);
+        if (!userId || !productId) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send User Id And Product Id !!", true, {}));
+            return;
         }
+        const { addNewFavoriteProduct } = require("../models/users.model");
+        await res.json(await addNewFavoriteProduct(userId, productId));
     }
     catch(err) {
-        console.log(err);
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -46,25 +45,25 @@ async function postAccountVerificationCode(req, res) {
     try{
         const userEmail = req.query.email;
         const { isEmail } = require("../global/functions");
-        if (!userEmail) await res.status(400).json("Sorry, Please Send The Email !!");
-        else {
-            if (!isEmail(userEmail)) {
-                await res.status(400).json("Sorry, Please Send Valid Email !!");
-            } else {
-                const { isExistUserAndVerificationEmail } = require("../models/users.model");
-                const result = await isExistUserAndVerificationEmail(userEmail);
-                if (result === "Sorry, The User Is Not Exist !!, Please Enter Another User Email .." || result === "Sorry, The Email For This User Has Been Verified !!") {
-                    await res.status(400).json(result);
-                } else {
-                    const { sendCodeToUserEmail } = require("../global/functions");
-                    const verificationCode = await sendCodeToUserEmail(userEmail);
-                    await res.json(verificationCode);
-                }
-            }
+        if (!userEmail) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send The Email !!", true, {}));
+            return;
         }
+        if (!isEmail(userEmail)) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send Valid Email !!", true, {}));
+            return;
+        }
+        const { isExistUserAndVerificationEmail } = require("../models/users.model");
+        const result = await isExistUserAndVerificationEmail(userEmail);
+        if (result.error) {
+            await res.json(result);
+            return;
+        }
+        const { sendCodeToUserEmail } = require("../global/functions");
+        await res.json(await sendCodeToUserEmail(userEmail));
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -80,43 +79,56 @@ async function login(req, res) {
             if (isEmail(email)) {
                 const { login } = require("../models/users.model");
                 const result = await login(email.toLowerCase(), password);
+                if (!result.error) {
+                    const { sign } = require("jsonwebtoken");
+                    const token = sign(result.data, process.env.secretKey, {
+                        expiresIn: "1h",
+                    });
+                    await res.json({
+                        msg: result.msg,
+                        error: result.error,
+                        data: {
+                            token,
+                        },
+                    });
+                    return;
+                }
                 await res.json(result);
-            } else {
-                // Return Error Msg If Email Is Not Valid
-                await res.status(400).json("Error, This Is Not Email Valid !!");
+                return;
             }
-        } else {
-            await res.status(400).json("Error, Please Enter Email And Password Or Rest Input !!");
+            // Return Error Msg If Email Is Not Valid
+            await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+            return;
         }
+        await res.status(400).json(getResponseObject("Error, Please Enter Email And Password Or Rest Input !!", true, {}));
     }
     catch(err){
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
 async function getUserInfo(req, res) {
     try{
         const userId = req.params.userId;
-        if (!userId) await res.status(400).json("Sorry, Please Send User Id !!");
-        else {
-            const { getUserInfo } = require("../models/users.model");
-            const result = await getUserInfo(userId);
-            await res.json(result);
+        if (!userId) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send User Id !!", true, {}));
+            return;
         }
+        const { getUserInfo } = require("../models/users.model");
+        await res.json(await getUserInfo(userId));
     }
     catch(err){
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
 async function getAllUsers(req, res) {
     try{
         const { getAllUsers } = require("../models/users.model");
-        const result = await getAllUsers();
-        await res.json(result);
+        await res.json(await getAllUsers());
     }
     catch(err){
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -128,23 +140,27 @@ async function getForgetPassword(req, res) {
             if (isEmail(email)) {
                 const { isUserAccountExist } = require("../models/users.model");
                 const result = await isUserAccountExist(email);
-                if (result) {
+                if (!result.error) {
                     const { sendCodeToUserEmail } = require("../global/functions");
-                    const generatedCode = await sendCodeToUserEmail(email);
                     await res.json({
-                        _id: result._id,
-                        isVerified: result.isVerified,
-                        code: generatedCode,
+                        ...result,
+                        data: {
+                            ...result.data,
+                            code: await sendCodeToUserEmail(email),
+                        },
                     });
-                } else await res.json("Sorry, This Email Is Not Exist !!");
+                    return;
+                }
+                await res.json(getResponseObject("Sorry, This Email Is Not Exist !!", true, {}));
+                return;
             }
-            else await res.status(400).json("Sorry, Invalid Email !!");
+            await res.status(400).json(getResponseObject("Sorry, Please Send Email !!", true, {}));
+            return;
         }
-        else await res.status(400).json("Sorry, Please Send Email !!");
+        await res.status(400).json(getResponseObject("Sorry, Please Send Email !!", true, {}));
     }
     catch(err) {
-        console.log(err)
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -162,13 +178,16 @@ async function getFavoriteProductsCount(req, res) {
         for (let objectKey in filters) {
             if (
                 objectKey !== "customerId"
-            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+            ) {
+                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
+                return;
+            }
         }
         const { getFavoriteProductsCount } = require("../models/users.model");
         await res.json(await getFavoriteProductsCount(getFiltersObject(filters)));
     }
     catch (err) {
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -178,13 +197,16 @@ async function getWalletProductsCount(req, res) {
         for (let objectKey in filters) {
             if (
                 objectKey !== "customerId"
-            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+            ) {
+                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
+                return;
+            }
         }
         const { getWalletProductsCount } = require("../models/users.model");
         await res.json(await getWalletProductsCount(getFiltersObject(filters)));
     }
     catch (err) {
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -196,13 +218,16 @@ async function getAllFavoriteProductsInsideThePage(req, res) {
                 objectKey !== "pageNumber" &&
                 objectKey !== "pageSize" &&
                 objectKey !== "customerId"
-            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+            ) {
+                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
+                return;
+            }
         }
         const { getAllFavoriteProductsInsideThePage } = require("../models/users.model");
         await res.json(await getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err){
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -214,13 +239,16 @@ async function getAllWalletProductsInsideThePage(req, res) {
                 objectKey !== "pageNumber" &&
                 objectKey !== "pageSize" &&
                 objectKey !== "customerId"
-            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+            ) {
+                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
+                return;
+            }
         }
         const { getAllWalletProductsInsideThePage } = require("../models/users.model");
         await res.json(await getAllWalletProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err){
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -228,48 +256,46 @@ async function putUserInfo(req, res) {
     try{
         const userId = req.params.userId;
         const newUserData = req.body;
-        if (!userId || Object.keys(newUserData).length === 0) res.status(400).json("Sorry, Please Send User Id And New User Data !!");
-        else {
-            const { updateUserInfo } = require("../models/users.model");
-            const result = await updateUserInfo(userId, newUserData);
-            await res.json(result);
+        if (!userId || Object.keys(newUserData).length === 0) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send User Id And New User Data !!", true, {}));
+            return;
         }
+        const { updateUserInfo } = require("../models/users.model");
+        await res.json(await updateUserInfo(userId, newUserData));
     }
     catch(err) {
-        console.log(err);
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
 async function putVerificationStatus(req, res) {
     try{
         const email = req.query.email;
-        if (!email) res.status(400).json("Sorry, Please Send User Email !!");
-        else {
-            const { updateVerificationStatus } = require("../models/users.model");
-            const result = await updateVerificationStatus(email);
-            await res.json(result);
+        if (!email) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send User Email !!", true, {}));
+            return;
         }
+        const { updateVerificationStatus } = require("../models/users.model");
+        await res.json(await updateVerificationStatus(email));
     }
     catch(err) {
-        console.log(err);
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
 async function putResetPassword(req, res) {
     try{
         const userId = req.params.userId;
-        if (!userId) await res.status(400).json("Sorry, Please Send All Required Fields !!");
-        else {
-            const newPassword = req.query.newPassword;
-            const { resetUserPassword } = require("../models/users.model");
-            const result = await resetUserPassword(userId, newPassword);
-            await res.json(result);
+        if (!userId) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send All Required Fields !!", true, {}));
+            return;
         }
+        const newPassword = req.query.newPassword;
+        const { resetUserPassword } = require("../models/users.model");
+        await res.json(await resetUserPassword(userId, newPassword));
     }
     catch(err) {
-        throw Error(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -277,15 +303,15 @@ async function deleteProductFromFavoriteUserProducts(req, res) {
     try{
         const   userId = req.query.userId,
                 productId = req.query.productId;
-        if (!userId || !productId) await res.status(400).json("Sorry, Please Send User Id And Product Id !!");
-        else {
-            const { deleteProductFromFavoriteUserProducts } = require("../models/users.model");
-            const result = await deleteProductFromFavoriteUserProducts(userId, productId);
-            await res.json(result);
+        if (!userId || !productId) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send User Id And Product Id !!", true, {}));
+            return;
         }
+        const { deleteProductFromFavoriteUserProducts } = require("../models/users.model");
+        await res.json(await deleteProductFromFavoriteUserProducts(userId, productId));
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -293,15 +319,15 @@ async function deleteProductFromUserProductsWallet(req, res) {
     try{
         const   userId = req.query.userId,
                 productId = req.query.productId;
-        if (!userId || !productId) await res.status(400).json("Sorry, Please Send User Id And Product Id !!");
-        else {
-            const { deleteProductFromUserProductsWallet } = require("../models/users.model");
-            const result = await deleteProductFromUserProductsWallet(userId, productId);
-            await res.json(result);
+        if (!userId || !productId) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send User Id And Product Id !!", true, {}));
+            return;
         }
+        const { deleteProductFromUserProductsWallet } = require("../models/users.model");
+        await res.json(await deleteProductFromUserProductsWallet(userId, productId));
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 

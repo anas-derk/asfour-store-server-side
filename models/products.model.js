@@ -9,7 +9,11 @@ async function addNewProduct(productInfo) {
         const newProductInfo = new productModel(productInfo);
         await newProductInfo.save();
         await mongoose.disconnect();
-        return "Adding New Product Process It Successfuly ...";
+        return {
+            msg: "Adding New Product Process Has Been Successfuly !!",
+            error: false,
+            data: {},
+        }
     }
     catch (err) {
         // Disconnect To DB
@@ -27,6 +31,11 @@ async function addingNewImagesToProductGallery(productId, newGalleryImagePaths) 
             galleryImagesPaths: productDetails.galleryImagesPaths.concat(newGalleryImagePaths),
         });
         await mongoose.disconnect();
+        return {
+            msg: "Adding New Images To Product Gallery Process Has Been Successfuly !!",
+            error: false,
+            data: {},
+        }
     }
     catch(err) {
         await mongoose.disconnect();
@@ -41,11 +50,17 @@ async function getProductInfo(productId) {
         const productInfo = await productModel.findById(productId);
         if (productInfo) {
             await mongoose.disconnect();
-            return productInfo;
+            return {
+                msg: "Get Product Info Process Has Been Successfuly !!",
+                error: false,
+                data: productInfo,
+            }
         }
-        else {
-            await mongoose.disconnect();
-            return "Sorry, This Product It Not Exist !!!";
+        await mongoose.disconnect();
+        return {
+            msg: "Sorry, This Product It Not Exist !!",
+            error: true,
+            data: {},
         }
     }
     catch (err) {
@@ -61,7 +76,11 @@ async function getProductsCount(filters) {
         await mongoose.connect(process.env.DB_URL);
         const productsCount = await productModel.countDocuments(filters);
         await mongoose.disconnect();
-        return productsCount;
+        return {
+            msg: "Get Products Count Process Has Been Successfully !!",
+            error: false,
+            data: productsCount,
+        }
     }
     catch (err) {
         // Disconnect To DB
@@ -76,7 +95,11 @@ async function getAllProductsInsideThePage(pageNumber, pageSize, filters) {
         await mongoose.connect(process.env.DB_URL);
         const productsCount = await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize);
         await mongoose.disconnect();
-        return productsCount;
+        return {
+            msg: `Get Products Count Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: productsCount,
+        }
     }
     catch (err) {
         // Disconnect To DB
@@ -95,16 +118,19 @@ async function deleteProduct(productId) {
         await mongoose.disconnect();
         if (productInfo) {
             return {
-                deletedProductPath: productInfo.imagePath,
-                galleryImagePathsForDeletedProduct: productInfo.galleryImagesPaths,
-                isError: false,
-                msg: "Deleting Product Process Has Been Successfuly ...",
-            };
+                msg: "Deleting Product Process Has Been Successfuly !!",
+                error: false,
+                data: {
+                    deletedProductPath: productInfo.imagePath,
+                    galleryImagePathsForDeletedProduct: productInfo.galleryImagesPaths,
+                },
+            }
         }
         return {
-            msg: "Sorry, This Product Id Is Not Exist !!",
-            isError: true,
-        };
+            msg: "Sorry, This Product Is Not Exist !!",
+            error: true,
+            data: {},
+        }
     }
     catch (err) {
         // Disconnect To DB
@@ -121,6 +147,11 @@ async function deleteImageFromProductGallery(productId, galleryImagePath) {
             galleryImagesPaths: productData.galleryImagesPaths.filter((path) => galleryImagePath !== path)
         });
         await mongoose.disconnect();
+        return {
+            msg: "Deleting Image From Product Gallery Process Has Been Successfully !!",
+            error: false,
+            data: {},
+        }
     }
     catch(err) {
         await mongoose.disconnect();
@@ -134,7 +165,11 @@ async function updateProduct(productId, newData) {
         await mongoose.connect(process.env.DB_URL);
         await productModel.updateOne({ _id: productId }, { ...newData });
         await mongoose.disconnect();
-        return "Updating Product Process Has Been Successfuly ...";
+        return {
+            msg: "Updating Product Process Has Been Successful !!",
+            error: false,
+            data: {},
+        }
     }
     catch (err) {
         // Disconnect To DB
@@ -153,6 +188,11 @@ async function updateProductGalleryImage(productId, oldGalleryImagePath, newGall
             galleryImagesPaths: productData.galleryImagesPaths
         });
         await mongoose.disconnect();
+        return {
+            msg: "Updating Product Galley Image Process Has Been Successfully !!",
+            error: false,
+            data: {},
+        }
     }
     catch(err) {
         await mongoose.disconnect();
@@ -168,7 +208,11 @@ async function updateProductImage(productId, newProductImagePath) {
             imagePath: newProductImagePath,
         });
         await mongoose.disconnect();
-        return imagePath;
+        return {
+            msg: "Change Product Image Process Has Been Successfully !!",
+            error: false,
+            data: imagePath,
+        };
     }
     catch(err) {
         await mongoose.disconnect();
