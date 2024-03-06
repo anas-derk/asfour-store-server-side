@@ -42,7 +42,7 @@ async function getBrandsCount(req, res) {
             }
         }
         const { getBrandsCount } = require("../models/brands.model");
-        await res.json(await getBrandsCount());
+        await res.json(await getBrandsCount(filters));
     }
     catch (err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));

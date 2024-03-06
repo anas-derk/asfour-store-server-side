@@ -4,21 +4,21 @@ async function createNewUser(req, res) {
     try {
         const email = req.body.email,
             password = req.body.password;
-        // Start Handle Email Value To Check It Before Save In DB
-        const { isEmail } = require("../global/functions");
-        // Check If Email, Password And Country Are Exist
-        if (email.length > 0 && password.length > 0) {
-            // Check If Email Valid
-            if (isEmail(email)) {
-                const { createNewUser } = require("../models/users.model");
-                await res.json(await createNewUser(email.toLowerCase(), password));
-                return;
-            }
-            // Return Error Msg If Email Is Not Valid
-            await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        if (!email) {
+            await res.status(400).json(getResponseObject("Please Send The Email !!", true, {}));
             return;
         }
-        await res.status(400).json(getResponseObject("Error, Please Send Email And Password Or Rest Input !!", true, {}));
+        if (!password) {
+            await res.status(400).json(getResponseObject("Please Send The Password !!", true, {}));
+            return;
+        }
+        const { isEmail } = require("../global/functions");
+        if (isEmail(email)) {
+            const { createNewUser } = require("../models/users.model");
+            await res.json(await createNewUser(email.toLowerCase(), password));
+            return;
+        }
+        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));
@@ -71,36 +71,36 @@ async function login(req, res) {
     try{
         const   email = req.query.email,
                 password = req.query.password;
-        // Start Handle Email Value To Check It Before Save In DB
-        const { isEmail } = require("../global/functions");
-        // Check If Email And Password Are Exist
-        if (email.length > 0 && password.length > 0) {
-            // Check If Email Valid
-            if (isEmail(email)) {
-                const { login } = require("../models/users.model");
-                const result = await login(email.toLowerCase(), password);
-                if (!result.error) {
-                    const { sign } = require("jsonwebtoken");
-                    const token = sign(result.data, process.env.secretKey, {
-                        expiresIn: "1h",
-                    });
-                    await res.json({
-                        msg: result.msg,
-                        error: result.error,
-                        data: {
-                            token,
-                        },
-                    });
-                    return;
-                }
-                await res.json(result);
-                return;
-            }
-            // Return Error Msg If Email Is Not Valid
-            await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        if (!email) {
+            await res.status(400).json(getResponseObject("Please Send The Email !!", true, {}));
             return;
         }
-        await res.status(400).json(getResponseObject("Error, Please Enter Email And Password Or Rest Input !!", true, {}));
+        if (!password) {
+            await res.status(400).json(getResponseObject("Please Send The Password !!", true, {}));
+            return;
+        }
+        const { isEmail } = require("../global/functions");
+        if (isEmail(email)) {
+            const { login } = require("../models/users.model");
+            const result = await login(email.toLowerCase(), password);
+            if (!result.error) {
+                const { sign } = require("jsonwebtoken");
+                const token = sign(result.data, process.env.secretKey, {
+                    expiresIn: "1h",
+                });
+                await res.json({
+                    msg: result.msg,
+                    error: result.error,
+                    data: {
+                        token,
+                    },
+                });
+                return;
+            }
+            await res.json(result);
+            return;
+        }
+        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err){
         await res.status(500).json(getResponseObject(err.message, true, {}));
@@ -135,26 +135,26 @@ async function getAllUsers(req, res) {
 async function getForgetPassword(req, res) {
     try{
         const email = req.query.email;
-        if (email) {
-            const { isEmail } = require("../global/functions");
-            if (isEmail(email)) {
-                const { isUserAccountExist } = require("../models/users.model");
-                const result = await isUserAccountExist(email);
-                if (!result.error) {
-                    const { sendCodeToUserEmail } = require("../global/functions");
-                    await res.json({
-                        ...result,
-                        data: {
-                            ...result.data,
-                            code: await sendCodeToUserEmail(email),
-                        },
-                    });
-                    return;
-                }
-                await res.json(getResponseObject("Sorry, This Email Is Not Exist !!", true, {}));
+        if (!email) {
+            await res.status(400).json(getResponseObject("Please Send The Email !!", true, {}));
+            return;
+        }
+        const { isEmail } = require("../global/functions");
+        if (isEmail(email)) {
+            const { isUserAccountExist } = require("../models/users.model");
+            const result = await isUserAccountExist(email);
+            if (!result.error) {
+                const { sendCodeToUserEmail } = require("../global/functions");
+                await res.json({
+                    ...result,
+                    data: {
+                        ...result.data,
+                        code: await sendCodeToUserEmail(email),
+                    },
+                });
                 return;
             }
-            await res.status(400).json(getResponseObject("Sorry, Please Send Email !!", true, {}));
+            await res.json(getResponseObject("Sorry, This Email Is Not Exist !!", true, {}));
             return;
         }
         await res.status(400).json(getResponseObject("Sorry, Please Send Email !!", true, {}));

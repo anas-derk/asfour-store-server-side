@@ -1,3 +1,5 @@
+const { getResponseObject } = require("../global/functions");
+
 function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
@@ -25,11 +27,7 @@ async function getAllOrdersInsideThePage(req, res) {
                 objectKey !== "email" &&
                 objectKey !== "customerId"
             ) {
-                await res.status(400).json({
-                    msg: "Invalid Request, Please Send Valid Keys !!",
-                    error: true,
-                    data: {},
-                });
+                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
                 return;
             }
         }
@@ -37,11 +35,7 @@ async function getAllOrdersInsideThePage(req, res) {
         await res.json(await getAllOrdersInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err) {
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -58,13 +52,16 @@ async function getOrdersCount(req, res) {
                 objectKey !== "customerName" &&
                 objectKey !== "email" &&
                 objectKey !== "customerId"
-            ) { await res.status(400).json("Invalid Request, Please Send Valid Keys !!"); return; }
+            ) {
+                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
+                return;
+            }
         }
         const { getOrdersCount } = require("../models/orders.model");
         await res.json(await getOrdersCount(getFiltersObject(filters)));
     }
     catch(err) {
-        await res.status(500).json(err);
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -72,22 +69,14 @@ async function getOrderDetails(req, res) {
     try{
         const orderId = req.params.orderId;
         if (!orderId) {
-            await res.status(400).json({
-                msg: "Please Send Order Id !!",
-                error: true,
-                data: {},
-            });
+            await res.status(400).json(getResponseObject("Please Send Order Id !!", true, {}));
             return;
         }
         const { getOrderDetails } = require("../models/orders.model");
         await res.json(await getOrderDetails(orderId));
     }
     catch(err) {
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -97,11 +86,7 @@ async function postNewOrder(req, res) {
         await res.json(await postNewOrder(req.body));
     }
     catch(err) {
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -109,18 +94,15 @@ async function putOrder(req, res) {
     try{
         const orderId = req.params.orderId;
         const newOrderDetails = req.body;
-        if (!orderId) await res.status(400).json("Please Send Order Id !!");
-        else {
-            const { updateOrder } = require("../models/orders.model");
-            await res.json(await updateOrder(orderId, newOrderDetails));
+        if (!orderId) {
+            await res.status(400).json(getResponseObject("Please Send Order Id !!", true, {}));
+            return;
         }
+        const { updateOrder } = require("../models/orders.model");
+        await res.json(await updateOrder(orderId, newOrderDetails));
     }
     catch(err){
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -130,22 +112,14 @@ async function putOrderProduct(req, res) {
                 productId = req.params.productId;
         const newOrderProductDetails = req.body;
         if (!orderId || !productId) {
-            await res.status(400).json({
-                msg: "Please Send Order Id And Product Id !!",
-                error: true,
-                data: {},
-            });
+            await res.status(400).json(getResponseObject("Please Send Order Id And Product Id !!", true, {}));
             return;
         }
         const { updateOrderProduct } = require("../models/orders.model");
         await res.json(await updateOrderProduct(orderId, productId, newOrderProductDetails));
     }
     catch(err){
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -153,22 +127,14 @@ async function deleteOrder(req, res) {
     try{
         const orderId = req.params.orderId;
         if (!orderId) {
-            await res.status(400).json({
-                msg: "Please Send Order Id !!",
-                error: true,
-                data: {},
-            });
+            await res.status(400).json(getResponseObject("Please Send Order Id !!", true, {}));
             return;
         }
         const { deleteOrder } = require("../models/orders.model");
         await res.json(await deleteOrder(orderId));
     }
     catch(err){
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
@@ -177,22 +143,14 @@ async function deleteProductFromOrder(req, res) {
         const   orderId = req.params.orderId,
                 productId = req.params.productId;
         if (!orderId || !productId) {
-            await res.status(400).json({
-                msg: "Please Send Order Id And Product Id !!",
-                error: true,
-                data: {},
-            });
+            await res.status(400).json(getResponseObject("Please Send Order Id And Product Id !!", true, {}));
             return;
         }
         const { deleteProductFromOrder } = require("../models/orders.model");
         await res.json(await deleteProductFromOrder(orderId, productId));
     }
     catch(err){
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 

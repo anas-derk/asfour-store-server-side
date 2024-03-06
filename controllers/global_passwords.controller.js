@@ -1,12 +1,10 @@
+const { getResponseObject } = require("../global/functions");
+
 async function putChangeBussinessEmailPassword(req, res) {
     try{
         const token = req.headers.authorization;
         if (!token) {
-            await res.status(400).json({
-                msg: "Sorry, Please Send JWT For User !!",
-                error: true,
-                data: {},
-            });
+            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
             return;
         }
         const { verify } = require("jsonwebtoken");
@@ -14,36 +12,29 @@ async function putChangeBussinessEmailPassword(req, res) {
         const   email = req.query.email,
                 password = req.query.password,
                 newPassword = req.query.newPassword;
-        // Start Handle Email Value To Check It Before Save In DB
         const { isEmail } = require("../global/functions");
-        // Check If Email And Password Are Exist
-        if (email.length > 0 && password.length > 0 && newPassword.length > 0) {
-            // Check If Email Valid
-            if (isEmail(email)) {
-                const { changeBussinessEmailPassword } = require("../models/global_passwords.model");
-                const result = await changeBussinessEmailPassword(email.toLowerCase(), password, newPassword);
-                await res.json(result);
-                return;
-            }
-            await res.status(400).json({
-                msg: "Error, This Is Not Email Valid !!",
-                error: true,
-                data: {},
-            });
+        if (!email) {
+            await res.status(400).json(getResponseObject("Please Send The Email !!", true, {}));
             return;
         }
-        await res.status(400).json({
-            msg: "Error, Please Enter Email And Password And New Password Or Rest Input !!",
-            error: true,
-            data: {},
-        });
+        if (!password) {
+            await res.status(400).json(getResponseObject("Please Send The Password !!", true, {}));
+            return;
+        }
+        if (!newPassword) {
+            await res.status(400).json(getResponseObject("Please Send The New Password !!", true, {}));
+            return;
+        }
+        if (isEmail(email)) {
+            const { changeBussinessEmailPassword } = require("../models/global_passwords.model");
+            const result = await changeBussinessEmailPassword(email.toLowerCase(), password, newPassword);
+            await res.json(result);
+            return;
+        }
+        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json({
-            msg: err.message,
-            error: true,
-            data: {},
-        });
+        await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 

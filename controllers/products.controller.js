@@ -130,12 +130,10 @@ async function deleteImageFromProductGallery(req, res) {
             await res.status(400).json(getResponseObject("Sorry, Please Send Product Id And Gallery Image Path !!", true, {}));
             return;
         }
-        else {
-            const { deleteImageFromProductGallery } = require("../models/products.model");
-            await res.json(await deleteImageFromProductGallery(productId, galleryImagePath));
-            const { unlinkSync } = require("fs");
-            unlinkSync(galleryImagePath);
-        }
+        const { deleteImageFromProductGallery } = require("../models/products.model");
+        await res.json(await deleteImageFromProductGallery(productId, galleryImagePath));
+        const { unlinkSync } = require("fs");
+        unlinkSync(galleryImagePath);
     }
     catch (err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));
@@ -167,12 +165,10 @@ async function putProductGalleryImage(req, res) {
             await res.status(400).json(getResponseObject("Sorry, Please Send Product Id And Gallery Image !!", true, {}));
             return;
         }
-        else {
-            const { updateProductGalleryImage } = require("../models/products.model");
-            await res.json(await updateProductGalleryImage(productId, oldGalleryImagePath, newGalleryImagePath));
-            const { unlinkSync } = require("fs");
-            unlinkSync(oldGalleryImagePath);
-        }
+        const { updateProductGalleryImage } = require("../models/products.model");
+        await res.json(await updateProductGalleryImage(productId, oldGalleryImagePath, newGalleryImagePath));
+        const { unlinkSync } = require("fs");
+        unlinkSync(oldGalleryImagePath);
     }
     catch (err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));
@@ -187,13 +183,11 @@ async function putProductImage(req, res) {
             await res.status(400).json(getResponseObject("Sorry, Please Send Product Id And New Image !!", true, {}));
             return;
         }
-        else {
-            const { updateProductImage } = require("../models/products.model");
-            const result = await updateProductImage(productId, newProductImagePath);
-            const { unlinkSync } = require("fs");
-            unlinkSync(result.data);
-            await res.json(result);
-        }
+        const { updateProductImage } = require("../models/products.model");
+        const result = await updateProductImage(productId, newProductImagePath);
+        const { unlinkSync } = require("fs");
+        unlinkSync(result.data);
+        await res.json(result);
     }
     catch (err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));
