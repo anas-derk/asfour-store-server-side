@@ -1,65 +1,48 @@
-// Import Mongoose And Order Model Object
+// Import  Order Model Object
 
-const { mongoose, orderModel, userModel } = require("../models/all.models");
+const { orderModel, userModel } = require("../models/all.models");
 
 async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
     try {
-        // Connect To DB
-        await mongoose.connect(process.env.DB_URL);
         const orders = await orderModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ orderNumber: -1 });
-        await mongoose.disconnect();
         return {
             msg: `Get All Orders Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
             data: orders,
         }
     } catch (err) {
-        // Disconnect In DB
-        await mongoose.disconnect();
         throw Error(err);
     }
 }
 
 async function getOrdersCount(filters) {
     try {
-        // Connect To DB
-        await mongoose.connect(process.env.DB_URL);
         const ordersCount = await orderModel.countDocuments(filters);
-        await mongoose.disconnect();
         return {
             msg: "Get Orders Count Process Has Been Successfully !!",
             error: false,
             data: ordersCount,
         }
     } catch (err) {
-        // Disconnect In DB
-        await mongoose.disconnect();
         throw Error(err);
     }
 }
 
 async function getOrderDetails(orderId) {
     try {
-        // Connect To DB
-        await mongoose.connect(process.env.DB_URL);
         const order = await orderModel.findById(orderId);
-        await mongoose.disconnect();
         return {
             msg: `Get Details For Order: ${orderId} Process Has Been Successfully !!`,
             error: false,
             data: order,
         }
     } catch (err) {
-        // Disconnect In DB
-        await mongoose.disconnect();
         throw Error(err);
     }
 }
 
 async function postNewOrder(orderDetails) {
     try {
-        // Connect To DB
-        await mongoose.connect(process.env.DB_URL);
         const ordersCount = await orderModel.countDocuments();
         const newOrder = new orderModel({ ...orderDetails, orderNumber: ordersCount + 1 });
         const { _id, orderNumber } = await newOrder.save();
@@ -81,7 +64,6 @@ async function postNewOrder(orderDetails) {
                 await userModel.updateOne({ _id: orderDetails.customerId } , { wallet_products_list: user.wallet_products_list });
             }
         }
-        await mongoose.disconnect();
         return {
             msg: "Creating New Order Has Been Successfuly !!",
             error: false,
@@ -91,36 +73,27 @@ async function postNewOrder(orderDetails) {
             },
         }
     } catch (err) {
-        // Disconnect In DB
-        await mongoose.disconnect();
         throw Error(err);
     }
 }
 
 async function updateOrder(orderId, newOrderDetails) {
     try {
-        // Connect To DB
-        await mongoose.connect(process.env.DB_URL);
         const { orderNumber } = await orderModel.findOneAndUpdate({
             _id: orderId,
         }, { ...newOrderDetails });
-        await mongoose.disconnect();
         return {
             msg: `Update Details For Order That : ( Id: ${ orderId }) Process Has Been Successfully !!`,
             error: false,
             data: orderNumber,
         };
     } catch (err) {
-        // Disconnect In DB
-        await mongoose.disconnect();
         throw Error(err);
     }
 }
 
 async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
     try {
-        // Connect To DB
-        await mongoose.connect(process.env.DB_URL);
         const { order_lines } = await orderModel.findOne({ _id: orderId });
         const productIndex = order_lines.findIndex((order_line) => order_line._id == productId);
         order_lines[productIndex].quantity = newOrderProductDetails.quantity;
@@ -129,22 +102,18 @@ async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
         order_lines[productIndex].total_amount = newOrderProductDetails.total_amount;
         const { calcOrderAmount } = require("../global/functions");
         await orderModel.updateOne({ _id: orderId }, { order_lines, order_amount: calcOrderAmount(order_lines) });
-        await mongoose.disconnect();
         return {
             msg: "Updating Order Details Process Has Been Successfuly !!",
             error: false,
             data: {},
         }
     } catch (err) {
-        // Disconnect In DB
-        await mongoose.disconnect();
         throw Error(err);
     }
 }
 
 async function deleteOrder(orderId){
     try{
-        await mongoose.connect(process.env.DB_URL);
         await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
         return {
             msg: "Deleting This Order Has Been Successfuly !!",
@@ -153,27 +122,21 @@ async function deleteOrder(orderId){
         }
     }
     catch(err){
-        await mongoose.disconnect();
         throw Error(err);
     }
 }
 
 async function deleteProductFromOrder(orderId, productId) {
     try {
-        // Connect To DB
-        await mongoose.connect(process.env.DB_URL);
         const { order_lines } = await orderModel.findOne({ _id: orderId });
         const newOrderLines = order_lines.filter((order_line) => order_line._id == productId);
         await orderModel.updateOne({ _id: orderId }, { order_lines: newOrderLines });
-        await mongoose.disconnect();
         return {
             msg: "Deleting Product From Order Has Been Successfuly !!",
             error: false,
             data: {},
         }
     } catch (err) {
-        // Disconnect In DB
-        await mongoose.disconnect();
         throw Error(err);
     }
 }

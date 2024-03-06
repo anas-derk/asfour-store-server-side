@@ -29,9 +29,14 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 /* Start Running The Server */
 
-const PORT = process.env.PORT || 5200;
+const mongoose = require("mongoose");
 
-app.listen(PORT, () => console.log(`The Server Is Running On: http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, async () => {
+    console.log(`The Server Is Running On: http://localhost:${PORT}`);
+    mongoose.connect(process.env.DB_URL);
+});
 
 /* End Running The Server */
 
@@ -63,3 +68,21 @@ app.use("/appeared-sections", appearedSectionsRouter);
 app.use("/global-passwords", globalPasswordsRouter);
 
 /* End Handle The Routes */
+
+/* Start Handling Events */
+
+mongoose.connection.on("connected", () => console.log("connected"));
+mongoose.connection.on("disconnected", () => console.log("disconnected"));
+mongoose.connection.on("reconnected", () => console.log("reconnected"));
+mongoose.connection.on("disconnecting", () => console.log("disconnecting"));
+mongoose.connection.on("close", () => console.log("close"));
+
+process.on("SIGINT", () => {
+    mongoose.connection.close();
+});
+
+/* End Handling Events */
+
+module.exports = {
+    mongoose,
+}
