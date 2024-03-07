@@ -1,16 +1,15 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, checkIsExistValueForFieldsAndDataTypes, isEmail } = require("../global/functions");
 
 async function getAdminLogin(req, res) {
     try{
         const   email = req.query.email,
                 password = req.query.password;
-        const { isEmail } = require("../global/functions");
-        if (!email) {
-            await res.status(400).json(getResponseObject("Please Send The Email !!", true, {}));
-            return;
-        }
-        if (!password) {
-            await res.status(400).json(getResponseObject("Please Send The Password !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "email", fieldValue: email, dataType: "string", isRequiredValue: true },
+            { fieldName: "password", fieldValue: password, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         if (isEmail(email)) {
@@ -21,7 +20,6 @@ async function getAdminLogin(req, res) {
                 await res.json({
                     ...result,
                     data: {
-                        ...result.data,
                         token: sign(result.data, process.env.secretKey, {
                             expiresIn: "1h",
                         }),
@@ -42,8 +40,11 @@ async function getAdminLogin(req, res) {
 async function getAdminUserInfo(req, res) {
     try{
         const token = req.headers.authorization;
-        if (!token) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { verify } = require("jsonwebtoken");

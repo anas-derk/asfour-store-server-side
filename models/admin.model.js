@@ -11,21 +11,22 @@ async function adminLogin(email, password) {
             const { compare } = require("bcryptjs");
             // Check From Password
             const isTruePassword = await compare(password, user.password);
-            if (isTruePassword) return {
-                msg: "Admin Logining Process Has Been Successfully !!",
-                error: false,
-                data: {
-                    _id: user._id,
-                },
-            };
+            if (isTruePassword)
+                return {
+                    msg: "Admin Logining Process Has Been Successfully !!",
+                    error: false,
+                    data: {
+                        _id: user._id,
+                    },
+                };
             return {
-                msg: "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!",
+                msg: "Sorry, The Email Or Password Is Not Valid !!",
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, The Email Or Password Is Not Exist, Or Not Valid !!",
+            msg: "Sorry, The Email Or Password Is Not Valid !!",
             error: true,
             data: {},
         }

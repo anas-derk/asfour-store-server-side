@@ -59,8 +59,31 @@ function getResponseObject(msg, isError, data) {
     }
 }
 
+function checkIsExistValueForFieldsAndDataTypes(fieldNamesAndValuesAndDataTypes) {
+    for (let fieldnameAndValueAndDataType of fieldNamesAndValuesAndDataTypes) {
+        if (fieldnameAndValueAndDataType.isRequiredValue) {
+            if (!fieldnameAndValueAndDataType.fieldValue) 
+                return getResponseObject(
+                    `Invalid Request, Please Send ${fieldnameAndValueAndDataType.fieldName} Value !!`,
+                    true,
+                    {}
+                );
+        }
+        if (fieldnameAndValueAndDataType.fieldValue) {
+            if (typeof fieldnameAndValueAndDataType.fieldValue !== fieldnameAndValueAndDataType.dataType)
+                return getResponseObject(
+                    `Invalid Request, Please Fix Type Of ${fieldnameAndValueAndDataType.fieldName} ( Required: ${fieldnameAndValueAndDataType.dataType} ) !!`,
+                    true,
+                    {}
+                );
+        }
+    }
+    return getResponseObject("Success In Check Is Exist Value For Fields And Data Types !!", false, {});
+}
+
 module.exports = {
     isEmail,
     sendCodeToUserEmail,
     getResponseObject,
+    checkIsExistValueForFieldsAndDataTypes,
 }
