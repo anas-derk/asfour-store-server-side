@@ -4,11 +4,10 @@ const { appearedSectionsModel } = require("../models/all.models");
 
 async function getAllSections() {
     try {
-        const allSections = await appearedSectionsModel.find({});
         return {
             msg: "Get All Sections Process Has Been Successfully !!",
             error: false,
-            data: allSections,
+            data: await appearedSectionsModel.find({}),
         }
     } catch (err) {
         throw Error(err);
