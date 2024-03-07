@@ -19,7 +19,11 @@ async function addNewBrand(brandInfo) {
 
 async function getAllBrands() {
     try {
-        return await brandModel.find({});
+        return {
+            msg: "Get All Brands Process Has Been Successfully !!",
+            error: false,
+            data: await brandModel.find({}),
+        }
     }
     catch (err) {
         throw Error(err);
@@ -28,7 +32,11 @@ async function getAllBrands() {
 
 async function getBrandsCount(filters) {
     try {
-        return await brandModel.countDocuments(filters);
+        return {
+            msg: "Get Brands Count Process Has Been Successfully !!",
+            error: false,
+            data: await brandModel.countDocuments(filters),
+        }
     }
     catch (err) {
         throw Error(err);
@@ -37,7 +45,11 @@ async function getBrandsCount(filters) {
 
 async function getAllBrandsInsideThePage(pageNumber, pageSize) {
     try {
-        return await brandModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize);
+        return {
+            msg: `Get All Brands Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: await brandModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize),
+        };
     }
     catch (err) {
         throw Error(err);
@@ -52,15 +64,18 @@ async function deleteBrand(brandId) {
         if (brandInfo) {
             const newBrandsList = await brandModel.find({});
             return {
-                deletedBrandPath: brandInfo.imagePath,
-                isError: false,
+                error: false,
                 msg: "Deleting Brand Process Has Been Successfuly ...",
-                newBrandsList,
+                data: {
+                    deletedBrandPath: brandInfo.imagePath,
+                    newBrandsList,
+                },
             };
         }
         return {
             msg: "Sorry, This Brand Id Is Not Exist !!",
-            isError: true,
+            error: true,
+            data: {},
         };
     }
     catch (err) {
@@ -70,8 +85,13 @@ async function deleteBrand(brandId) {
 
 async function updateBrandInfo(brandId, newBrandTitle) {
     try {
-        await brandModel.updateOne( { _id: brandId } , { title: newBrandTitle });
-        return "Updating Brand Info Process Has Been Successfuly ...";
+        const updatingDetails = await brandModel.updateOne( { _id: brandId } , { title: newBrandTitle });
+        return {
+            msg: updatingDetails.matchedCount > 0 ?
+                "Updating Brand Info Process Has Been Successfuly ..." : "Sorry This Brand Is Not Exist !!",
+            error: updatingDetails.matchedCount > 0 ? false : true,
+            data: {},
+        };
     }
     catch (err) {
         throw Error(err);
@@ -80,11 +100,14 @@ async function updateBrandInfo(brandId, newBrandTitle) {
 
 async function updateBrandImage(brandId, newBrandImagePath) {
     try{
-        const { imagePath } = await brandModel.findById(brandId);
-        await brandModel.updateOne({ _id: brandId }, {
+        const brand = await brandModel.findOneAndUpdate({ _id: brandId }, {
             imagePath: newBrandImagePath,
         });
-        return imagePath;
+        return {
+            msg: brand ? "Updating Brand Image Process Has Been Successfully !!" : "Sorry, This Brand Is Not Exist !!",
+            error: brand ? false : true,
+            data: brand ? brand.imagePath : {}
+        };
     }
     catch(err) {
         throw Error(err);

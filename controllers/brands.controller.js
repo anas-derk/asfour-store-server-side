@@ -1,16 +1,20 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
 async function postNewBrand(req, res) {
     try{
         const token = req.headers.authorization;
-        if (!token) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
+        const newBrandTitle = req.body.title;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
+            { fieldName: "newBrandTitle", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { verify } = require("jsonwebtoken");
         verify(token, process.env.secretKey);
         const newBrandImagePath = req.file.path;
-        const newBrandTitle = req.body.title;
         const { addNewBrand } = require("../models/brands.model");
         await res.json(await addNewBrand({ imagePath: newBrandImagePath, title: newBrandTitle }));
     }
@@ -32,15 +36,6 @@ async function getAllBrands(req, res) {
 async function getBrandsCount(req, res) {
     try {
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
-        }
         const { getBrandsCount } = require("../models/brands.model");
         await res.json(await getBrandsCount(filters));
     }
@@ -52,14 +47,13 @@ async function getBrandsCount(req, res) {
 async function getAllBrandsInsideThePage(req, res) {
     try {
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getAllBrandsInsideThePage } = require("../models/brands.model");
         await res.json(await getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize));
@@ -72,31 +66,24 @@ async function getAllBrandsInsideThePage(req, res) {
 async function deleteBrand(req, res) {
     try{
         const token = req.headers.authorization;
-        if (!token) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
+        const brandId = req.params.brandId;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
+            { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { verify } = require("jsonwebtoken");
         verify(token, process.env.secretKey);
-        const brandId = req.params.brandId;
-        if (!brandId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Brand Id !!", true, {}));
-            return;
-        }
         const { deleteBrand } = require("../models/brands.model");
         const result = await deleteBrand(brandId);
-        if (!result.isError) {
+        if (!result.error) {
             const { unlinkSync } = require("fs");
             unlinkSync(result.deletedBrandPath);
         }
-        await res.json({
-            msg: result.msg,
-            error: result.isError,
-            data: !result.isError ? {
-                deletedBrandPath: result.deletedBrandPath,
-                newBrandsList: result.newBrandsList,
-            } : {},
-        });
+        await res.json(result);
     }
     catch(err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));
@@ -106,25 +93,21 @@ async function deleteBrand(req, res) {
 async function putBrandInfo(req, res) {
     try{
         const token = req.headers.authorization;
-        if (!token) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
+        const brandId = req.params.brandId;
+        const newBrandTitle = req.body.newBrandTitle;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
+            { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
+            { fieldName: "newBrandTitle", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { verify } = require("jsonwebtoken");
         verify(token, process.env.secretKey);
-        const brandId = req.params.brandId;
-        const newBrandTitle = req.body.newBrandTitle;
-        if (!brandId || !newBrandTitle) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Brand Id, New Brand Name !!", true, {}));
-            return;
-        }
         const { updateBrandInfo } = require("../models/brands.model");
-        const result = await updateBrandInfo(brandId, newBrandTitle);
-        await res.json({
-            msg: result,
-            error: false,
-            data: {},
-        });
+        await res.json(await updateBrandInfo(brandId, newBrandTitle));
     }
     catch(err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));
@@ -134,31 +117,26 @@ async function putBrandInfo(req, res) {
 async function putBrandImage(req, res) {
     try {
         const token = req.headers.authorization;
-        if (!token) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
+        const brandId = req.params.brandId;
+        const newBrandImagePath = req.file.path;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
+            { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { verify } = require("jsonwebtoken");
         verify(token, process.env.secretKey);
-        const brandId = req.params.brandId,
-            newBrandImagePath = req.file.path;
-        if (!brandId || !newBrandImagePath) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Brand Id And New Image !!", true, {}));
-        }
-        else {
-            const { updateBrandImage } = require("../models/brands.model");
-            const oldImagePath = await updateBrandImage(brandId, newBrandImagePath);
+        const { updateBrandImage } = require("../models/brands.model");
+        const result = await updateBrandImage(brandId, newBrandImagePath);
+        if (!result.error) {
             const { unlinkSync } = require("fs");
             unlinkSync(oldImagePath);
-            await res.json({
-                msg: "",
-                error: false,
-                data: {
-                    newBrandImagePath,
-                },
-            });
         }
-    }
+        await res.json(result);
+}
     catch (err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));
     }
