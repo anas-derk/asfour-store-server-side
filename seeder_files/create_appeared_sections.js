@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-const DB_URL = "mongodb://127.0.0.1:27017/asfour-store";
+require("dotenv").config({
+    path: "../.env",
+});
 
 // create Appeared Sections Schema For Appeared Sections Model
 
@@ -33,7 +35,7 @@ const appeared_sections = [
 
 async function create_appeared_sections() {
     try {
-        await mongoose.connect(DB_URL);
+        await mongoose.connect(process.env.DB_URL);
         await appeared_sections_model.insertMany(appeared_sections);
         await mongoose.disconnect();
         return "Ok !!, Create Appeared Sections Account Has Been Successfuly !!";

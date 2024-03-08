@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-const DB_URL = "mongodb://127.0.0.1:27017/asfour-store";
+require("dotenv").config({
+    path: "../.env",
+});
 
 // Create Global Password Schema
 
@@ -24,14 +26,14 @@ const userInfo = {
 
 async function create_global_password() {
     try {
-        await mongoose.connect(DB_URL);
+        await mongoose.connect(process.env.DB_URL);
         let user = await globalPasswordModel.findOne({ email: userInfo.email });
         if (user) {
             await mongoose.disconnect();
             return "Sorry, Can't Insert Global Password To Database Because it is Exist !!!";
         } else {
             let password = userInfo.password;
-            let encrypted_password = cryptoJS.AES.encrypt(password, "anasDerk19991").toString();
+            let encrypted_password = cryptoJS.AES.encrypt(password, process.env.secretKey).toString();
             userInfo.password = encrypted_password;
             let new_global_password = new globalPasswordModel(userInfo);
             await new_global_password.save();

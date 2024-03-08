@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-const DB_URL = "mongodb://127.0.0.1:27017/asfour-store";
+require("dotenv").config({
+    path: "../.env",
+});
 
 // create Admin User Schema For Admin User Model
 
@@ -15,7 +17,7 @@ const admin_user_model = mongoose.model("admin", admin_user_schema);
 
 // require bcryptjs module for password encrypting
 
-const bcrypt = require("bcryptjs");
+const { hash } = require("bcryptjs");
 
 const userInfo = {
     email: "admin@gmail.com",
@@ -24,14 +26,14 @@ const userInfo = {
 
 async function create_admin_user_account() {
     try {
-        await mongoose.connect(DB_URL);
+        await mongoose.connect(process.env.DB_URL);
         let user = await admin_user_model.findOne({ email: userInfo.email });
         if (user) {
             await mongoose.disconnect();
             return "Sorry, Can't Insert Admin Data To Database Because it is Exist !!!";
         } else {
             let password = userInfo.password;
-            let encrypted_password = await bcrypt.hash(password, 10);
+            let encrypted_password = await hash(password, 10);
             userInfo.password = encrypted_password;
             let new_admin_user = new admin_user_model(userInfo);
             await new_admin_user.save();
