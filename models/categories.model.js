@@ -27,11 +27,10 @@ async function addNewCategory(categoryName) {
 
 async function getAllCategories() {
     try {
-        const allCategories = await categoryModel.find({});
         return {
             msg: "Get All Categories Process Has Been Successfully !!",
             error: false,
-            data: allCategories,
+            data: await categoryModel.find({}),
         }
     }
     catch (err) {
@@ -41,11 +40,10 @@ async function getAllCategories() {
 
 async function getCategoriesCount(filters) {
     try {
-        const categoriesCount = await categoryModel.countDocuments(filters);
         return {
             msg: "Get All Categories Process Has Been Successfully !!",
             error: false,
-            data: categoriesCount,
+            data: await categoryModel.countDocuments(filters),
         }
     }
     catch (err) {
@@ -55,11 +53,10 @@ async function getCategoriesCount(filters) {
 
 async function getAllCategoriesInsideThePage(pageNumber, pageSize) {
     try {
-        const categoriesListInsideThePage = await categoryModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize);
         return {
             msg: `Get All Categories Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
-            data: categoriesListInsideThePage,
+            data: await categoryModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize),
         }
     }
     catch (err) {
@@ -73,15 +70,14 @@ async function deleteCategory(categoryId) {
             _id: categoryId,
         });
         if (deletingDetails.deletedCount > 0) {
-            const newCategoiesList = await categoryModel.find({});
             return {
                 msg: "Deleting Category Process Has Been Successfuly ...",
                 error: false,
-                data: newCategoiesList,
+                data: await categoryModel.find({}),
             };
         }
         return {
-            msg: "Sorry, This Category Id Is Not Exist !!",
+            msg: "Sorry, This Category Is Not Exist !!",
             error: true,
             data: {},
         };
@@ -93,12 +89,19 @@ async function deleteCategory(categoryId) {
 
 async function updateCategory(categoryId, newCategoryName) {
     try {
-        await categoryModel.updateOne( { _id: categoryId } , { name: newCategoryName });
-        return {
-            msg: "Updating Category Process Has Been Successfuly !!",
-            error: false,
-            data: {},
+        const updatingDetails = await categoryModel.updateOne( { _id: categoryId } , { name: newCategoryName })
+        if (updatingDetails.updatedCount > 0) {
+            return {
+                msg: "Updating Category Process Has Been Successfuly !!",
+                error: false,
+                data: await categoryModel.find({}),
+            };
         }
+        return {
+            msg: "Sorry, This Category Is Not Exist !!",
+            error: true,
+            data: {},
+        };
     }
     catch (err) {
         throw Error(err);

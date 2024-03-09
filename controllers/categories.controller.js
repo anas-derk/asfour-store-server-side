@@ -1,19 +1,19 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
 async function postNewCategory(req, res) {
     try{
         const token = req.headers.authorization;
-        if (!token) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
+        const categoryName = req.body.categoryName;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
+            { fieldName: "Category Name", fieldValue: categoryName, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { verify } = require("jsonwebtoken");
         verify(token, process.env.secretKey);
-        const categoryName = req.body.categoryName;
-        if (!categoryName) {
-            await res.status(400).json(getResponseObject("Please Send Category Name !!", true, {}));
-            return;
-        }
         const { addNewCategory } = require("../models/categories.model");
         await res.json(await addNewCategory(categoryName));
     }
@@ -35,14 +35,13 @@ async function getAllCategories(req, res) {
 async function getCategoriesCount(req, res) {
     try {
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getCategoriesCount } = require("../models/categories.model");
         await res.json(await getCategoriesCount(filters));
@@ -55,14 +54,13 @@ async function getCategoriesCount(req, res) {
 async function getAllCategoriesInsideThePage(req, res) {
     try {
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getAllCategoriesInsideThePage } = require("../models/categories.model");
         await res.json(await getAllCategoriesInsideThePage(filters.pageNumber, filters.pageSize));
@@ -75,17 +73,17 @@ async function getAllCategoriesInsideThePage(req, res) {
 async function deleteCategory(req, res) {
     try{
         const token = req.headers.authorization;
-        if (!token) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
+        const categoryId = req.params.categoryId;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
+            { fieldName: "category Id", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { verify } = require("jsonwebtoken");
         verify(token, process.env.secretKey);
-        const categoryId = req.params.categoryId;
-        if (!categoryId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Category Id !!", true, {}));
-            return;
-        }
         const { deleteCategory } = require("../models/categories.model");
         await res.json(await deleteCategory(categoryId));
     }
@@ -97,18 +95,19 @@ async function deleteCategory(req, res) {
 async function putCategory(req, res) {
     try{
         const token = req.headers.authorization;
-        if (!token) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send JWT For User !!", true, {}));
+        const categoryId = req.params.categoryId;
+        const newCategoryName = req.body.newCategoryName;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
+            { fieldName: "category Id", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
+            { fieldName: "new Category Name", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { verify } = require("jsonwebtoken");
-        verify(token, process.env.secretKey);
-        const categoryId = req.params.categoryId;
-        const newCategoryName = req.body.newCategoryName;
-        if (!categoryId || !newCategoryName) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Category Id, New Catergory Name !!", true, {}));
-            return;
-        }
+        verify(token, process.env.secretKey)
         const { updateCategory } = require("../models/categories.model");
         await res.json(await updateCategory(categoryId, newCategoryName));
     }

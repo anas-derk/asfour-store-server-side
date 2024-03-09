@@ -40,7 +40,7 @@ async function changeBussinessEmailPassword(email, password, newPassword) {
             const bytes = cryptoJS.AES.decrypt(user.password, process.env.secretKey);
             const decryptedPassword = bytes.toString(cryptoJS.enc.Utf8);
             if (decryptedPassword === password) {
-                let encrypted_password = cryptoJS.AES.encrypt(newPassword, process.env.secretKey).toString();
+                const encrypted_password = cryptoJS.AES.encrypt(newPassword, process.env.secretKey).toString();
                 await globalPasswordModel.updateOne({ password: encrypted_password });
                 return {
                     msg: "Changing Global Password Process Has Been Successfully !!",

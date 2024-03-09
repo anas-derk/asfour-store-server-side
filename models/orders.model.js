@@ -4,11 +4,10 @@ const { orderModel, userModel } = require("../models/all.models");
 
 async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
     try {
-        const orders = await orderModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ orderNumber: -1 });
         return {
             msg: `Get All Orders Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
-            data: orders,
+            data: await orderModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ orderNumber: -1 }),
         }
     } catch (err) {
         throw Error(err);
@@ -17,11 +16,10 @@ async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
 
 async function getOrdersCount(filters) {
     try {
-        const ordersCount = await orderModel.countDocuments(filters);
         return {
             msg: "Get Orders Count Process Has Been Successfully !!",
             error: false,
-            data: ordersCount,
+            data: await orderModel.countDocuments(filters),
         }
     } catch (err) {
         throw Error(err);
@@ -31,10 +29,17 @@ async function getOrdersCount(filters) {
 async function getOrderDetails(orderId) {
     try {
         const order = await orderModel.findById(orderId);
+        if (order) {
+            return {
+                msg: `Get Details For Order: ${orderId} Process Has Been Successfully !!`,
+                error: false,
+                data: await orderModel.findById(orderId),
+            }
+        }
         return {
-            msg: `Get Details For Order: ${orderId} Process Has Been Successfully !!`,
-            error: false,
-            data: order,
+            msg: "Sorry, This Order Is Not Found !!",
+            error: true,
+            data: {},
         }
     } catch (err) {
         throw Error(err);
@@ -79,13 +84,19 @@ async function postNewOrder(orderDetails) {
 
 async function updateOrder(orderId, newOrderDetails) {
     try {
-        const { orderNumber } = await orderModel.findOneAndUpdate({
-            _id: orderId,
-        }, { ...newOrderDetails });
+        const order = await orderModel.findById(orderId);
+        if (order) {
+            await orderModel.updateOne({ _id: orderId }, { ...newOrderDetails });
+            return {
+                msg: `Update Details For Order That : ( Id: ${ orderId }) Process Has Been Successfully !!`,
+                error: false,
+                data: order.orderNumber,
+            };
+        }
         return {
-            msg: `Update Details For Order That : ( Id: ${ orderId }) Process Has Been Successfully !!`,
-            error: false,
-            data: orderNumber,
+            msg: "Sorry, This Order Is Not Found !!",
+            error: true,
+            data: {},
         };
     } catch (err) {
         throw Error(err);
@@ -94,17 +105,31 @@ async function updateOrder(orderId, newOrderDetails) {
 
 async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
     try {
-        const { order_lines } = await orderModel.findOne({ _id: orderId });
-        const productIndex = order_lines.findIndex((order_line) => order_line._id == productId);
-        order_lines[productIndex].quantity = newOrderProductDetails.quantity;
-        order_lines[productIndex].name = newOrderProductDetails.name;
-        order_lines[productIndex].unit_price = newOrderProductDetails.unit_price;
-        order_lines[productIndex].total_amount = newOrderProductDetails.total_amount;
-        const { calcOrderAmount } = require("../global/functions");
-        await orderModel.updateOne({ _id: orderId }, { order_lines, order_amount: calcOrderAmount(order_lines) });
+        const order = await orderModel.findOne({ _id: orderId });
+        if (order) {
+            const productIndex = order.order_lines.findIndex((order_line) => order_line._id == productId);
+            if (productIndex >= 0) {
+                order.order_lines[productIndex].quantity = newOrderProductDetails.quantity;
+                order.order_lines[productIndex].name = newOrderProductDetails.name;
+                order.order_lines[productIndex].unit_price = newOrderProductDetails.unit_price;
+                order.order_lines[productIndex].total_amount = newOrderProductDetails.total_amount;
+                const { calcOrderAmount } = require("../global/functions");
+                await orderModel.updateOne({ _id: orderId }, { order_lines, order_amount: calcOrderAmount(order_lines) });
+                return {
+                    msg: "Updating Order Details Process Has Been Successfuly !!",
+                    error: false,
+                    data: {},
+                }
+            }
+            return {
+                msg: `Sorry, This Product For Order Id: ${orderId} Is Not Found !!`,
+                error: true,
+                data: {},
+            }
+        }
         return {
-            msg: "Updating Order Details Process Has Been Successfuly !!",
-            error: false,
+            msg: "Sorry, This Order Is Not Found !!",
+            error: true,
             data: {},
         }
     } catch (err) {
@@ -114,10 +139,17 @@ async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
 
 async function deleteOrder(orderId){
     try{
-        await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
+        const updatingDetails = await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
+        if (updatingDetails.updatedCount > 0) {
+            return {
+                msg: "Deleting This Order Has Been Successfuly !!",
+                error: false,
+                data: {},
+            }
+        }
         return {
-            msg: "Deleting This Order Has Been Successfuly !!",
-            error: false,
+            msg: "Sorry, This Order Is Not Found !!",
+            error: true,
             data: {},
         }
     }
@@ -128,12 +160,26 @@ async function deleteOrder(orderId){
 
 async function deleteProductFromOrder(orderId, productId) {
     try {
-        const { order_lines } = await orderModel.findOne({ _id: orderId });
-        const newOrderLines = order_lines.filter((order_line) => order_line._id == productId);
-        await orderModel.updateOne({ _id: orderId }, { order_lines: newOrderLines });
+        const order = await orderModel.findOne({ _id: orderId });
+        if (order) {
+            const newOrderLines = order.order_lines.filter((order_line) => order_line._id == productId);
+            if (newOrderLines.length < order.order_lines) {
+                await orderModel.updateOne({ _id: orderId }, { order_lines: newOrderLines });
+                return {
+                    msg: "Deleting Product From Order Has Been Successfuly !!",
+                    error: false,
+                    data: {},
+                }
+            }
+            return {
+                msg: `Sorry, This Product For Order Id: ${orderId} Is Not Found !!`,
+                error: true,
+                data: {},
+            }
+        }
         return {
-            msg: "Deleting Product From Order Has Been Successfuly !!",
-            error: false,
+            msg: "Sorry, This Order Is Not Found !!",
+            error: true,
             data: {},
         }
     } catch (err) {

@@ -6,7 +6,7 @@ async function postNewBrand(req, res) {
         const newBrandTitle = req.body.title;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
             { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
-            { fieldName: "newBrandTitle", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
+            { fieldName: "new Brand Title", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);

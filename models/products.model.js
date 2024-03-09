@@ -19,13 +19,20 @@ async function addNewProduct(productInfo) {
 
 async function addingNewImagesToProductGallery(productId, newGalleryImagePaths) {
     try{
-        const productDetails = await productModel.findById(productId);
-        await productModel.updateOne({ _id: productId },
-        {
-            galleryImagesPaths: productDetails.galleryImagesPaths.concat(newGalleryImagePaths),
-        });
+        const product = await productModel.findById(productId);
+        if (product) {
+            await productModel.updateOne({ _id: productId },
+            {
+                galleryImagesPaths: product.galleryImagesPaths.concat(newGalleryImagePaths),
+            });
+            return {
+                msg: "Adding New Images To Product Gallery Process Has Been Successfuly !!",
+                error: false,
+                data: {},
+            }
+        }
         return {
-            msg: "Adding New Images To Product Gallery Process Has Been Successfuly !!",
+            msg: "Sorry, This Product Is Not Found !!",
             error: false,
             data: {},
         }
@@ -58,11 +65,10 @@ async function getProductInfo(productId) {
 
 async function getProductsCount(filters) {
     try {
-        const productsCount = await productModel.countDocuments(filters);
         return {
             msg: "Get Products Count Process Has Been Successfully !!",
             error: false,
-            data: productsCount,
+            data: await productModel.countDocuments(filters),
         }
     }
     catch (err) {
@@ -72,11 +78,10 @@ async function getProductsCount(filters) {
 
 async function getAllProductsInsideThePage(pageNumber, pageSize, filters) {
     try {
-        const productsCount = await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize);
         return {
             msg: `Get Products Count Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
-            data: productsCount,
+            data: await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize),
         }
     }
     catch (err) {
@@ -112,13 +117,20 @@ async function deleteProduct(productId) {
 
 async function deleteImageFromProductGallery(productId, galleryImagePath) {
     try{
-        const productData = await productModel.findById(productId);
-        await productModel.updateOne({ _id: productId }, {
-            galleryImagesPaths: productData.galleryImagesPaths.filter((path) => galleryImagePath !== path)
-        });
+        const product = await productModel.findById(productId);
+        if (product) {
+            await productModel.updateOne({ _id: productId }, {
+                galleryImagesPaths: product.galleryImagesPaths.filter((path) => galleryImagePath !== path)
+            });
+            return {
+                msg: "Deleting Image From Product Gallery Process Has Been Successfully !!",
+                error: false,
+                data: {},
+            }
+        }
         return {
-            msg: "Deleting Image From Product Gallery Process Has Been Successfully !!",
-            error: false,
+            msg: "Sorry, This Product Is Not Exist !!",
+            error: true,
             data: {},
         }
     }
@@ -129,10 +141,17 @@ async function deleteImageFromProductGallery(productId, galleryImagePath) {
 
 async function updateProduct(productId, newData) {
     try {
-        await productModel.updateOne({ _id: productId }, { ...newData });
+        const updatedDetails = await productModel.updateOne({ _id: productId }, { ...newData });
+        if (updatedDetails.updatedCount > 0) {
+            return {
+                msg: "Updating Product Process Has Been Successful !!",
+                error: false,
+                data: {},
+            }
+        }
         return {
-            msg: "Updating Product Process Has Been Successful !!",
-            error: false,
+            msg: "Sorry, This Product Is Not Exist !!",
+            error: true,
             data: {},
         }
     }
@@ -143,15 +162,29 @@ async function updateProduct(productId, newData) {
 
 async function updateProductGalleryImage(productId, oldGalleryImagePath, newGalleryImagePath) {
     try{
-        const productData = await productModel.findById(productId);
-        const galleryImagePathIndex = productData.galleryImagesPaths.findIndex((galleryImagePath) => galleryImagePath === oldGalleryImagePath);
-        productData.galleryImagesPaths[galleryImagePathIndex] = newGalleryImagePath;
-        await productModel.updateOne({ _id: productId }, {
-            galleryImagesPaths: productData.galleryImagesPaths
-        });
+        const product = await productModel.findById(productId);
+        if (product) {
+            const galleryImagePathIndex = product.galleryImagesPaths.findIndex((galleryImagePath) => galleryImagePath === oldGalleryImagePath);
+            if (galleryImagePathIndex >= 0) {
+                product.galleryImagesPaths[galleryImagePathIndex] = newGalleryImagePath;
+                await productModel.updateOne({ _id: productId }, {
+                    galleryImagesPaths: product.galleryImagesPaths
+                });
+                return {
+                    msg: "Updating Product Galley Image Process Has Been Successfully !!",
+                    error: false,
+                    data: {},
+                }
+            }
+            return {
+                msg: "Sorry, This Path Is Not Found !!",
+                error: true,
+                data: {},
+            }
+        }
         return {
-            msg: "Updating Product Galley Image Process Has Been Successfully !!",
-            error: false,
+            msg: "Sorry, This Product Is Not Exist !!",
+            error: true,
             data: {},
         }
     }
@@ -162,15 +195,22 @@ async function updateProductGalleryImage(productId, oldGalleryImagePath, newGall
 
 async function updateProductImage(productId, newProductImagePath) {
     try{
-        const { imagePath } = await productModel.findById(productId);
-        await productModel.updateOne({ _id: productId }, {
-            imagePath: newProductImagePath,
-        });
+        const product = await productModel.findById(productId);
+        if (product) {
+            await productModel.updateOne({ _id: productId }, {
+                imagePath: newProductImagePath,
+            });
+            return {
+                msg: "Change Product Image Process Has Been Successfully !!",
+                error: false,
+                data: product.imagePath,
+            }
+        }
         return {
-            msg: "Change Product Image Process Has Been Successfully !!",
-            error: false,
-            data: imagePath,
-        };
+            msg: "Sorry, This Product Is Not Exist !!",
+            error: true,
+            data: product.imagePath,
+        }
     }
     catch(err) {
         throw Error(err);

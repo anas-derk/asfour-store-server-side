@@ -1,4 +1,4 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
 function getFiltersObject(filters) {
     let filtersObject = {};
@@ -16,20 +16,13 @@ function getFiltersObject(filters) {
 async function getAllOrdersInsideThePage(req, res) {
     try{
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize" &&
-                objectKey !== "orderNumber" &&
-                objectKey !== "_id" &&
-                objectKey !== "status" &&
-                objectKey !== "customerName" &&
-                objectKey !== "email" &&
-                objectKey !== "customerId"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getAllOrdersInsideThePage } = require("../models/orders.model");
         await res.json(await getAllOrdersInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
@@ -42,20 +35,13 @@ async function getAllOrdersInsideThePage(req, res) {
 async function getOrdersCount(req, res) {
     try{
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize" &&
-                objectKey !== "orderNumber" &&
-                objectKey !== "_id" &&
-                objectKey !== "status" &&
-                objectKey !== "customerName" &&
-                objectKey !== "email" &&
-                objectKey !== "customerId"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getOrdersCount } = require("../models/orders.model");
         await res.json(await getOrdersCount(getFiltersObject(filters)));
@@ -68,8 +54,11 @@ async function getOrdersCount(req, res) {
 async function getOrderDetails(req, res) {
     try{
         const orderId = req.params.orderId;
-        if (!orderId) {
-            await res.status(400).json(getResponseObject("Please Send Order Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Order Id", fieldValue: orderId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { getOrderDetails } = require("../models/orders.model");
@@ -94,8 +83,11 @@ async function putOrder(req, res) {
     try{
         const orderId = req.params.orderId;
         const newOrderDetails = req.body;
-        if (!orderId) {
-            await res.status(400).json(getResponseObject("Please Send Order Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Order Id", fieldValue: orderId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { updateOrder } = require("../models/orders.model");
@@ -111,8 +103,12 @@ async function putOrderProduct(req, res) {
         const   orderId = req.params.orderId,
                 productId = req.params.productId;
         const newOrderProductDetails = req.body;
-        if (!orderId || !productId) {
-            await res.status(400).json(getResponseObject("Please Send Order Id And Product Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Order Id", fieldValue: orderId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { updateOrderProduct } = require("../models/orders.model");
@@ -126,8 +122,11 @@ async function putOrderProduct(req, res) {
 async function deleteOrder(req, res) {
     try{
         const orderId = req.params.orderId;
-        if (!orderId) {
-            await res.status(400).json(getResponseObject("Please Send Order Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Order Id", fieldValue: orderId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { deleteOrder } = require("../models/orders.model");
@@ -142,8 +141,12 @@ async function deleteProductFromOrder(req, res) {
     try{
         const   orderId = req.params.orderId,
                 productId = req.params.productId;
-        if (!orderId || !productId) {
-            await res.status(400).json(getResponseObject("Please Send Order Id And Product Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Order Id", fieldValue: orderId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { deleteProductFromOrder } = require("../models/orders.model");

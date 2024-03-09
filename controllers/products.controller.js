@@ -1,4 +1,4 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
 async function postNewProduct(req, res) {
     try {
@@ -24,8 +24,11 @@ async function postNewImagesToProductGallery(req, res) {
     try {
         const productId = req.params.productId,
             newGalleryImagePaths = req.files.map(file => file.path);
-        if (!productId || newGalleryImagePaths.length === 0) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Product Id And New Images !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { addingNewImagesToProductGallery } = require("../models/products.model");
@@ -47,8 +50,11 @@ function getFiltersObject(filters) {
 async function getProductInfo(req, res) {
     try {
         const productId = req.params.productId;
-        if (!productId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send User Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { getProductInfo } = require("../models/products.model");
@@ -62,15 +68,13 @@ async function getProductInfo(req, res) {
 async function getProductsCount(req, res) {
     try {
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize" &&
-                objectKey !== "category"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getProductsCount } = require("../models/products.model");
         await res.json(await getProductsCount(getFiltersObject(filters)));
@@ -83,12 +87,12 @@ async function getProductsCount(req, res) {
 async function getAllProductsInsideThePage(req, res) {
     try {
         const filters = req.query;
-        if (
-            objectKey !== "pageNumber" &&
-            objectKey !== "pageSize" &&
-            objectKey !== "category"
-        ) {
-            await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { getAllProductsInsideThePage } = require("../models/products.model");
@@ -102,8 +106,11 @@ async function getAllProductsInsideThePage(req, res) {
 async function deleteProduct(req, res) {
     try {
         const productId = req.params.productId;
-        if (!productId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Product Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { deleteProduct } = require("../models/products.model");
@@ -126,8 +133,11 @@ async function deleteImageFromProductGallery(req, res) {
     try {
         const productId = req.params.productId,
             galleryImagePath = req.query.galleryImagePath;
-        if (!productId || !galleryImagePath) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Product Id And Gallery Image Path !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { deleteImageFromProductGallery } = require("../models/products.model");
@@ -144,8 +154,11 @@ async function putProduct(req, res) {
     try {
         const productId = req.params.productId;
         const newProductData = req.body;
-        if (!productId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Product Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { updateProduct } = require("../models/products.model");
@@ -161,8 +174,11 @@ async function putProductGalleryImage(req, res) {
         const productId = req.params.productId,
             oldGalleryImagePath = req.query.oldGalleryImagePath,
             newGalleryImagePath = req.file.path;
-        if (!productId || !oldGalleryImagePath) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Product Id And Gallery Image !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { updateProductGalleryImage } = require("../models/products.model");
@@ -179,8 +195,11 @@ async function putProductImage(req, res) {
     try {
         const productId = req.params.productId,
             newProductImagePath = req.file.path;
-        if (!productId || !newProductImagePath) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Product Id And New Image !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { updateProductImage } = require("../models/products.model");

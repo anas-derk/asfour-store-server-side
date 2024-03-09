@@ -1,15 +1,15 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
 async function createNewUser(req, res) {
     try {
         const email = req.body.email,
             password = req.body.password;
-        if (!email) {
-            await res.status(400).json(getResponseObject("Please Send The Email !!", true, {}));
-            return;
-        }
-        if (!password) {
-            await res.status(400).json(getResponseObject("Please Send The Password !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: true },
+            { fieldName: "Password", fieldValue: password, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { isEmail } = require("../global/functions");
@@ -29,8 +29,12 @@ async function postNewFavoriteProduct(req, res) {
     try{
         const   userId = req.query.userId,
                 productId = req.query.productId;
-        if (!userId || !productId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send User Id And Product Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { addNewFavoriteProduct } = require("../models/users.model");
@@ -44,11 +48,14 @@ async function postNewFavoriteProduct(req, res) {
 async function postAccountVerificationCode(req, res) {
     try{
         const userEmail = req.query.email;
-        const { isEmail } = require("../global/functions");
-        if (!userEmail) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send The Email !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "User Email", fieldValue: userEmail, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
+        const { isEmail } = require("../global/functions");
         if (!isEmail(userEmail)) {
             await res.status(400).json(getResponseObject("Sorry, Please Send Valid Email !!", true, {}));
             return;
@@ -71,12 +78,12 @@ async function login(req, res) {
     try{
         const   email = req.query.email,
                 password = req.query.password;
-        if (!email) {
-            await res.status(400).json(getResponseObject("Please Send The Email !!", true, {}));
-            return;
-        }
-        if (!password) {
-            await res.status(400).json(getResponseObject("Please Send The Password !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: true },
+            { fieldName: "Password", fieldValue: password, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { isEmail } = require("../global/functions");
@@ -110,8 +117,11 @@ async function login(req, res) {
 async function getUserInfo(req, res) {
     try{
         const userId = req.params.userId;
-        if (!userId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send User Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { getUserInfo } = require("../models/users.model");
@@ -135,8 +145,11 @@ async function getAllUsers(req, res) {
 async function getForgetPassword(req, res) {
     try{
         const email = req.query.email;
-        if (!email) {
-            await res.status(400).json(getResponseObject("Please Send The Email !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { isEmail } = require("../global/functions");
@@ -175,13 +188,12 @@ function getFiltersObject(filters) {
 async function getFavoriteProductsCount(req, res) {
     try {
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "customerId"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getFavoriteProductsCount } = require("../models/users.model");
         await res.json(await getFavoriteProductsCount(getFiltersObject(filters)));
@@ -194,13 +206,12 @@ async function getFavoriteProductsCount(req, res) {
 async function getWalletProductsCount(req, res) {
     try {
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "customerId"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getWalletProductsCount } = require("../models/users.model");
         await res.json(await getWalletProductsCount(getFiltersObject(filters)));
@@ -213,15 +224,14 @@ async function getWalletProductsCount(req, res) {
 async function getAllFavoriteProductsInsideThePage(req, res) {
     try{
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize" &&
-                objectKey !== "customerId"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+            { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getAllFavoriteProductsInsideThePage } = require("../models/users.model");
         await res.json(await getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
@@ -234,15 +244,14 @@ async function getAllFavoriteProductsInsideThePage(req, res) {
 async function getAllWalletProductsInsideThePage(req, res) {
     try{
         const filters = req.query;
-        for (let objectKey in filters) {
-            if (
-                objectKey !== "pageNumber" &&
-                objectKey !== "pageSize" &&
-                objectKey !== "customerId"
-            ) {
-                await res.status(400).json(getResponseObject("Invalid Request, Please Send Valid Keys !!", true, {}));
-                return;
-            }
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+            { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
         }
         const { getAllWalletProductsInsideThePage } = require("../models/users.model");
         await res.json(await getAllWalletProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
@@ -256,8 +265,11 @@ async function putUserInfo(req, res) {
     try{
         const userId = req.params.userId;
         const newUserData = req.body;
-        if (!userId || Object.keys(newUserData).length === 0) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send User Id And New User Data !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { updateUserInfo } = require("../models/users.model");
@@ -271,8 +283,11 @@ async function putUserInfo(req, res) {
 async function putVerificationStatus(req, res) {
     try{
         const email = req.query.email;
-        if (!email) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send User Email !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { updateVerificationStatus } = require("../models/users.model");
@@ -286,11 +301,15 @@ async function putVerificationStatus(req, res) {
 async function putResetPassword(req, res) {
     try{
         const userId = req.params.userId;
-        if (!userId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send All Required Fields !!", true, {}));
+        const newPassword = req.query.newPassword;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Customer Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
+            { fieldName: "New Password", fieldValue: newPassword, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
-        const newPassword = req.query.newPassword;
         const { resetUserPassword } = require("../models/users.model");
         await res.json(await resetUserPassword(userId, newPassword));
     }
@@ -303,8 +322,12 @@ async function deleteProductFromFavoriteUserProducts(req, res) {
     try{
         const   userId = req.query.userId,
                 productId = req.query.productId;
-        if (!userId || !productId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send User Id And Product Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { deleteProductFromFavoriteUserProducts } = require("../models/users.model");
@@ -319,8 +342,12 @@ async function deleteProductFromUserProductsWallet(req, res) {
     try{
         const   userId = req.query.userId,
                 productId = req.query.productId;
-        if (!userId || !productId) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send User Id And Product Id !!", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
             return;
         }
         const { deleteProductFromUserProductsWallet } = require("../models/users.model");

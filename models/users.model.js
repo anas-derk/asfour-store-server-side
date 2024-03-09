@@ -4,7 +4,7 @@ const { userModel, productModel } = require("../models/all.models");
 
 // require bcryptjs module for password encrypting
 
-const bcrypt = require("bcryptjs");
+const { hash, compare } = require("bcryptjs");
 
 // Define Create New User Function
 
@@ -12,16 +12,25 @@ async function createNewUser(email, password) {
     try {
         // Check If Email Is Exist
         const user = await userModel.findOne({ email });
-        if (user)
-            return "Sorry, Can't Create User Because it is Exist !!";
+        if (user) {
+            return {
+                msg: "Sorry, Can't Create User Because it is Exist !!",
+                error: true,
+                data: {},
+            }
+        }
         // Create New Document From User Schema
         const newUser = new userModel({
             email,
-            password: await bcrypt.hash(password, 10),
+            password: await hash(password, 10),
         });
         // Save The New User As Document In User Collection
         await newUser.save();
-        return "Ok !!, Create New User Process Has Been Successfuly !!";
+        return {
+            msg: "Ok !!, Create New User Process Has Been Successfuly !!",
+            error: false,
+            data: {},
+        }
     }
     catch (err) {
         throw Error(err);
@@ -73,12 +82,14 @@ async function login(email, password) {
         const user = await userModel.findOne({ email });
         if (user) {
             // Check From Password
-            const isTruePassword = await bcrypt.compare(password, user.password);
-            if (isTruePassword) return {
-                msg: "Logining Process Has Been Successfully !!",
-                error: false,
-                data: user,
-            };
+            const isTruePassword = await compare(password, user.password);
+            if (isTruePassword) {
+                return {
+                    msg: "Logining Process Has Been Successfully !!",
+                    error: false,
+                    data: user,
+                };
+            }
             return {
                 msg: "Sorry, Email Or Password Incorrect !!",
                 error: true,
@@ -100,11 +111,13 @@ async function getUserInfo(userId) {
     try {
         // Check If User Is Exist
         const user = await userModel.findById(userId);
-        if (user) return {
-            msg: "Get User Info Process Has Been Successfully !!",
-            error: false,
-            data: user,
-        };
+        if (user) {
+            return {
+                msg: "Get User Info Process Has Been Successfully !!",
+                error: false,
+                data: user,
+            };
+        }
         return {
             msg: "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..",
             error: true,
@@ -120,11 +133,13 @@ async function isExistUserAndVerificationEmail(email) {
         // Check If User Is Exist
         const user = await userModel.findOne({ email });
         if (user) {
-            if (!user.isVerified) return {
-                msg: "This User Is Exist !!",
-                error: false,
-                data: user,
-            };
+            if (!user.isVerified) {
+                return {
+                    msg: "This User Is Exist !!",
+                    error: false,
+                    data: user,
+                };
+            }
             return {
                 msg: "Sorry, The Email For This User Has Been Verified !!",
                 error: true,
@@ -143,11 +158,10 @@ async function isExistUserAndVerificationEmail(email) {
 
 async function getAllUsers() {
     try {
-        const users = await userModel.find({});
         return {
             msg: "Get All Users Process Has Been Successfully !!",
             error: false,
-            data: users,
+            data: await userModel.find({}),
         };
     } catch (err) {
         throw Error(err);
@@ -268,11 +282,11 @@ async function updateUserInfo(userId, newUserData) {
         if (newUserData.password && newUserData.newPassword) {
             const userInfo = await userModel.findById(userId);
             if (userInfo) {
-                const isTruePassword = await bcrypt.compare(newUserData.password, userInfo.password);
+                const isTruePassword = await compare(newUserData.password, userInfo.password);
                 if (isTruePassword) {
                     await userModel.updateOne({ _id: userId }, {
                         ...newUserData,
-                        password: await bcrypt.hash(newUserData.newPassword, 10),
+                        password: await hash(newUserData.newPassword, 10),
                     });
                     return {
                         msg: "Updating User Info Process Has Been Successfuly !!",
@@ -292,12 +306,19 @@ async function updateUserInfo(userId, newUserData) {
                 data: {},
             };
         }
-        await userModel.updateOne({ _id: userId }, {
+        const updatingDetails = await userModel.updateOne({ _id: userId }, {
             ...newUserData,
         });
+        if (updatingDetails.updatedCount > 0) {
+            return {
+                msg: "Updating User Info Process Has Been Successfuly !!",
+                error: false,
+                data: {},
+            };
+        }
         return {
-            msg: "Updating User Info Process Has Been Successfuly !!",
-            error: false,
+            msg: "Sorry, This User Is Not Found !!",
+            error: true,
             data: {},
         };
     } catch (err) {
@@ -307,12 +328,18 @@ async function updateUserInfo(userId, newUserData) {
 
 async function updateVerificationStatus(email) {
     try{
-        const userInfo = await userModel.findOne({ email });
-        await userModel.updateOne({ email }, { isVerified: true });
+        const userInfo = await userModel.findOneAndUpdate({ email }, { isVerified: true });
+        if(userInfo) {
+            return {
+                msg: "Updating Verification Status Process Has Been Successfully !!",
+                error: false ,
+                data: userInfo._id,
+            };
+        }
         return {
-            msg: "Updating Verification Status Process Has Been Successfully !!",
-            error: false,
-            data: userInfo._id,
+            msg: "Sorry, This User Is Not Found !!",
+            error: true,
+            data: {},
         };
     }
     catch(err) {
@@ -322,11 +349,18 @@ async function updateVerificationStatus(email) {
 
 async function resetUserPassword(userId, newPassword) {
     try {
-        const newEncryptedPassword = await bcrypt.hash(newPassword, 10);
-        await userModel.updateOne({ _id: userId }, { password: newEncryptedPassword });
+        const newEncryptedPassword = await hash(newPassword, 10);
+        const updatingDetails = await userModel.updateOne({ _id: userId }, { password: newEncryptedPassword });
+        if (updatingDetails.updatedCount > 0) {
+            return {
+                msg: "Reseting Password Process Has Been Successfully !!",
+                error: false,
+                data: {},
+            };
+        }
         return {
-            msg: "Reseting Password Process Has Been Successfully !!",
-            error: false,
+            msg: "Sorry, This User Is Not Found !!",
+            error: true,
             data: {},
         };
     } catch (err) {
