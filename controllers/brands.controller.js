@@ -2,18 +2,19 @@ const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require(".
 
 async function postNewBrand(req, res) {
     try{
-        const token = req.headers.authorization;
+        const uploadError = req.uploadError;
+        if (uploadError) {
+            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            return;
+        }
         const newBrandTitle = req.body.title;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
             { fieldName: "new Brand Title", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { verify } = require("jsonwebtoken");
-        verify(token, process.env.secretKey);
         const newBrandImagePath = req.file.path;
         const { addNewBrand } = require("../models/brands.model");
         await res.json(await addNewBrand({ imagePath: newBrandImagePath, title: newBrandTitle }));
