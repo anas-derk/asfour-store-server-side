@@ -13,7 +13,7 @@ const globalPasswordSchema = mongoose.Schema({
 
 // Create Global Password Model From Global Password Schema
 
-const globalPasswordModel = mongoose.model("gloabal_password", globalPasswordSchema);
+const globalPasswordModel = mongoose.model("global_password", globalPasswordSchema);
 
 // require cryptoJs module for password encrypting
 

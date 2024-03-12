@@ -1,14 +1,30 @@
 // Import Product Model Object
 
-const { productModel } = require("../models/all.models");
+const { productModel, categoryModel } = require("../models/all.models");
 
 async function addNewProduct(productInfo) {
     try {
-        const newProductInfo = new productModel(productInfo);
-        await newProductInfo.save();
+        const product = await productModel.findOne({ name: productInfo.name, category: productInfo.category });
+        if (!product) {
+            const category = await categoryModel.findOne({ name: product.category });
+            if (!category) {
+                const newProductInfo = new productModel(productInfo);
+                await newProductInfo.save();
+                return {
+                    msg: "Adding New Product Process Has Been Successfuly !!",
+                    error: false,
+                    data: {},
+                }
+            }
+            return {
+                msg: "Sorry, This Category Is Not Exist !!",
+                error: true,
+                data: {},
+            }
+        }
         return {
-            msg: "Adding New Product Process Has Been Successfuly !!",
-            error: false,
+            msg: "Sorry, This Product Is Already Exist !!",
+            error: true,
             data: {},
         }
     }
