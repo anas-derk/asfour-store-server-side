@@ -4,6 +4,8 @@ const productsController = require("../controllers/products.controller");
 
 const multer = require("multer");
 
+const { validateJWT } = require("../middlewares/global.middlewares");
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "./assets/images/products");
@@ -13,10 +15,29 @@ const storage = multer.diskStorage({
     },
 });
 
-productsRouter.post("/add-new-product", multer({ storage }).fields([
-    { name: "productImage", maxCount: 1 },
-    { name: "galleryImages", maxCount: 10 },
-]), productsController.postNewProduct);
+productsRouter.post("/add-new-product", validateJWT, multer({
+        storage,
+        fileFilter: (req, file, cb) => {
+            if (!file) {
+                req.uploadError = "Sorry, No Files Uploaded, Please Upload The Files";
+                return cb(null, false);
+            }
+            if (
+                file.mimetype !== "image/jpeg" &&
+                file.mimetype !== "image/png" &&
+                file.mimetype !== "image/webp"
+            ){
+                req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+                return cb(null, false);
+            }
+            cb(null, true);
+        }
+    }).fields([
+        { name: "productImage", maxCount: 1 },
+        { name: "galleryImages", maxCount: 10 },
+    ]),
+productsController.postNewProduct);
+
 
 productsRouter.post("/adding-new-images-to-product-gallery/:productId", multer({ storage }).array("productGalleryImage", 10), productsController.postNewImagesToProductGallery);
 

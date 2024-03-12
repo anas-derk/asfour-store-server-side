@@ -2,20 +2,37 @@ const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require(".
 
 async function postNewProduct(req, res) {
     try {
+        const uploadError = req.uploadError;
+        if (uploadError) {
+            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            return;
+        }
         const productImages = Object.assign({}, req.files);
         const productInfo = {
             ...Object.assign({}, req.body),
             imagePath: productImages.productImage[0].path.replace(/\\/g, '/'),
             galleryImagesPaths: productImages.galleryImages.map((galleryImage) => galleryImage.path.replace(/\\/g, '/')),
         };
-        if (Object.keys(productInfo).length === 0) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Product Info", true, {}));
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Name", fieldValue: productInfo.name, dataType: "string", isRequiredValue: true },
+            { fieldName: "Price", fieldValue: Number(productInfo.price), dataType: "number", isRequiredValue: true },
+            { fieldName: "Description", fieldValue: productInfo.description, dataType: "string", isRequiredValue: true },
+            { fieldName: "Category", fieldValue: productInfo.category, dataType: "string", isRequiredValue: true },
+            { fieldName: "discount", fieldValue: Number(productInfo.discount), dataType: "number", isRequiredValue: false },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
+        }
+        if(productInfo.discount < 0 || productInfo.discount > productInfo.price) {
+            await res.status(400).json(getResponseObject("Sorry, Please Send Valid Discount Value !!", true, {}));
             return;
         }
         const { addNewProduct } = require("../models/products.model");
         await res.json(await addNewProduct(productInfo));
     }
     catch (err) {
+        console.log(err);
         await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
