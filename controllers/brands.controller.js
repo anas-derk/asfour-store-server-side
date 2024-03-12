@@ -110,28 +110,30 @@ async function putBrandInfo(req, res) {
 
 async function putBrandImage(req, res) {
     try {
-        const token = req.headers.authorization;
+        const uploadError = req.uploadError;
+        if (uploadError) {
+            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            return;
+        }
         const brandId = req.params.brandId;
-        const newBrandImagePath = req.file.path;
+        const newBrandImagePath = req.file.path.replace(/\\/g, '/');
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
             { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { verify } = require("jsonwebtoken");
-        verify(token, process.env.secretKey);
         const { updateBrandImage } = require("../models/brands.model");
         const result = await updateBrandImage(brandId, newBrandImagePath);
         if (!result.error) {
             const { unlinkSync } = require("fs");
-            unlinkSync(oldImagePath);
+            unlinkSync(result.data.deletedBrandImagePath);
         }
         await res.json(result);
 }
     catch (err) {
+        console.log(err);
         await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }

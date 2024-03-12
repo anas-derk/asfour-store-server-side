@@ -38,7 +38,6 @@ productsRouter.post("/add-new-product", validateJWT, multer({
     ]),
 productsController.postNewProduct);
 
-
 productsRouter.post("/adding-new-images-to-product-gallery/:productId", multer({ storage }).array("productGalleryImage", 10), productsController.postNewImagesToProductGallery);
 
 productsRouter.get("/product-info/:productId", productsController.getProductInfo);

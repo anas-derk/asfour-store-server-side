@@ -104,7 +104,7 @@ async function updateBrandImage(brandId, newBrandImagePath) {
         return {
             msg: brand ? "Updating Brand Image Process Has Been Successfully !!" : "Sorry, This Brand Is Not Exist !!",
             error: brand ? false : true,
-            data: brand ? brand.imagePath : {}
+            data: brand ? { deletedBrandImagePath: brand.imagePath } : {}
         };
     }
     catch(err) {

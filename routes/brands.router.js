@@ -44,6 +44,23 @@ brandsRouter.delete("/:brandId", validateJWT, brandsController.deleteBrand);
 
 brandsRouter.put("/:brandId", validateJWT, brandsController.putBrandInfo);
 
-brandsRouter.put("/update-brand-image/:brandId", validateJWT, multer({ storage }).single("brandImage") , brandsController.putBrandImage);
+brandsRouter.put("/update-brand-image/:brandId", validateJWT, multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (!file) {
+            req.uploadError = "Sorry, No Files Uploaded, Please Upload The Files";
+            return cb(null, false);
+        }
+        if (
+            file.mimetype !== "image/jpeg" &&
+            file.mimetype !== "image/png" &&
+            file.mimetype !== "image/webp"
+        ){
+            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+            return cb(null, false);
+        }
+        cb(null, true);
+    }
+}).single("brandImage") , brandsController.putBrandImage);
 
 module.exports = brandsRouter;
