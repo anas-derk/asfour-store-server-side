@@ -66,14 +66,14 @@ async function getAllCategoriesInsideThePage(pageNumber, pageSize) {
 
 async function deleteCategory(categoryId) {
     try {
-        const deletingDetails = await categoryModel.deleteOne({
+        const category = await categoryModel.findOneAndDelete({
             _id: categoryId,
         });
-        if (deletingDetails.deletedCount > 0) {
+        if (category) {
             return {
                 msg: "Deleting Category Process Has Been Successfuly ...",
                 error: false,
-                data: await categoryModel.find({}),
+                data: {},
             };
         }
         return {
@@ -89,12 +89,12 @@ async function deleteCategory(categoryId) {
 
 async function updateCategory(categoryId, newCategoryName) {
     try {
-        const updatingDetails = await categoryModel.updateOne( { _id: categoryId } , { name: newCategoryName })
-        if (updatingDetails.updatedCount > 0) {
+        const category = await categoryModel.findOneAndUpdate( { _id: categoryId } , { name: newCategoryName })
+        if (category) {
             return {
                 msg: "Updating Category Process Has Been Successfuly !!",
                 error: false,
-                data: await categoryModel.find({}),
+                data: {},
             };
         }
         return {

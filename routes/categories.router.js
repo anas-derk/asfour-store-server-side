@@ -2,7 +2,9 @@ const categoriesRouter = require("express").Router();
 
 const categoriesController = require("../controllers/categories.controller");
 
-categoriesRouter.post("/add-new-category", categoriesController.postNewCategory);
+const { validateJWT } = require("../middlewares/global.middlewares");
+
+categoriesRouter.post("/add-new-category", validateJWT, categoriesController.postNewCategory);
 
 categoriesRouter.get("/all-categories", categoriesController.getAllCategories);
 
@@ -10,8 +12,8 @@ categoriesRouter.get("/categories-count", categoriesController.getCategoriesCoun
 
 categoriesRouter.get("/all-categories-inside-the-page", categoriesController.getAllCategoriesInsideThePage);
 
-categoriesRouter.delete("/:categoryId", categoriesController.deleteCategory);
+categoriesRouter.delete("/:categoryId", validateJWT, categoriesController.deleteCategory);
 
-categoriesRouter.put("/:categoryId", categoriesController.putCategory);
+categoriesRouter.put("/:categoryId", validateJWT, categoriesController.putCategory);
 
 module.exports = categoriesRouter;
