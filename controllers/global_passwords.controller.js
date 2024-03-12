@@ -2,12 +2,10 @@ const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require(".
 
 async function putChangeBussinessEmailPassword(req, res) {
     try{
-        const token = req.headers.authorization;
         const   email = req.query.email,
                 password = req.query.password,
                 newPassword = req.query.newPassword;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
             { fieldName: "Bussiness Email", fieldValue: email, dataType: "string", isRequiredValue: true },
             { fieldName: "Bussiness Password", fieldValue: password, dataType: "string", isRequiredValue: true },
             { fieldName: "New Bussiness Password", fieldValue: newPassword, dataType: "string", isRequiredValue: true },
@@ -16,8 +14,6 @@ async function putChangeBussinessEmailPassword(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { verify } = require("jsonwebtoken");
-        verify(token, process.env.secretKey);
         const { isEmail } = require("../global/functions");
         if (isEmail(email)) {
             const { changeBussinessEmailPassword } = require("../models/global_passwords.model");

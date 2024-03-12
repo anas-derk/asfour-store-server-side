@@ -2,6 +2,8 @@ const globalPasswordRouter = require("express").Router();
 
 const globalPasswordController = require("../controllers/global_passwords.controller");
 
-globalPasswordRouter.put("/change-bussiness-email-password", globalPasswordController.putChangeBussinessEmailPassword);
+const { validateJWT } = require("../middlewares/global.middlewares");
+
+globalPasswordRouter.put("/change-bussiness-email-password", validateJWT, globalPasswordController.putChangeBussinessEmailPassword);
 
 module.exports = globalPasswordRouter;
