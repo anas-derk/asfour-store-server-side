@@ -62,13 +62,11 @@ async function deleteBrand(brandId) {
             _id: brandId,
         });
         if (brandInfo) {
-            const newBrandsList = await brandModel.find({});
             return {
                 error: false,
                 msg: "Deleting Brand Process Has Been Successfuly ...",
                 data: {
                     deletedBrandPath: brandInfo.imagePath,
-                    newBrandsList,
                 },
             };
         }
@@ -85,11 +83,11 @@ async function deleteBrand(brandId) {
 
 async function updateBrandInfo(brandId, newBrandTitle) {
     try {
-        const updatingDetails = await brandModel.updateOne( { _id: brandId } , { title: newBrandTitle });
+        const brand = await brandModel.findOneAndUpdate( { _id: brandId } , { title: newBrandTitle });
         return {
-            msg: updatingDetails.matchedCount > 0 ?
+            msg: brand ?
                 "Updating Brand Info Process Has Been Successfuly ..." : "Sorry This Brand Is Not Exist !!",
-            error: updatingDetails.matchedCount > 0 ? false : true,
+            error: brand ? false : true,
             data: {},
         };
     }

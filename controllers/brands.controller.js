@@ -66,38 +66,33 @@ async function getAllBrandsInsideThePage(req, res) {
 
 async function deleteBrand(req, res) {
     try{
-        const token = req.headers.authorization;
         const brandId = req.params.brandId;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
             { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { verify } = require("jsonwebtoken");
-        verify(token, process.env.secretKey);
         const { deleteBrand } = require("../models/brands.model");
         const result = await deleteBrand(brandId);
         if (!result.error) {
             const { unlinkSync } = require("fs");
-            unlinkSync(result.deletedBrandPath);
+            unlinkSync(result.data.deletedBrandPath);
         }
         await res.json(result);
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
 
 async function putBrandInfo(req, res) {
     try{
-        const token = req.headers.authorization;
         const brandId = req.params.brandId;
         const newBrandTitle = req.body.newBrandTitle;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "JWT", fieldValue: token, dataType: "string", isRequiredValue: true },
             { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
             { fieldName: "newBrandTitle", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
         ]);
@@ -105,8 +100,6 @@ async function putBrandInfo(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { verify } = require("jsonwebtoken");
-        verify(token, process.env.secretKey);
         const { updateBrandInfo } = require("../models/brands.model");
         await res.json(await updateBrandInfo(brandId, newBrandTitle));
     }

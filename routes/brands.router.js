@@ -40,10 +40,10 @@ brandsRouter.get("/brands-count", brandsController.getBrandsCount);
 
 brandsRouter.get("/all-brands-inside-the-page", brandsController.getAllBrandsInsideThePage);
 
-brandsRouter.delete("/:brandId", brandsController.deleteBrand);
+brandsRouter.delete("/:brandId", validateJWT, brandsController.deleteBrand);
 
-brandsRouter.put("/:brandId", brandsController.putBrandInfo);
+brandsRouter.put("/:brandId", validateJWT, brandsController.putBrandInfo);
 
-brandsRouter.put("/update-brand-image/:brandId", multer({ storage }).single("brandImage") , brandsController.putBrandImage);
+brandsRouter.put("/update-brand-image/:brandId", validateJWT, multer({ storage }).single("brandImage") , brandsController.putBrandImage);
 
 module.exports = brandsRouter;
