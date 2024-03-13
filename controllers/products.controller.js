@@ -143,6 +143,7 @@ async function deleteImageFromProductGallery(req, res) {
             galleryImagePath = req.query.galleryImagePath;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Gallery Image Path", fieldValue: galleryImagePath, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
