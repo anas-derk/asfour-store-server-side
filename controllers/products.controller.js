@@ -85,14 +85,6 @@ async function getProductInfo(req, res) {
 async function getProductsCount(req, res) {
     try {
         const filters = req.query;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            await res.status(400).json(checkResult);
-            return;
-        }
         const { getProductsCount } = require("../models/products.model");
         await res.json(await getProductsCount(getFiltersObject(filters)));
     }
