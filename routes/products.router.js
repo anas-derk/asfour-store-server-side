@@ -38,7 +38,7 @@ productsRouter.post("/add-new-product", validateJWT, multer({
     ]),
 productsController.postNewProduct);
 
-productsRouter.post("/adding-new-images-to-product-gallery/:productId", multer({ storage }).array("productGalleryImage", 10), productsController.postNewImagesToProductGallery);
+productsRouter.post("/adding-new-images-to-product-gallery/:productId", validateJWT, multer({ storage }).array("productGalleryImage", 10), productsController.postNewImagesToProductGallery);
 
 productsRouter.get("/product-info/:productId", productsController.getProductInfo);
 
@@ -46,14 +46,31 @@ productsRouter.get("/products-count", productsController.getProductsCount);
 
 productsRouter.get("/all-products-inside-the-page", productsController.getAllProductsInsideThePage);
 
-productsRouter.delete("/:productId", productsController.deleteProduct);
+productsRouter.delete("/:productId", validateJWT, productsController.deleteProduct);
 
-productsRouter.delete("/gallery-images/:productId", productsController.deleteImageFromProductGallery);
+productsRouter.delete("/gallery-images/:productId", validateJWT, productsController.deleteImageFromProductGallery);
 
-productsRouter.put("/:productId", productsController.putProduct);
+productsRouter.put("/:productId", validateJWT, productsController.putProduct);
 
-productsRouter.put("/update-product-gallery-image/:productId", multer({ storage }).single("productGalleryImage") , productsController.putProductGalleryImage);
+productsRouter.put("/update-product-gallery-image/:productId", validateJWT, multer({ storage }).single("productGalleryImage") , productsController.putProductGalleryImage);
 
-productsRouter.put("/update-product-image/:productId", multer({ storage }).single("productImage") , productsController.putProductImage);
+productsRouter.put("/update-product-image/:productId", validateJWT, multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (!file) {
+            req.uploadError = "Sorry, No Files Uploaded, Please Upload The Files";
+            return cb(null, false);
+        }
+        if (
+            file.mimetype !== "image/jpeg" &&
+            file.mimetype !== "image/png" &&
+            file.mimetype !== "image/webp"
+        ){
+            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+            return cb(null, false);
+        }
+        cb(null, true);
+    }
+}).single("productImage") , productsController.putProductImage);
 
 module.exports = productsRouter;

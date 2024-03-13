@@ -157,8 +157,8 @@ async function deleteImageFromProductGallery(productId, galleryImagePath) {
 
 async function updateProduct(productId, newData) {
     try {
-        const updatedDetails = await productModel.updateOne({ _id: productId }, { ...newData });
-        if (updatedDetails.updatedCount > 0) {
+        const product = await productModel.findOneAndUpdate({ _id: productId }, { ...newData });
+        if (product) {
             return {
                 msg: "Updating Product Process Has Been Successful !!",
                 error: false,
@@ -219,7 +219,9 @@ async function updateProductImage(productId, newProductImagePath) {
             return {
                 msg: "Change Product Image Process Has Been Successfully !!",
                 error: false,
-                data: product.imagePath,
+                data: {
+                    deletedProductImagePath: product.imagePath,
+                },
             }
         }
         return {

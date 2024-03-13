@@ -32,7 +32,6 @@ async function postNewProduct(req, res) {
         await res.json(await addNewProduct(productInfo));
     }
     catch (err) {
-        console.log(err);
         await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }
@@ -164,7 +163,12 @@ async function putProduct(req, res) {
         const productId = req.params.productId;
         const newProductData = req.body;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: false },
+            { fieldName: "Name", fieldValue: newProductData.name, dataType: "string", isRequiredValue: false },
+            { fieldName: "Price", fieldValue: Number(newProductData.price), dataType: "number", isRequiredValue: false },
+            { fieldName: "Description", fieldValue: newProductData.description, dataType: "string", isRequiredValue: false },
+            { fieldName: "Category", fieldValue: newProductData.category, dataType: "string", isRequiredValue: false },
+            { fieldName: "discount", fieldValue: Number(newProductData.discount), dataType: "number", isRequiredValue: false },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
@@ -202,8 +206,12 @@ async function putProductGalleryImage(req, res) {
 
 async function putProductImage(req, res) {
     try {
-        const productId = req.params.productId,
-            newProductImagePath = req.file.path;
+        const uploadError = req.uploadError;
+        if (uploadError) {
+            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            return;
+        }
+        const productId = req.params.productId;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
@@ -211,10 +219,13 @@ async function putProductImage(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
+        const newProductImagePath = req.file.path.replace(/\\/g, '/');
         const { updateProductImage } = require("../models/products.model");
         const result = await updateProductImage(productId, newProductImagePath);
-        const { unlinkSync } = require("fs");
-        unlinkSync(result.data);
+        if (!result.error) {
+            const { unlinkSync } = require("fs");
+            unlinkSync(result.data.deletedProductImagePath);
+        }
         await res.json(result);
     }
     catch (err) {

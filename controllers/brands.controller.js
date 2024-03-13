@@ -116,7 +116,6 @@ async function putBrandImage(req, res) {
             return;
         }
         const brandId = req.params.brandId;
-        const newBrandImagePath = req.file.path.replace(/\\/g, '/');
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
             { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
         ]);
@@ -124,6 +123,7 @@ async function putBrandImage(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
+        const newBrandImagePath = req.file.path.replace(/\\/g, '/');
         const { updateBrandImage } = require("../models/brands.model");
         const result = await updateBrandImage(brandId, newBrandImagePath);
         if (!result.error) {
