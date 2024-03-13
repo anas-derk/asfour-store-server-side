@@ -38,6 +38,11 @@ async function postNewProduct(req, res) {
 
 async function postNewImagesToProductGallery(req, res) {
     try {
+        const uploadError = req.uploadError;
+        if (uploadError) {
+            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            return;
+        }
         const productId = req.params.productId,
             newGalleryImagePaths = req.files.map(file => file.path);
         const checkResult = checkIsExistValueForFieldsAndDataTypes([

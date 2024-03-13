@@ -44,7 +44,9 @@ async function addingNewImagesToProductGallery(productId, newGalleryImagePaths) 
             return {
                 msg: "Adding New Images To Product Gallery Process Has Been Successfuly !!",
                 error: false,
-                data: {},
+                data: {
+                    newGalleryImagePaths,
+                },
             }
         }
         return {

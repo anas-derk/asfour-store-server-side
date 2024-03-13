@@ -27,7 +27,7 @@ productsRouter.post("/add-new-product", validateJWT, multer({
                 file.mimetype !== "image/png" &&
                 file.mimetype !== "image/webp"
             ){
-                req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+                req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG Or WEBP files are allowed !!";
                 return cb(null, false);
             }
             cb(null, true);
@@ -38,7 +38,24 @@ productsRouter.post("/add-new-product", validateJWT, multer({
     ]),
 productsController.postNewProduct);
 
-productsRouter.post("/adding-new-images-to-product-gallery/:productId", validateJWT, multer({ storage }).array("productGalleryImage", 10), productsController.postNewImagesToProductGallery);
+productsRouter.post("/adding-new-images-to-product-gallery/:productId", validateJWT, multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (!file) {
+            req.uploadError = "Sorry, No Files Uploaded, Please Upload The Files";
+            return cb(null, false);
+        }
+        if (
+            file.mimetype !== "image/jpeg" &&
+            file.mimetype !== "image/png" &&
+            file.mimetype !== "image/webp"
+        ){
+            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG Or WEBP files are allowed !!";
+            return cb(null, false);
+        }
+        cb(null, true);
+    }
+}).array("productGalleryImage", 10), productsController.postNewImagesToProductGallery);
 
 productsRouter.get("/product-info/:productId", productsController.getProductInfo);
 
@@ -64,7 +81,7 @@ productsRouter.put("/update-product-gallery-image/:productId", validateJWT, mult
             file.mimetype !== "image/png" &&
             file.mimetype !== "image/webp"
         ){
-            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG Or WEBP files are allowed !!";
             return cb(null, false);
         }
         cb(null, true);
@@ -83,7 +100,7 @@ productsRouter.put("/update-product-image/:productId", validateJWT, multer({
             file.mimetype !== "image/png" &&
             file.mimetype !== "image/webp"
         ){
-            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG Or WEBP files are allowed !!";
             return cb(null, false);
         }
         cb(null, true);
