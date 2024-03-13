@@ -184,20 +184,29 @@ async function putProduct(req, res) {
 
 async function putProductGalleryImage(req, res) {
     try {
+        const uploadError = req.uploadError;
+        if (uploadError) {
+            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            return;
+        }
         const productId = req.params.productId,
             oldGalleryImagePath = req.query.oldGalleryImagePath,
             newGalleryImagePath = req.file.path;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Old Gallery Image Path", fieldValue: oldGalleryImagePath, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
             return;
         }
         const { updateProductGalleryImage } = require("../models/products.model");
-        await res.json(await updateProductGalleryImage(productId, oldGalleryImagePath, newGalleryImagePath));
-        const { unlinkSync } = require("fs");
-        unlinkSync(oldGalleryImagePath);
+        const result = await updateProductGalleryImage(productId, oldGalleryImagePath, newGalleryImagePath);
+        if (!result.error) {
+            const { unlinkSync } = require("fs");
+            unlinkSync(oldGalleryImagePath);
+        }
+        await res.json(result);
     }
     catch (err) {
         await res.status(500).json(getResponseObject(err.message, true, {}));

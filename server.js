@@ -42,30 +42,21 @@ app.listen(PORT, async () => {
 
 /* Start Handle The Routes */
 
-const   adminRouter = require("./routes/admin.router"),
-        productsRouter = require("./routes/products.router"),
-        usersRouter = require("./routes/users.router"),
-        categoriesRouter = require("./routes/categories.router"),
-        ordersRouter = require("./routes/orders.router"),
-        brandsRouter = require("./routes/brands.router"),
-        appearedSectionsRouter = require("./routes/appeared_sections.router"),
-        globalPasswordsRouter = require("./routes/global_passwords");
+app.use("/admins", require("./routes/admin.router"));
 
-app.use("/admins", adminRouter);
+app.use("/products", require("./routes/products.router"));
 
-app.use("/products", productsRouter);
+app.use("/users", require("./routes/users.router"));
 
-app.use("/users", usersRouter);
+app.use("/categories", require("./routes/categories.router"));
 
-app.use("/categories", categoriesRouter);
+app.use("/orders", require("./routes/orders.router"));
 
-app.use("/orders", ordersRouter);
+app.use("/brands", require("./routes/brands.router"));
 
-app.use("/brands", brandsRouter);
+app.use("/appeared-sections", require("./routes/appeared_sections.router"));
 
-app.use("/appeared-sections", appearedSectionsRouter);
-
-app.use("/global-passwords", globalPasswordsRouter);
+app.use("/global-passwords", require("./routes/global_passwords"));
 
 /* End Handle The Routes */
 

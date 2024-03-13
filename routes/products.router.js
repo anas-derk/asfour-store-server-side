@@ -52,13 +52,30 @@ productsRouter.delete("/gallery-images/:productId", validateJWT, productsControl
 
 productsRouter.put("/:productId", validateJWT, productsController.putProduct);
 
-productsRouter.put("/update-product-gallery-image/:productId", validateJWT, multer({ storage }).single("productGalleryImage") , productsController.putProductGalleryImage);
+productsRouter.put("/update-product-gallery-image/:productId", validateJWT, multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (!file) {
+            req.uploadError = "Sorry, No File Uploaded, Please Upload The File";
+            return cb(null, false);
+        }
+        if (
+            file.mimetype !== "image/jpeg" &&
+            file.mimetype !== "image/png" &&
+            file.mimetype !== "image/webp"
+        ){
+            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+            return cb(null, false);
+        }
+        cb(null, true);
+    }
+}).single("productGalleryImage") , productsController.putProductGalleryImage);
 
 productsRouter.put("/update-product-image/:productId", validateJWT, multer({
     storage,
     fileFilter: (req, file, cb) => {
         if (!file) {
-            req.uploadError = "Sorry, No Files Uploaded, Please Upload The Files";
+            req.uploadError = "Sorry, No File Uploaded, Please Upload The File";
             return cb(null, false);
         }
         if (
