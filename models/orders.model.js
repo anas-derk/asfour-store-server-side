@@ -90,7 +90,7 @@ async function updateOrder(orderId, newOrderDetails) {
             return {
                 msg: `Update Details For Order That : ( Id: ${ orderId }) Process Has Been Successfully !!`,
                 error: false,
-                data: order.orderNumber,
+                data: {},
             };
         }
         return {
@@ -139,8 +139,8 @@ async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
 
 async function deleteOrder(orderId){
     try{
-        const updatingDetails = await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
-        if (updatingDetails.updatedCount > 0) {
+        const order = await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
+        if (order) {
             return {
                 msg: "Deleting This Order Has Been Successfuly !!",
                 error: false,

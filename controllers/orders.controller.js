@@ -17,8 +17,8 @@ async function getAllOrdersInsideThePage(req, res) {
     try{
         const filters = req.query;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
@@ -36,8 +36,8 @@ async function getOrdersCount(req, res) {
     try{
         const filters = req.query;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: false },
+            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: false },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
