@@ -116,16 +116,8 @@ async function login(req, res) {
 
 async function getUserInfo(req, res) {
     try{
-        const userId = req.params.userId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            await res.status(400).json(checkResult);
-            return;
-        }
         const { getUserInfo } = require("../models/users.model");
-        await res.json(await getUserInfo(userId));
+        await res.json(await getUserInfo(req.data._id));
     }
     catch(err){
         await res.status(500).json(getResponseObject(err.message, true, {}));

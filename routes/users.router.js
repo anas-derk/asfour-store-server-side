@@ -10,7 +10,7 @@ usersRouter.post("/send-account-verification-code", usersController.postAccountV
 
 usersRouter.get("/login", usersController.login);
 
-usersRouter.get("/user-info/:userId", usersController.getUserInfo);
+usersRouter.get("/user-info", usersController.getUserInfo);
 
 usersRouter.get("/all-users", usersController.getAllUsers);
 
