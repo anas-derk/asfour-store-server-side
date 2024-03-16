@@ -33,7 +33,7 @@ async function getOrderDetails(orderId) {
             return {
                 msg: `Get Details For Order: ${orderId} Process Has Been Successfully !!`,
                 error: false,
-                data: await orderModel.findById(orderId),
+                data: order,
             }
         }
         return {

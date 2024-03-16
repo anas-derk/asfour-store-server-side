@@ -27,7 +27,7 @@ brandsRouter.post("/add-new-brand", validateJWT, multer({
             file.mimetype !== "image/png" &&
             file.mimetype !== "image/webp"
         ){
-            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG, PNG And Webp files are allowed !!";
             return cb(null, false);
         }
         cb(null, true);
@@ -56,7 +56,7 @@ brandsRouter.put("/update-brand-image/:brandId", validateJWT, multer({
             file.mimetype !== "image/png" &&
             file.mimetype !== "image/webp"
         ){
-            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG and PNG files are allowed !!";
+            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG, PNG And Webp files are allowed !!";
             return cb(null, false);
         }
         cb(null, true);
