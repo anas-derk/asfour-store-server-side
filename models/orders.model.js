@@ -162,9 +162,9 @@ async function deleteProductFromOrder(orderId, productId) {
     try {
         const order = await orderModel.findOne({ _id: orderId });
         if (order) {
-            const newOrderLines = order.order_lines.filter((order_line) => order_line._id == productId);
-            if (newOrderLines.length < order.order_lines) {
-                await orderModel.updateOne({ _id: orderId }, { order_lines: newOrderLines });
+            const newOrderLines = order.order_products.filter((order_product) => order_product._id == productId);
+            if (newOrderLines.length < order.order_products) {
+                await orderModel.updateOne({ _id: orderId }, { order_products: newOrderLines });
                 return {
                     msg: "Deleting Product From Order Has Been Successfuly !!",
                     error: false,
