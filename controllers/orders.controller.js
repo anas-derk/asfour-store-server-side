@@ -115,6 +115,7 @@ async function putOrderProduct(req, res) {
         await res.json(await updateOrderProduct(orderId, productId, newOrderProductDetails));
     }
     catch(err){
+        console.log(err);
         await res.status(500).json(getResponseObject(err.message, true, {}));
     }
 }

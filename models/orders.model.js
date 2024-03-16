@@ -107,14 +107,14 @@ async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
     try {
         const order = await orderModel.findOne({ _id: orderId });
         if (order) {
-            const productIndex = order.order_lines.findIndex((order_line) => order_line._id == productId);
+            const productIndex = order.order_products.findIndex((order_product) => order_product._id == productId);
             if (productIndex >= 0) {
-                order.order_lines[productIndex].quantity = newOrderProductDetails.quantity;
-                order.order_lines[productIndex].name = newOrderProductDetails.name;
-                order.order_lines[productIndex].unit_price = newOrderProductDetails.unit_price;
-                order.order_lines[productIndex].total_amount = newOrderProductDetails.total_amount;
+                order.order_products[productIndex].quantity = newOrderProductDetails.quantity;
+                order.order_products[productIndex].name = newOrderProductDetails.name;
+                order.order_products[productIndex].unit_price = newOrderProductDetails.unit_price;
+                order.order_products[productIndex].total_amount = newOrderProductDetails.total_amount;
                 const { calcOrderAmount } = require("../global/functions");
-                await orderModel.updateOne({ _id: orderId }, { order_lines, order_amount: calcOrderAmount(order_lines) });
+                await orderModel.updateOne({ _id: orderId }, { order_products, order_amount: calcOrderAmount(order.order_products) });
                 return {
                     msg: "Updating Order Details Process Has Been Successfuly !!",
                     error: false,
