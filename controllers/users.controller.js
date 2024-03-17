@@ -66,10 +66,15 @@ async function postAccountVerificationCode(req, res) {
             return;
         }
         const { sendCodeToUserEmail } = require("../global/functions");
-        await res.json(await sendCodeToUserEmail(userEmail));
+        await res.json({
+            msg: "Sending Verification Code Process Has Been Successfully !!",
+            error: false,
+            data: {
+                code: await sendCodeToUserEmail(userEmail)
+            }
+        });
     }
     catch(err) {
-        console.log(err);
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
