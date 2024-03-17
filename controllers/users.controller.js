@@ -144,7 +144,6 @@ async function getForgetPassword(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { isEmail } = require("../global/functions");
         if (isEmail(email)) {
             const { isUserAccountExist } = require("../models/users.model");
             const result = await isUserAccountExist(email);
