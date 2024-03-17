@@ -353,8 +353,8 @@ async function updateVerificationStatus(email) {
 async function resetUserPassword(userId, newPassword) {
     try {
         const newEncryptedPassword = await hash(newPassword, 10);
-        const updatingDetails = await userModel.updateOne({ _id: userId }, { password: newEncryptedPassword });
-        if (updatingDetails.updatedCount > 0) {
+        const user = await userModel.findOneAndUpdate({ _id: userId }, { password: newEncryptedPassword });
+        if (user) {
             return {
                 msg: "Reseting Password Process Has Been Successfully !!",
                 error: false,
