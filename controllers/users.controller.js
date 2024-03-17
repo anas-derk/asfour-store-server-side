@@ -26,10 +26,8 @@ async function createNewUser(req, res) {
 
 async function postNewFavoriteProduct(req, res) {
     try{
-        const   userId = req.query.userId,
-                productId = req.query.productId;
+        const productId = req.query.productId;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
@@ -37,7 +35,7 @@ async function postNewFavoriteProduct(req, res) {
             return;
         }
         const { addNewFavoriteProduct } = require("../models/users.model");
-        await res.json(await addNewFavoriteProduct(userId, productId));
+        await res.json(await addNewFavoriteProduct(req.data._id, productId));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -312,10 +310,8 @@ async function putResetPassword(req, res) {
 
 async function deleteProductFromFavoriteUserProducts(req, res) {
     try{
-        const   userId = req.query.userId,
-                productId = req.query.productId;
+        const productId = req.query.productId;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
@@ -323,7 +319,7 @@ async function deleteProductFromFavoriteUserProducts(req, res) {
             return;
         }
         const { deleteProductFromFavoriteUserProducts } = require("../models/users.model");
-        await res.json(await deleteProductFromFavoriteUserProducts(userId, productId));
+        await res.json(await deleteProductFromFavoriteUserProducts(req.data._id, productId));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

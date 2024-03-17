@@ -382,7 +382,9 @@ async function deleteProductFromFavoriteUserProducts(userId, productId) {
                 return {
                     msg: "Ok !!, Deleting Favorite Product From This User Is Successfuly !!",
                     error: false,
-                    data: newFavoriteProductsList,
+                    data: {
+                        newFavoriteProductsList,
+                    },
                 };
             }
             return {
