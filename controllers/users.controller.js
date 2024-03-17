@@ -1,4 +1,4 @@
-const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
+const { getResponseObject, checkIsExistValueForFieldsAndDataTypes, isEmail } = require("../global/functions");
 
 async function createNewUser(req, res) {
     try {
@@ -12,7 +12,6 @@ async function createNewUser(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { isEmail } = require("../global/functions");
         if (isEmail(email)) {
             const { createNewUser } = require("../models/users.model");
             await res.json(await createNewUser(email.toLowerCase(), password));
@@ -87,7 +86,6 @@ async function login(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { isEmail } = require("../global/functions");
         if (isEmail(email)) {
             const { login } = require("../models/users.model");
             const result = await login(email.toLowerCase(), password);
@@ -284,8 +282,12 @@ async function putVerificationStatus(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
-        const { updateVerificationStatus } = require("../models/users.model");
-        await res.json(await updateVerificationStatus(email));
+        if (isEmail(email)) {
+            const { updateVerificationStatus } = require("../models/users.model");
+            await res.json(await updateVerificationStatus(email));
+            return;
+        }
+        await res.status(400).json(getResponseObject("Sorry, Inavalid Email !!", true, {}));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
