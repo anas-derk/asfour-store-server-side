@@ -32,7 +32,7 @@ async function postNewProduct(req, res) {
         await res.json(await addNewProduct(productInfo));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -56,7 +56,7 @@ async function postNewImagesToProductGallery(req, res) {
         await res.json(await addingNewImagesToProductGallery(productId, newGalleryImagePaths));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -82,7 +82,7 @@ async function getProductInfo(req, res) {
         await res.json(await getProductInfo(productId));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -93,7 +93,7 @@ async function getProductsCount(req, res) {
         await res.json(await getProductsCount(getFiltersObject(filters)));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -112,7 +112,7 @@ async function getAllProductsInsideThePage(req, res) {
         await res.json(await getAllProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -138,7 +138,7 @@ async function deleteProduct(req, res) {
         await res.json(result);
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -160,7 +160,7 @@ async function deleteImageFromProductGallery(req, res) {
         unlinkSync(galleryImagePath);
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -184,7 +184,7 @@ async function putProduct(req, res) {
         await res.json(await updateProduct(productId, newProductData));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -215,7 +215,7 @@ async function putProductGalleryImage(req, res) {
         await res.json(result);
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -244,7 +244,7 @@ async function putProductImage(req, res) {
         await res.json(result);
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

@@ -23,7 +23,7 @@ async function putChangeBussinessEmailPassword(req, res) {
         await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

@@ -33,7 +33,7 @@ async function getAdminLogin(req, res) {
         await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -43,7 +43,7 @@ async function getAdminUserInfo(req, res) {
         await res.json(await getAdminUserInfo(req.data._id));
     }
     catch(err){
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

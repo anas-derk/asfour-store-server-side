@@ -21,7 +21,7 @@ async function createNewUser(req, res) {
         await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -41,7 +41,7 @@ async function postNewFavoriteProduct(req, res) {
         await res.json(await addNewFavoriteProduct(userId, productId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -70,7 +70,7 @@ async function postAccountVerificationCode(req, res) {
         await res.json(await sendCodeToUserEmail(userEmail));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -90,6 +90,7 @@ async function login(req, res) {
         if (isEmail(email)) {
             const { login } = require("../models/users.model");
             const result = await login(email.toLowerCase(), password);
+            console.log(result);
             if (!result.error) {
                 const { sign } = require("jsonwebtoken");
                 const token = sign(result.data, process.env.secretKey, {
@@ -110,7 +111,7 @@ async function login(req, res) {
         await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err){
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -120,7 +121,7 @@ async function getUserInfo(req, res) {
         await res.json(await getUserInfo(req.data._id));
     }
     catch(err){
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -130,7 +131,7 @@ async function getAllUsers(req, res) {
         await res.json(await getAllUsers());
     }
     catch(err){
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -165,7 +166,7 @@ async function getForgetPassword(req, res) {
         await res.status(400).json(getResponseObject("Sorry, Please Send Email !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -191,7 +192,7 @@ async function getFavoriteProductsCount(req, res) {
         await res.json(await getFavoriteProductsCount(getFiltersObject(filters)));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -209,7 +210,7 @@ async function getWalletProductsCount(req, res) {
         await res.json(await getWalletProductsCount(getFiltersObject(filters)));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -229,7 +230,7 @@ async function getAllFavoriteProductsInsideThePage(req, res) {
         await res.json(await getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err){
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -249,7 +250,7 @@ async function getAllWalletProductsInsideThePage(req, res) {
         await res.json(await getAllWalletProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err){
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -268,7 +269,7 @@ async function putUserInfo(req, res) {
         await res.json(await updateUserInfo(userId, newUserData));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -286,7 +287,7 @@ async function putVerificationStatus(req, res) {
         await res.json(await updateVerificationStatus(email));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -306,7 +307,7 @@ async function putResetPassword(req, res) {
         await res.json(await resetUserPassword(userId, newPassword));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -326,7 +327,7 @@ async function deleteProductFromFavoriteUserProducts(req, res) {
         await res.json(await deleteProductFromFavoriteUserProducts(userId, productId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -346,7 +347,7 @@ async function deleteProductFromUserProductsWallet(req, res) {
         await res.json(await deleteProductFromUserProductsWallet(userId, productId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

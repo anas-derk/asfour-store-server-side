@@ -87,7 +87,9 @@ async function login(email, password) {
                 return {
                     msg: "Logining Process Has Been Successfully !!",
                     error: false,
-                    data: user,
+                    data: {
+                        _id: user._id,
+                    },
                 };
             }
             return {

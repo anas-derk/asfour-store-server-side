@@ -20,7 +20,7 @@ async function postNewBrand(req, res) {
         await res.json(await addNewBrand({ imagePath: newBrandImagePath, title: newBrandTitle }));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -30,7 +30,7 @@ async function getAllBrands(req, res) {
         await res.json(await getAllBrands());
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -41,7 +41,7 @@ async function getBrandsCount(req, res) {
         await res.json(await getBrandsCount(filters));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -60,7 +60,7 @@ async function getAllBrandsInsideThePage(req, res) {
         await res.json(await getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -84,7 +84,7 @@ async function deleteBrand(req, res) {
     }
     catch(err) {
         console.log(err);
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -104,7 +104,7 @@ async function putBrandInfo(req, res) {
         await res.json(await updateBrandInfo(brandId, newBrandTitle));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -134,7 +134,7 @@ async function putBrandImage(req, res) {
 }
     catch (err) {
         console.log(err);
-        await res.status(500).json(getResponseObject(err.message, true, {}));
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
