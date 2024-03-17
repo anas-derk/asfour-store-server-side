@@ -309,10 +309,10 @@ async function updateUserInfo(userId, newUserData) {
                 data: {},
             };
         }
-        const updatingDetails = await userModel.updateOne({ _id: userId }, {
+        const user = await userModel.findOneAndUpdate({ _id: userId }, {
             ...newUserData,
         });
-        if (updatingDetails.updatedCount > 0) {
+        if (user) {
             return {
                 msg: "Updating User Info Process Has Been Successfuly !!",
                 error: false,

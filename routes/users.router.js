@@ -26,7 +26,7 @@ usersRouter.get("/all-wallet-products-inside-the-page", usersController.getAllWa
 
 usersRouter.get("/forget-password", usersController.getForgetPassword);
 
-usersRouter.put("/update-user-info/:userId", usersController.putUserInfo);
+usersRouter.put("/update-user-info", validateJWT, usersController.putUserInfo);
 
 usersRouter.put("/update-verification-status", usersController.putVerificationStatus);
 

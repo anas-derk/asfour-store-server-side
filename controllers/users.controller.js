@@ -259,17 +259,9 @@ async function getAllWalletProductsInsideThePage(req, res) {
 
 async function putUserInfo(req, res) {
     try{
-        const userId = req.params.userId;
         const newUserData = req.body;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            await res.status(400).json(checkResult);
-            return;
-        }
         const { updateUserInfo } = require("../models/users.model");
-        await res.json(await updateUserInfo(userId, newUserData));
+        await res.json(await updateUserInfo(req.data._id, newUserData));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
