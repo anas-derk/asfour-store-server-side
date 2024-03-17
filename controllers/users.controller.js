@@ -70,6 +70,7 @@ async function postAccountVerificationCode(req, res) {
         await res.json(await sendCodeToUserEmail(userEmail));
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }

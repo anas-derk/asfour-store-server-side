@@ -6,7 +6,7 @@ function transporterObj(bussinessEmailPassword) {
     const nodemailer = require('nodemailer');
     // إنشاء ناقل بيانات لسيرفر SMTP مع إعداده 
     const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
+        host: "smtppro.zoho.com",
         port: 465,
         secure: true,
         requireTLS: true,
@@ -21,7 +21,7 @@ function transporterObj(bussinessEmailPassword) {
 async function sendCodeToUserEmail(email) {
     const { getPasswordForBussinessEmail } = require("../models/global_passwords.model");
     const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
-    if (result !== "Sorry, Email Incorrect !!") {
+    if (!result.error) {
         const CodeGenerator = require('node-code-generator');
         const generator = new CodeGenerator();
         const generatedCode = generator.generateCodes("####")[0];
@@ -33,14 +33,14 @@ async function sendCodeToUserEmail(email) {
         const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ generatedCode });
         // إعداد الرسالة قبل إرسالها
         const mailConfigurations = {
-            from: "info@asfourintlco.com",
+            from: process.env.BUSSINESS_EMAIL,
             to: email,
             subject: "Account Verification Code On Asfour International Store",
             html: htmlContentAfterCompilingEjsTemplateFile,
         };
         return new Promise((resolve, reject) => {
             // إرسال رسالة الكود إلى الإيميل
-            transporterObj(result).sendMail(mailConfigurations, function (error, info) {
+            transporterObj(result.data).sendMail(mailConfigurations, function (error, info) {
                 // في حالة حدث خطأ في الإرسال أرجع خطأ
                 if (error) reject(error);
                 // في حالة لم يحدث خطأ أعد الكود المولد
