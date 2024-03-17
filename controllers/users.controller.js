@@ -328,10 +328,8 @@ async function deleteProductFromFavoriteUserProducts(req, res) {
 
 async function deleteProductFromUserProductsWallet(req, res) {
     try{
-        const   userId = req.query.userId,
-                productId = req.query.productId;
+        const productId = req.query.productId;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "User Id", fieldValue: userId, dataType: "string", isRequiredValue: true },
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
@@ -339,9 +337,10 @@ async function deleteProductFromUserProductsWallet(req, res) {
             return;
         }
         const { deleteProductFromUserProductsWallet } = require("../models/users.model");
-        await res.json(await deleteProductFromUserProductsWallet(userId, productId));
+        await res.json(await deleteProductFromUserProductsWallet(req.data._id, productId));
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }

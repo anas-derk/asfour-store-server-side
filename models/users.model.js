@@ -409,13 +409,15 @@ async function deleteProductFromUserProductsWallet(userId, productId) {
         // Check If Email Is Exist
         const user = await userModel.findById(userId);
         if (user) {
-            const newProductsWallet = user.products_wallet.filter((wallet_product) => wallet_product._id != productId);
-            if (newProductsWallet.length !== user.products_wallet.length) {
-                await userModel.updateOne({ _id: userId } , { $set: { products_wallet: newProductsWallet } });
+            const newProductsWallet = user.wallet_products_list.filter((wallet_product) => wallet_product.productId != productId);
+            if (newProductsWallet.length !== user.wallet_products_list.length) {
+                await userModel.updateOne({ _id: userId } , { $set: { wallet_products_list: newProductsWallet } });
                 return {
                     msg: "Ok !!, Deleting Wallet Product From This User Is Successfuly !!",
                     error: false,
-                    data: newProductsWallet,
+                    data: {
+                        newProductsWallet,
+                    },
                 };
             }
             return {
