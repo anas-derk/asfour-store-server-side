@@ -2,15 +2,17 @@ const usersRouter = require("express").Router();
 
 const usersController = require("../controllers/users.controller");
 
+const { validateJWT } = require("../middlewares/global.middlewares");
+
 usersRouter.post("/create-new-user", usersController.createNewUser);
 
-usersRouter.post("/add-favorite-product", usersController.postNewFavoriteProduct);
+usersRouter.post("/add-favorite-product", validateJWT, usersController.postNewFavoriteProduct);
 
 usersRouter.post("/send-account-verification-code", usersController.postAccountVerificationCode);
 
 usersRouter.get("/login", usersController.login);
 
-usersRouter.get("/user-info", usersController.getUserInfo);
+usersRouter.get("/user-info", validateJWT, usersController.getUserInfo);
 
 usersRouter.get("/all-users", usersController.getAllUsers);
 
@@ -30,8 +32,8 @@ usersRouter.put("/update-verification-status", usersController.putVerificationSt
 
 usersRouter.put("/reset-password/:userId", usersController.putResetPassword);
 
-usersRouter.delete("/favorite-product", usersController.deleteProductFromFavoriteUserProducts);
+usersRouter.delete("/favorite-product", validateJWT, usersController.deleteProductFromFavoriteUserProducts);
 
-usersRouter.delete("/wallet-product", usersController.deleteProductFromUserProductsWallet);
+usersRouter.delete("/wallet-product", validateJWT, usersController.deleteProductFromUserProductsWallet);
 
 module.exports = usersRouter;
