@@ -6,7 +6,7 @@ function transporterObj(bussinessEmailPassword) {
     const nodemailer = require('nodemailer');
     // إنشاء ناقل بيانات لسيرفر SMTP مع إعداده 
     const transporter = nodemailer.createTransport({
-        host: "smtp.titan.email",
+        host: "smtp.zoho.com",
         port: 465,
         secure: true,
         requireTLS: true,

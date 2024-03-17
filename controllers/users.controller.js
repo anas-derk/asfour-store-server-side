@@ -90,7 +90,6 @@ async function login(req, res) {
         if (isEmail(email)) {
             const { login } = require("../models/users.model");
             const result = await login(email.toLowerCase(), password);
-            console.log(result);
             if (!result.error) {
                 const { sign } = require("jsonwebtoken");
                 const token = sign(result.data, process.env.secretKey, {
@@ -100,6 +99,7 @@ async function login(req, res) {
                     msg: result.msg,
                     error: result.error,
                     data: {
+                        ...result.data,
                         token,
                     },
                 });

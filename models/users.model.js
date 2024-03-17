@@ -89,6 +89,7 @@ async function login(email, password) {
                     error: false,
                     data: {
                         _id: user._id,
+                        isVerified: user.isVerified,
                     },
                 };
             }
