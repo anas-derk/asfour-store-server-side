@@ -275,6 +275,10 @@ const orderSchema = mongoose.Schema({
         },
     },
     order_products: [{
+        productId: {
+            type: String,
+            required: true,
+        },
         quantity: {
             type: Number,
             default: 0,

@@ -67,6 +67,12 @@ async function postNewOrder(orderDetails) {
                     }
                 }
                 await userModel.updateOne({ _id: orderDetails.customerId } , { wallet_products_list: user.wallet_products_list });
+                return;
+            }
+            return {
+                msg: "Sorry, This User Is Not Exist !!",
+                error: true,
+                data: {},
             }
         }
         return {

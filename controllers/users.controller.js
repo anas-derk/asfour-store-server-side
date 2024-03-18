@@ -278,7 +278,23 @@ async function putVerificationStatus(req, res) {
         }
         if (isEmail(email)) {
             const { updateVerificationStatus } = require("../models/users.model");
-            await res.json(await updateVerificationStatus(email));
+            const result = await updateVerificationStatus(email);
+            if (!result.error) {
+                const { sign } = require("jsonwebtoken");
+                const token = sign(result.data, process.env.secretKey, {
+                    expiresIn: "1h",
+                });
+                await res.json({
+                    msg: result.msg,
+                    error: result.error,
+                    data: {
+                        ...result.data,
+                        token,
+                    },
+                });
+                return;
+            }
+            await res.json(result);
             return;
         }
         await res.status(400).json(getResponseObject("Sorry, Inavalid Email !!", true, {}));

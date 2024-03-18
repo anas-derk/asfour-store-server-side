@@ -336,7 +336,10 @@ async function updateVerificationStatus(email) {
             return {
                 msg: "Updating Verification Status Process Has Been Successfully !!",
                 error: false ,
-                data: userInfo._id,
+                data: {
+                    _id: userInfo._id,
+                    isVerified: userInfo.isVerified,
+                },
             };
         }
         return {
