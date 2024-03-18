@@ -73,6 +73,7 @@ async function postAccountVerificationCode(req, res) {
         });
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
