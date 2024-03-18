@@ -2,6 +2,14 @@ function isEmail(email) {
     return email.match(/[^\s@]+@[^\s@]+\.[^\s@]+/);
 }
 
+function calcOrderAmount(order_lines) {
+    let newOrderAmount = 0;
+    for (let i = 0; i < order_lines.length; i++) {
+        newOrderAmount += order_lines[i].total_amount;
+    }
+    return newOrderAmount;
+}
+
 function transporterObj(bussinessEmailPassword) {
     const nodemailer = require('nodemailer');
     // إنشاء ناقل بيانات لسيرفر SMTP مع إعداده 
@@ -90,6 +98,7 @@ function checkIsExistValueForFieldsAndDataTypes(fieldNamesAndValuesAndDataTypes)
 
 module.exports = {
     isEmail,
+    calcOrderAmount,
     sendCodeToUserEmail,
     getResponseObject,
     checkIsExistValueForFieldsAndDataTypes,

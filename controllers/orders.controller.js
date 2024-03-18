@@ -151,7 +151,9 @@ async function deleteProductFromOrder(req, res) {
             return;
         }
         const { deleteProductFromOrder } = require("../models/orders.model");
-        await res.json(await deleteProductFromOrder(orderId, productId));
+        const result = await deleteProductFromOrder(orderId, productId);
+        console.log(result);
+        await res.json(result);
     }
     catch(err){
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

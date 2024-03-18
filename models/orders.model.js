@@ -114,14 +114,14 @@ async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
     try {
         const order = await orderModel.findOne({ _id: orderId });
         if (order) {
-            const productIndex = order.order_products.findIndex((order_product) => order_product._id == productId);
+            const productIndex = order.order_products.findIndex((order_product) => order_product.productId == productId);
             if (productIndex >= 0) {
                 order.order_products[productIndex].quantity = newOrderProductDetails.quantity;
                 order.order_products[productIndex].name = newOrderProductDetails.name;
                 order.order_products[productIndex].unit_price = newOrderProductDetails.unit_price;
                 order.order_products[productIndex].total_amount = newOrderProductDetails.total_amount;
                 const { calcOrderAmount } = require("../global/functions");
-                await orderModel.updateOne({ _id: orderId }, { order_products, order_amount: calcOrderAmount(order.order_products) });
+                await orderModel.updateOne({ _id: orderId }, { order_products: order.order_products, order_amount: calcOrderAmount(order.order_products) });
                 return {
                     msg: "Updating Order Details Process Has Been Successfuly !!",
                     error: false,
@@ -169,13 +169,15 @@ async function deleteProductFromOrder(orderId, productId) {
     try {
         const order = await orderModel.findOne({ _id: orderId });
         if (order) {
-            const newOrderLines = order.order_products.filter((order_product) => order_product._id == productId);
-            if (newOrderLines.length < order.order_products) {
-                await orderModel.updateOne({ _id: orderId }, { order_products: newOrderLines });
+            const newOrderProducts = order.order_products.filter((order_product) => order_product.productId !== productId);
+            if (newOrderProducts.length < order.order_products.length) {
+                await orderModel.updateOne({ _id: orderId }, { order_products: newOrderProducts });
                 return {
                     msg: "Deleting Product From Order Has Been Successfuly !!",
                     error: false,
-                    data: {},
+                    data: {
+                        newOrderProducts,
+                    },
                 }
             }
             return {
