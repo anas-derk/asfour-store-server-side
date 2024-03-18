@@ -47,6 +47,10 @@ const productModel = mongoose.model("product", productSchema);
 const userSchema = mongoose.Schema({
     email: String,
     password: String,
+    provider: {
+        type: String,
+        default: "same-site",
+    },
     isVerified: {
         type: Boolean,
         default: false,
