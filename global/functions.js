@@ -21,7 +21,6 @@ function transporterObj(bussinessEmailPassword) {
 async function sendCodeToUserEmail(email) {
     const { getPasswordForBussinessEmail } = require("../models/global_passwords.model");
     const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
-    console.log(process.env.BUSSINESS_EMAIL, result);
     if (!result.error) {
         const CodeGenerator = require('node-code-generator');
         const generator = new CodeGenerator();
