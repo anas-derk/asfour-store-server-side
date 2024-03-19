@@ -12,6 +12,8 @@ usersRouter.post("/send-account-verification-code", usersController.postAccountV
 
 usersRouter.get("/login", usersController.login);
 
+usersRouter.get("/login-with-google", usersController.loginWithGoogle);
+
 usersRouter.get("/user-info", validateJWT, usersController.getUserInfo);
 
 usersRouter.get("/all-users", usersController.getAllUsers);

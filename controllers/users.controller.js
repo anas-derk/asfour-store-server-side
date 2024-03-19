@@ -117,6 +117,47 @@ async function login(req, res) {
     }
 }
 
+async function loginWithGoogle(req, res) {
+    try{
+        const   email = req.query.email,
+                first_name = req.query.first_name,
+                last_name = req.query.last_name,
+                preview_name = req.query.preview_name;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: true },
+            { fieldName: "First Name", fieldValue: first_name, dataType: "string", isRequiredValue: true },
+            { fieldName: "Last Name", fieldValue: last_name, dataType: "string", isRequiredValue: true },
+            { fieldName: "Preview Name", fieldValue: preview_name, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
+        }
+        if (isEmail(email)) {
+            const { loginWithGoogle } = require("../models/users.model");
+            const result = await loginWithGoogle(req.query);
+            const { sign } = require("jsonwebtoken");
+            const token = sign(result.data, process.env.secretKey, {
+                expiresIn: "1h",
+            });
+            await res.json({
+                msg: result.msg,
+                error: result.error,
+                data: {
+                    ...result.data,
+                    token,
+                },
+            });
+            return;
+        }
+        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+    }
+    catch(err) {
+        console.log(err)
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function getUserInfo(req, res) {
     try{
         const { getUserInfo } = require("../models/users.model");
@@ -366,6 +407,7 @@ module.exports = {
     postNewFavoriteProduct,
     postAccountVerificationCode,
     login,
+    loginWithGoogle,
     getUserInfo,
     getAllUsers,
     getFavoriteProductsCount,

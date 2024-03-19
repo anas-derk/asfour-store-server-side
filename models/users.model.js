@@ -110,6 +110,43 @@ async function login(email, password) {
     }
 }
 
+async function loginWithGoogle(userInfo) {
+    try{
+        const user = await userModel.findOne({ email: userInfo.email });
+        if (user) {
+            return {
+                msg: "Logining Process Has Been Successfully !!",
+                error: false,
+                data: {
+                    _id: user._id,
+                    isVerified: user.isVerified,
+                },
+            };
+        }
+        const newUser = new userModel({
+            email: userInfo.email,
+            first_name: userInfo.first_name,
+            last_name: userInfo.last_name,
+            preview_name: userInfo.preview_name,
+            password: await hash("anasDerk1999", 10),
+            isVerified: true,
+        });
+        const newUserInfo = await newUser.save();
+        console.log(newUserInfo);
+        return {
+            msg: "Logining Process Has Been Successfully !!",
+            error: false,
+            data: {
+                _id: newUserInfo._id,
+                isVerified: newUserInfo.isVerified,
+            },
+        }
+    }
+    catch(err){
+        throw Error(err);
+    }
+}
+
 async function getUserInfo(userId) {
     try {
         // Check If User Is Exist
@@ -444,6 +481,7 @@ module.exports = {
     createNewUser,
     addNewFavoriteProduct,
     login,
+    loginWithGoogle,
     getUserInfo,
     isUserAccountExist,
     isExistUserAndVerificationEmail,
