@@ -132,14 +132,13 @@ async function loginWithGoogle(userInfo) {
             isVerified: true,
             provider: "google",
         });
-        const newUserInfo = await newUser.save();
-        console.log(newUserInfo);
+        const { _id, isVerified } = await newUser.save();
         return {
             msg: "Logining Process Has Been Successfully !!",
             error: false,
             data: {
-                _id: newUserInfo._id,
-                isVerified: newUserInfo.isVerified,
+                _id,
+                isVerified,
             },
         }
     }
