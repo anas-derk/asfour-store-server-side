@@ -130,6 +130,7 @@ async function loginWithGoogle(userInfo) {
             preview_name: userInfo.preview_name,
             password: await hash("anasDerk1999", 10),
             isVerified: true,
+            provider: "google",
         });
         const newUserInfo = await newUser.save();
         console.log(newUserInfo);
