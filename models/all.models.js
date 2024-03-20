@@ -367,6 +367,20 @@ const globalPasswordSchema = mongoose.Schema({
 
 const globalPasswordModel = mongoose.model("global_password", globalPasswordSchema);
 
+// Create Subscription Schema
+
+const subscriptionShema = mongoose.Schema({
+    email: String,
+    subscriptionDate: {
+        type: Date,
+        default: Date.now(),
+    }
+});
+
+// Create Global Password Model From Global Password Schema
+
+const subscriptionModel = mongoose.model("subscription", subscriptionShema);
+
 module.exports = {
     mongoose,
     adminModel,
@@ -377,4 +391,5 @@ module.exports = {
     brandModel,
     appearedSectionsModel,
     globalPasswordModel,
+    subscriptionModel,
 }

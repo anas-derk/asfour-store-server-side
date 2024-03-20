@@ -35,7 +35,7 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
     console.log(`The Server Is Running On: http://localhost:${PORT}`);
-    mongoose.connect(process.env.DB_URL);
+    await mongoose.connect(process.env.DB_URL);
 });
 
 /* End Running The Server */
@@ -58,6 +58,8 @@ app.use("/appeared-sections", require("./routes/appeared_sections.router"));
 
 app.use("/global-passwords", require("./routes/global_passwords"));
 
+app.use("/subscriptions", require("./routes/subscriptions.router"));
+
 /* End Handle The Routes */
 
 /* Start Handling Events */
@@ -68,8 +70,8 @@ mongoose.connection.on("reconnected", () => console.log("reconnected"));
 mongoose.connection.on("disconnecting", () => console.log("disconnecting"));
 mongoose.connection.on("close", () => console.log("close"));
 
-process.on("SIGINT", () => {
-    mongoose.connection.close();
+process.on("SIGINT", async () => {
+    await mongoose.connection.close();
 });
 
 /* End Handling Events */
