@@ -377,9 +377,34 @@ const subscriptionShema = mongoose.Schema({
     }
 });
 
-// Create Global Password Model From Global Password Schema
+// Create Subscription Model From Subscription Schema
 
 const subscriptionModel = mongoose.model("subscription", subscriptionShema);
+
+// Create Referal Schema
+
+const referalShema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+    },
+    referalDate: {
+        type: Date,
+        default: Date.now(),
+    },
+    isAppeared: {
+        type: Boolean,
+        required: true,
+    }
+});
+
+// Create Referal Model From Referal Schema
+
+const referalModel = mongoose.model("referal", referalShema);
 
 module.exports = {
     mongoose,
@@ -392,4 +417,5 @@ module.exports = {
     appearedSectionsModel,
     globalPasswordModel,
     subscriptionModel,
+    referalModel,
 }

@@ -1,4 +1,4 @@
-// Import User And Product Model Object
+// Import Subscription Model Object
 
 const { subscriptionModel } = require("../models/all.models");
 
