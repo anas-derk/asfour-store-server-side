@@ -398,7 +398,7 @@ const referalShema = mongoose.Schema({
     },
     isAppeared: {
         type: Boolean,
-        required: true,
+        default: true,
     }
 });
 

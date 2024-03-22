@@ -60,6 +60,8 @@ app.use("/global-passwords", require("./routes/global_passwords"));
 
 app.use("/subscriptions", require("./routes/subscriptions.router"));
 
+app.use("/referals", require("./routes/referals.router"));
+
 /* End Handle The Routes */
 
 /* Start Handling Events */

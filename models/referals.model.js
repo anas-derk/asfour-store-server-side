@@ -4,7 +4,7 @@ const { referalModel } = require("../models/all.models");
 
 async function addNewReferal(referalDetails) {
     try {
-        const referal = await subscriptionModel.findOne({ email: referalDetails.email });
+        const referal = await referalModel.findOne({ email: referalDetails.email });
         if (referal) {
             return {
                 msg: "Sorry, This Referal Is Already Exist !!",
