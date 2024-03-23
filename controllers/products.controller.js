@@ -20,6 +20,8 @@ async function postNewProduct(req, res) {
             { fieldName: "Category", fieldValue: productInfo.category, dataType: "string", isRequiredValue: true },
             { fieldName: "discount", fieldValue: Number(productInfo.discount), dataType: "number", isRequiredValue: false },
         ]);
+        console.log(productInfo)
+        console.log(checkResult);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
             return;
