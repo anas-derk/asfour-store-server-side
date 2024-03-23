@@ -24,8 +24,7 @@ async function postNewProduct(req, res) {
             await res.status(400).json(checkResult);
             return;
         }
-        console.log("aaa")
-        if(productInfo.discount < 0 || productInfo.discount > productInfo.price) {
+        if(Number(productInfo.discount) < 0 || Number(productInfo.discount) > Number(productInfo.price)) {
             await res.status(400).json(getResponseObject("Sorry, Please Send Valid Discount Value !!", true, {}));
             return;
         }
