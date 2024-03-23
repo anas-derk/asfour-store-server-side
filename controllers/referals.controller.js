@@ -16,7 +16,7 @@ async function postAddNewReferal(req, res) {
             { fieldName: "Product Id", fieldValue: referalDetails.productId, dataType: "string", isRequiredValue: true },
             { fieldName: "name", fieldValue: referalDetails.name, dataType: "string", isRequiredValue: true },
             { fieldName: "email", fieldValue: referalDetails.email, dataType: "string", isRequiredValue: true },
-            { fieldName: "referal", fieldValue: referalDetails.referal, dataType: "string", isRequiredValue: true },
+            { fieldName: "Referal Content", fieldValue: referalDetails.content, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
