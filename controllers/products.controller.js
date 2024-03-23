@@ -32,6 +32,7 @@ async function postNewProduct(req, res) {
         await res.json(await addNewProduct(productInfo));
     }
     catch (err) {
+        console.log(err);
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
