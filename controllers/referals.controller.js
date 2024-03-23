@@ -3,7 +3,7 @@ const { getResponseObject, checkIsExistValueForFieldsAndDataTypes, isEmail } = r
 function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
-        if (objectKey === "category") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "customerName") filtersObject[objectKey] = filters[objectKey];
     }
     return filtersObject;
 }
@@ -35,6 +35,14 @@ async function postAddNewReferal(req, res) {
 
 async function getProductReferalsCount(req, res) {
     try {
+        const productId = req.params.productId;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
+        }
         const filters = req.query;
         const { getProductReferalsCount } = require("../models/referals.model");
         await res.json(await getProductReferalsCount(getFiltersObject(filters)));
