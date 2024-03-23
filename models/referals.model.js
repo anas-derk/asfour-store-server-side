@@ -26,6 +26,34 @@ async function addNewReferal(referalDetails) {
     }
 }
 
+async function getProductReferalsCount(filters) {
+    try {
+        return {
+            msg: "Get Products Count Process Has Been Successfully !!",
+            error: false,
+            data: await referalModel.countDocuments(filters),
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
+async function getAllProductReferalsInsideThePage(pageNumber, pageSize, filters) {
+    try {
+        return {
+            msg: `Get Products Count Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: await referalModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize),
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
 module.exports = {
     addNewReferal,
+    getProductReferalsCount,
+    getAllProductReferalsInsideThePage,
 }
