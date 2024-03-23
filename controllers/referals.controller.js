@@ -3,6 +3,7 @@ const { getResponseObject, checkIsExistValueForFieldsAndDataTypes, isEmail } = r
 function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
+        if (objectKey === "productId") filtersObject[objectKey] = filters[objectKey];
         if (objectKey === "customerName") filtersObject[objectKey] = filters[objectKey];
     }
     return filtersObject;
@@ -12,6 +13,7 @@ async function postAddNewReferal(req, res) {
     try{
         const referalDetails = req.body;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: referalDetails.productId, dataType: "string", isRequiredValue: true },
             { fieldName: "name", fieldValue: referalDetails.name, dataType: "string", isRequiredValue: true },
             { fieldName: "email", fieldValue: referalDetails.email, dataType: "string", isRequiredValue: true },
             { fieldName: "referal", fieldValue: referalDetails.referal, dataType: "string", isRequiredValue: true },
@@ -45,7 +47,7 @@ async function getProductReferalsCount(req, res) {
         }
         const filters = req.query;
         const { getProductReferalsCount } = require("../models/referals.model");
-        await res.json(await getProductReferalsCount(getFiltersObject(filters)));
+        await res.json(await getProductReferalsCount(getFiltersObject({ ...filters, productId})));
     }
     catch (err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -66,7 +68,7 @@ async function getAllProductReferalsInsideThePage(req, res) {
             return;
         }
         const { getAllProductReferalsInsideThePage } = require("../models/referals.model");
-        await res.json(await getAllProductReferalsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        await res.json(await getAllProductReferalsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({...filters, productId})));
     }
     catch (err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
