@@ -6,7 +6,7 @@ async function addNewProduct(productInfo) {
     try {
         const product = await productModel.findOne({ name: productInfo.name, category: productInfo.category });
         if (!product) {
-            const category = await categoryModel.findOne({ name: product.category });
+            const category = await categoryModel.findOne({ name: productInfo.category });
             if (!category) {
                 const newProductInfo = new productModel(productInfo);
                 await newProductInfo.save();
