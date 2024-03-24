@@ -107,6 +107,31 @@ async function getAllProductsInsideThePage(pageNumber, pageSize, filters) {
     }
 }
 
+async function getRelatedProductsInTheProduct(productId) {
+    try {
+        const productInfo = await productModel.findById(productId);
+        if (productInfo) {
+            const relatedProducts = await productModel.aggregate([
+                { $match: { category: productInfo.category } },
+                { $sample: { size: 10 } }
+            ]);
+            return {
+                msg: "Get Sample From Related Products In This Product Process Has Been Successfuly !!",
+                error: false,
+                data: relatedProducts,
+            }
+        }
+        return {
+            msg: "Sorry, This Product It Not Exist !!",
+            error: true,
+            data: {},
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
 async function deleteProduct(productId) {
     try {
         const productInfo = await productModel.findOneAndDelete({
@@ -243,6 +268,7 @@ module.exports = {
     getProductInfo,
     getProductsCount,
     getAllProductsInsideThePage,
+    getRelatedProductsInTheProduct,
     deleteProduct,
     deleteImageFromProductGallery,
     updateProduct,

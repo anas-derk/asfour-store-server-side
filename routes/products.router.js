@@ -63,6 +63,8 @@ productsRouter.get("/products-count", productsController.getProductsCount);
 
 productsRouter.get("/all-products-inside-the-page", productsController.getAllProductsInsideThePage);
 
+productsRouter.get("/sample-from-related-products-in-the-product/:productId", productsController.getRelatedProductsInTheProduct);
+
 productsRouter.delete("/:productId", validateJWT, productsController.deleteProduct);
 
 productsRouter.delete("/gallery-images/:productId", validateJWT, productsController.deleteImageFromProductGallery);

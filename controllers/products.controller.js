@@ -116,6 +116,24 @@ async function getAllProductsInsideThePage(req, res) {
     }
 }
 
+async function getRelatedProductsInTheProduct(req, res) {
+    try{
+        const productId = req.params.productId;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
+        }
+        const { getRelatedProductsInTheProduct } = require("../models/products.model");
+        await res.json(await getRelatedProductsInTheProduct(productId));
+    }
+    catch(err) {
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function deleteProduct(req, res) {
     try {
         const productId = req.params.productId;
@@ -254,6 +272,7 @@ module.exports = {
     getProductsCount,
     getAllProductsInsideThePage,
     getProductInfo,
+    getRelatedProductsInTheProduct,
     deleteProduct,
     deleteImageFromProductGallery,
     putProduct,
