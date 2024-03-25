@@ -1,6 +1,6 @@
 // Import Product Model Object
 
-const { productModel, categoryModel } = require("../models/all.models");
+const { productModel, categoryModel, mongoose } = require("../models/all.models");
 
 async function addNewProduct(productInfo) {
     try {
@@ -111,14 +111,13 @@ async function getRelatedProductsInTheProduct(productId) {
     try {
         const productInfo = await productModel.findById(productId);
         if (productInfo) {
-            const relatedProducts = await productModel.aggregate([
-                { $match: { category: productInfo.category } },
-                { $sample: { size: 10 } }
-            ]);
             return {
                 msg: "Get Sample From Related Products In This Product Process Has Been Successfuly !!",
                 error: false,
-                data: relatedProducts,
+                data: await productModel.aggregate([
+                    { $match: { category: productInfo.category, _id: { $ne: new mongoose.Types.ObjectId(productId) } } },
+                    { $sample: { size: 10 } }
+                ]),
             }
         }
         return {
