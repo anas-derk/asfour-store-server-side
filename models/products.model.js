@@ -94,12 +94,12 @@ async function getProductsCount(filters) {
     }
 }
 
-async function getAllProductsInsideThePage(pageNumber, pageSize, filters) {
+async function getAllProductsInsideThePage(pageNumber, pageSize, filters, sortDetailsObject) {
     try {
         return {
             msg: `Get Products Count Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
-            data: await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize),
+            data: await productModel.find(filters).sort(sortDetailsObject).skip((pageNumber - 1) * pageSize).limit(pageSize),
         }
     }
     catch (err) {

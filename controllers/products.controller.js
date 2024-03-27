@@ -60,13 +60,15 @@ async function postNewImagesToProductGallery(req, res) {
     }
 }
 
-function getFiltersObject(filters) {
-    let filtersObject = {};
-    for (let objectKey in filters) {
-        if (objectKey === "category") filtersObject[objectKey] = filters[objectKey];
-        if (objectKey === "name") filtersObject[objectKey] = { $regex: new RegExp(filters[objectKey], 'i') }
+function getFiltersAndSortDetailsObject(queryObject) {
+    let filtersObject = {}, sortDetailsObject = {};
+    for (let objectKey in queryObject) {
+        if (objectKey === "category") filtersObject[objectKey] = queryObject[objectKey];
+        if (objectKey === "name") filtersObject[objectKey] = { $regex: new RegExp(queryObject[objectKey], 'i') }
+        if (objectKey === "sortBy") sortDetailsObject[objectKey] = queryObject[objectKey];
+        if (objectKey === "sortType") sortDetailsObject[objectKey] = queryObject[objectKey];
     }
-    return filtersObject;
+    return {filtersObject, sortDetailsObject};
 }
 
 async function getProductInfo(req, res) {
@@ -89,9 +91,9 @@ async function getProductInfo(req, res) {
 
 async function getProductsCount(req, res) {
     try {
-        const filters = req.query;
+        const queryObject = req.query;
         const { getProductsCount } = require("../models/products.model");
-        await res.json(await getProductsCount(getFiltersObject(filters)));
+        await res.json(await getProductsCount(getFiltersAndSortDetailsObject(queryObject).filtersObject));
     }
     catch (err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -100,17 +102,24 @@ async function getProductsCount(req, res) {
 
 async function getAllProductsInsideThePage(req, res) {
     try {
-        const filters = req.query;
+        const queryObject = req.query;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Number", fieldValue: queryObject.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: queryObject.pageSize, dataType: "string", isRequiredValue: true },
+            { fieldName: "Sort By", fieldValue: queryObject.sortBy, dataType: "string", isRequiredValue: false },
+            { fieldName: "Sort Type", fieldValue: queryObject.sortType, dataType: "string", isRequiredValue: false },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
             return;
         }
         const { getAllProductsInsideThePage } = require("../models/products.model");
-        await res.json(await getAllProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        const filtersAndSortDetailsObject = getFiltersAndSortDetailsObject(queryObject);
+        let sortDetailsObject = {};
+        if (filtersAndSortDetailsObject.sortDetailsObject) {
+            sortDetailsObject[filtersAndSortDetailsObject.sortDetailsObject.sortBy] = Number(filtersAndSortDetailsObject.sortDetailsObject.sortType);
+        }
+        await res.json(await getAllProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
     }
     catch (err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
