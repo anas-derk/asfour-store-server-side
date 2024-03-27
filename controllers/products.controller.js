@@ -64,7 +64,7 @@ function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
         if (objectKey === "category") filtersObject[objectKey] = filters[objectKey];
-        if (objectKey === "name") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "name") filtersObject[objectKey] = { $regex: new RegExp(filters[objectKey], 'i') }
     }
     return filtersObject;
 }
@@ -110,7 +110,7 @@ async function getAllProductsInsideThePage(req, res) {
             return;
         }
         const { getAllProductsInsideThePage } = require("../models/products.model");
-        await res.json(await getAllProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        await res.json(await getAllProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(getFiltersObject(filters))));
     }
     catch (err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
