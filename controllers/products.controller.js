@@ -92,6 +92,7 @@ async function getProductInfo(req, res) {
 async function getProductsCount(req, res) {
     try {
         const queryObject = req.query;
+        console.log(queryObject);
         const { getProductsCount } = require("../models/products.model");
         await res.json(await getProductsCount(getFiltersAndSortDetailsObject(queryObject).filtersObject));
     }
