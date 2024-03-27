@@ -110,7 +110,7 @@ async function getAllProductsInsideThePage(req, res) {
             return;
         }
         const { getAllProductsInsideThePage } = require("../models/products.model");
-        await res.json(await getAllProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(getFiltersObject(filters))));
+        await res.json(await getAllProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch (err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
