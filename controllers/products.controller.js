@@ -64,6 +64,7 @@ function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
         if (objectKey === "category") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "name") filtersObject[objectKey] = filters[objectKey];
     }
     return filtersObject;
 }
