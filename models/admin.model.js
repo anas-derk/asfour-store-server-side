@@ -2,13 +2,14 @@
 
 const { adminModel } = require("../models/all.models");
 
+const { compare } = require("bcryptjs");
+
 async function adminLogin(email, password) {
     try {
         // Check If Email Is Exist
         const user = await adminModel.findOne({ email });
         if (user) {
             // require bcryptjs module for password encrypting
-            const { compare } = require("bcryptjs");
             // Check From Password
             const isTruePassword = await compare(password, user.password);
             if (isTruePassword)
