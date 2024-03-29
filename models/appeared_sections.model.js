@@ -16,7 +16,7 @@ async function getAllSections() {
 
 async function updateSectionsStatus(sectionsStatus) {
     try {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 4; i++) {
             await appearedSectionsModel.updateOne({ _id: sectionsStatus[i]._id }, { isAppeared: sectionsStatus[i].isAppeared });
         }
         return {

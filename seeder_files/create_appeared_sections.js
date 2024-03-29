@@ -28,9 +28,13 @@ const appeared_sections = [
         isAppeared: false,
     },
     {
+        sectionName: "add your store",
+        isAppeared: false,
+    },
+    {
         sectionName: "stores",
         isAppeared: false,
-    }
+    },
 ]
 
 async function create_appeared_sections() {
