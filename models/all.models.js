@@ -5,13 +5,85 @@ const { mongoose } = require("../server");
 // Create Admin Schema
 
 const adminSchema = mongoose.Schema({
-    email: String,
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+    },
     password: String,
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    isMerchant: {
+        type: Boolean,
+        default: false,
+    },
+    storeName: {
+        type: String,
+        default: "",
+    },
+    storeId: {
+        type: String,
+        default: "",
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false,
+    },
+    blockingReason: {
+        type: String,
+        default: "",
+    },
 });
 
-// Create Admin Model From Admin Schema
+// Create Store Model From Admin Schema
 
 const adminModel = mongoose.model("admin", adminSchema);
+
+// Create Store Schema
+
+const storeSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    imagePath: {
+        type: String,
+        required: true,
+    },
+    ownerFirstName: {
+        type: String,
+        required: true,
+    },
+    ownerLastName: {
+        type: String,
+        required: true,
+    },
+    ownerEmail: {
+        type: String,
+        required: true,
+    },
+    isApproved: {
+        type: Boolean,
+        default: false,
+    },
+    productsType: {
+        type: String,
+        required: true,
+    },
+});
+
+// Create Store Model From Store Schema
+
+const storeModel = mongoose.model("store", storeSchema);
 
 // Create Product Schema
 
@@ -417,6 +489,7 @@ const referalModel = mongoose.model("referal", referalShema);
 module.exports = {
     mongoose,
     adminModel,
+    storeModel,
     productModel,
     userModel,
     categoryModel,
