@@ -23,6 +23,14 @@ const adminSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    isWebsiteOwner: {
+        type: Boolean,
+        default: false,
+    },
+    isMainAdmin: {
+        type: Boolean,
+        default: false,
+    },
     isAdmin: {
         type: Boolean,
         default: false,
@@ -46,14 +54,77 @@ const adminSchema = mongoose.Schema({
         ],
         required: true,
     },
+    permissions: {
+        addNewBrand: {
+            type: Boolean,
+            default: true,
+        },
+        updateBrandInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteBrand: {
+            type: Boolean,
+            default: true,
+        },
+        updateOrderInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteOrder: {
+            type: Boolean,
+            default: true,
+        },
+        updateOrderProductInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteOrderProduct: {
+            type: Boolean,
+            default: true,
+        },
+        addNewCategory: {
+            type: Boolean,
+            default: true,
+        },
+        updateCategoryInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteCategory: {
+            type: Boolean,
+            default: true,
+        },
+        addNewProduct: {
+            type: Boolean,
+            default: true,
+        },
+        updateProductInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteProduct: {
+            type: Boolean,
+            default: true,
+        },
+        showAndHideSections: {
+            type: Boolean,
+            default: false,
+        },
+        addNewAdmin: {
+            type: Boolean,
+            default: true,
+        },
+        changeBussinessEmailPassword: {
+            type: Boolean,
+            default: false,
+        },
+    },
     isBlocked: {
         type: Boolean,
         default: false,
     },
-    blockingReason: {
-        type: String,
-        default: "",
-    },
+    blockingReason: String,
 });
 
 // create Admin User Model In Database
@@ -67,8 +138,10 @@ const { hash } = require("bcryptjs");
 const userInfo = {
     firstName: "Soliman",
     lastName: "Asfour",
-    email: "admin@gmail.com",
-    password: "12345678",
+    email: process.env.MAIN_ADMIN_EMAIL,
+    password: process.env.MAIN_ADMIN_PASSWORD,
+    isWebsiteOwner: true,
+    isMainAdmin: true,
     isAdmin: true,
     isMerchant: true,
     storeNamesAndIds: [
@@ -77,6 +150,12 @@ const userInfo = {
             id: "660b10d0b6087fd48cf059ae",
         }
     ],
+    permissions: {
+        deleteProduct: true,
+        showAndHideSections: true,
+        addNewAdmin: true,
+        changeBussinessEmailPassword: true,
+    },
 };
 
 async function create_admin_user_account() {

@@ -122,10 +122,7 @@ const adminSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    blockingReason: {
-        type: String,
-        default: "",
-    },
+    blockingReason: String,
 });
 
 // Create Store Model From Admin Schema
