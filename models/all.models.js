@@ -29,14 +29,6 @@ const adminSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    isAdmin: {
-        type: Boolean,
-        default: false,
-    },
-    isMerchant: {
-        type: Boolean,
-        default: false,
-    },
     storeNamesAndIds: {
         type: [
             {
@@ -159,6 +151,96 @@ const storeSchema = mongoose.Schema({
     productsType: {
         type: String,
         required: true,
+    },
+    productsDescription: {
+        type: String,
+        required: true,
+    },
+    admins: {
+        firstName: {
+            type: String,
+            required: true,
+        },
+        lastName: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: true,
+        },
+        password: {
+            type: String,
+            required: true,
+        },
+        permissions: {
+            addNewBrand: {
+                type: Boolean,
+                default: true,
+            },
+            updateBrandInfo: {
+                type: Boolean,
+                default: true,
+            },
+            deleteBrand: {
+                type: Boolean,
+                default: true,
+            },
+            updateOrderInfo: {
+                type: Boolean,
+                default: true,
+            },
+            deleteOrder: {
+                type: Boolean,
+                default: true,
+            },
+            updateOrderProductInfo: {
+                type: Boolean,
+                default: true,
+            },
+            deleteOrderProduct: {
+                type: Boolean,
+                default: true,
+            },
+            addNewCategory: {
+                type: Boolean,
+                default: true,
+            },
+            updateCategoryInfo: {
+                type: Boolean,
+                default: true,
+            },
+            deleteCategory: {
+                type: Boolean,
+                default: true,
+            },
+            addNewProduct: {
+                type: Boolean,
+                default: true,
+            },
+            updateProductInfo: {
+                type: Boolean,
+                default: true,
+            },
+            deleteProduct: {
+                type: Boolean,
+                default: true,
+            },
+            showAndHideSections: {
+                type: Boolean,
+                default: false,
+            },
+            addNewAdmin: {
+                type: Boolean,
+                default: true,
+            },
+            changeBussinessEmailPassword: {
+                type: Boolean,
+                default: false,
+            },
+        },
+        isBlocked: Boolean,
+        blockingReason: String,
     },
 });
 
