@@ -19,7 +19,10 @@ const adminSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    password: String,
+    password: {
+        type: String,
+        required: true,
+    },
     isAdmin: {
         type: Boolean,
         default: false,
@@ -28,13 +31,20 @@ const adminSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    storeName: {
-        type: String,
-        default: "",
-    },
-    storeId: {
-        type: String,
-        default: "",
+    storeNamesAndIds: {
+        type: [
+            {
+                name: {
+                    type: String,
+                    required: true,
+                },
+                id: {
+                    type: String,
+                    required: true,
+                },
+            }
+        ],
+        required: true,
     },
     isBlocked: {
         type: Boolean,
@@ -42,7 +52,7 @@ const adminSchema = mongoose.Schema({
     },
     blockingReason: {
         type: String,
-        required: true,
+        default: "",
     },
 });
 
@@ -58,11 +68,15 @@ const userInfo = {
     firstName: "Soliman",
     lastName: "Asfour",
     email: "admin@gmail.com",
-    password: String,
+    password: "12345678",
     isAdmin: true,
     isMerchant: true,
-    storeName: "Ubuyblues",
-    storeId: "",
+    storeNamesAndIds: [
+        {
+            name: "Ubuyblues",
+            id: "660b10d0b6087fd48cf059ae",
+        }
+    ],
 };
 
 async function create_admin_user_account() {
