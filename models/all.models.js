@@ -26,13 +26,20 @@ const adminSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    storeName: {
-        type: String,
-        default: "",
-    },
-    storeId: {
-        type: String,
-        default: "",
+    storeNamesAndIds: {
+        type: [
+            {
+                name: {
+                    type: String,
+                    required: true,
+                },
+                id: {
+                    type: String,
+                    required: true,
+                },
+            }
+        ],
+        required: true,
     },
     isBlocked: {
         type: Boolean,

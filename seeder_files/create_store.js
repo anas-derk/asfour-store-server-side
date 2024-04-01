@@ -50,11 +50,6 @@ const storeInfo = {
 async function createStore() {
     try {
         await mongoose.connect(process.env.DB_URL);
-        const user = await storeModel.findOne({ email: userInfo.email });
-        if (user) {
-            await mongoose.disconnect();
-            return "Sorry, Can't Insert Store Data To Database Because it is Exist !!!";
-        }
         let newStore = new storeModel(storeInfo);
         await newStore.save();
         await mongoose.disconnect();
