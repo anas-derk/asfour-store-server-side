@@ -21,6 +21,14 @@ const adminSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    isWebsiteOwner: {
+        type: Boolean,
+        default: false,
+    },
+    isMainAdmin: {
+        type: Boolean,
+        default: false,
+    },
     isAdmin: {
         type: Boolean,
         default: false,
@@ -43,6 +51,72 @@ const adminSchema = mongoose.Schema({
             }
         ],
         required: true,
+    },
+    permissions: {
+        addNewBrand: {
+            type: Boolean,
+            default: true,
+        },
+        updateBrandInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteBrand: {
+            type: Boolean,
+            default: true,
+        },
+        updateOrderInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteOrder: {
+            type: Boolean,
+            default: true,
+        },
+        updateOrderProductInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteOrderProduct: {
+            type: Boolean,
+            default: true,
+        },
+        addNewCategory: {
+            type: Boolean,
+            default: true,
+        },
+        updateCategoryInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteCategory: {
+            type: Boolean,
+            default: true,
+        },
+        addNewProduct: {
+            type: Boolean,
+            default: true,
+        },
+        updateProductInfo: {
+            type: Boolean,
+            default: true,
+        },
+        deleteProduct: {
+            type: Boolean,
+            default: true,
+        },
+        showAndHideSections: {
+            type: Boolean,
+            default: false,
+        },
+        addNewAdmin: {
+            type: Boolean,
+            default: true,
+        },
+        changeBussinessEmailPassword: {
+            type: Boolean,
+            default: false,
+        },
     },
     isBlocked: {
         type: Boolean,
