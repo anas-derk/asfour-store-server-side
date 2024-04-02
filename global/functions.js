@@ -1,3 +1,5 @@
+const { Types } = require("mongoose");
+
 function isEmail(email) {
     return email.match(/[^\s@]+@[^\s@]+\.[^\s@]+/);
 }
@@ -85,6 +87,13 @@ function checkIsExistValueForFieldsAndDataTypes(fieldNamesAndValuesAndDataTypes)
                     {}
                 );
             } 
+            if (fieldnameAndValueAndDataType.dataType === "ObjectId" && !Types.ObjectId.isValid(fieldnameAndValueAndDataType.fieldValue))  {
+                return getResponseObject(
+                    `Invalid Request, Please Fix Type Of ${fieldnameAndValueAndDataType.fieldName} ( Required: ${fieldnameAndValueAndDataType.dataType} ) !!`,
+                    true,
+                    {}
+                );
+            }
             if (typeof fieldnameAndValueAndDataType.fieldValue !== fieldnameAndValueAndDataType.dataType)
                 return getResponseObject(
                     `Invalid Request, Please Fix Type Of ${fieldnameAndValueAndDataType.fieldName} ( Required: ${fieldnameAndValueAndDataType.dataType} ) !!`,

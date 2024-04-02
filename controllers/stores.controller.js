@@ -19,6 +19,7 @@ async function getAllStoresInsideThePage(req, res) {
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
             { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
             { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
+            { fieldName: "Store Id", fieldValue: filters._id, dataType: "ObjectId", isRequiredValue: false },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
@@ -38,6 +39,7 @@ async function getStoresCount(req, res) {
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
             { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: false },
             { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: false },
+            { fieldName: "Store Id", fieldValue: filters._id, dataType: "ObjectId", isRequiredValue: false },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
