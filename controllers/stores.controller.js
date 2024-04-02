@@ -4,10 +4,11 @@ function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
         if (objectKey === "_id") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "name") filtersObject[objectKey] = filters[objectKey];
         if (objectKey === "status") filtersObject[objectKey] = filters[objectKey];
-        if (objectKey === "customerName") filtersObject[`billing_address.given_name`] = filters[objectKey];
-        if (objectKey === "email") filtersObject[`billing_address.email`] = filters[objectKey];
-        if (objectKey === "customerId") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "ownerFirstName") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "ownerLastName") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "ownerEmail") filtersObject[`ownerEmail`] = filters[objectKey];
     }
     return filtersObject;
 }
