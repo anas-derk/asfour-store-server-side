@@ -8,16 +8,12 @@ storesRouter.get("/all-stores-inside-the-page", storesController.getAllStoresIns
 
 storesRouter.get("/stores-count", storesController.getStoresCount);
 
-// ordersRouter.get("/order-details/:orderId", ordersController.getOrderDetails);
+storesRouter.get("/store-details/:orderId", storesController.getStoreDetails);
 
-// ordersRouter.post("/create-new-order", ordersController.postNewOrder);
+storesRouter.post("/create-new-store", storesController.postNewStore);
 
-// ordersRouter.post("/update-order/:orderId", validateJWT, ordersController.putOrder);
+storesRouter.post("/update-store/:orderId", validateJWT, storesController.putStoreInfo);
 
-// ordersRouter.put("/products/update-product/:orderId/:productId", validateJWT, ordersController.putOrderProduct);
-
-// ordersRouter.delete("/delete-order/:orderId", validateJWT, ordersController.deleteOrder);
-
-// ordersRouter.delete("/products/delete-product/:orderId/:productId", validateJWT, ordersController.deleteProductFromOrder);
+storesRouter.delete("/delete-store/:orderId", validateJWT, storesController.deleteStore);
 
 module.exports = storesRouter;

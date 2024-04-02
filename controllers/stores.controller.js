@@ -53,7 +53,75 @@ async function getStoresCount(req, res) {
     }
 }
 
+async function getStoreDetails(req, res) {
+    try{
+        const storeId = req.params.storeId;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
+        }
+        const { getStoreDetails } = require("../models/stores.model");
+        await res.json(await getStoreDetails(storeId));
+    }
+    catch(err) {
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+async function postNewStore(req, res) {
+    try{
+        const { postNewStore } = require("../models/stores.model");
+        await res.json(await postNewStore(req.body));
+    }
+    catch(err) {
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function putStoreInfo(req, res) {
+    try{
+        const storeId = req.params.storeId;
+        const newStoreDetails = req.body;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
+        }
+        const { updateStoreInfo } = require("../models/stores.model");
+        await res.json(await updateStoreInfo(storeId, newStoreDetails));
+    }
+    catch(err){
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function deleteStore(req, res) {
+    try{
+        const storeId = req.params.storeId;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
+        }
+        const { deleteStore } = require("../models/stores.model");
+        await res.json(await deleteStore(storeId));
+    }
+    catch(err){
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 module.exports = {
     getAllStoresInsideThePage,
     getStoresCount,
+    getStoreDetails,
+    postNewStore,
+    putStoreInfo,
+    deleteStore,
 }
