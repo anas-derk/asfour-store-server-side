@@ -31,6 +31,10 @@ const storeSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    productsDescription: {
+        type: String,
+        required: true,
+    },
 });
 
 // Create Store Model From Store Schema
@@ -45,6 +49,7 @@ const storeInfo = {
     ownerEmail: "admin@gmail.com",
     isApproved: true,
     productsType: "Multiple",
+    productsDescription: "Welcome To Ubuyblues Store",
 };
 
 async function createStore() {

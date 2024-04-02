@@ -27,14 +27,6 @@ const adminSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    isMainAdmin: {
-        type: Boolean,
-        default: false,
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false,
-    },
     isMerchant: {
         type: Boolean,
         default: false,
@@ -54,72 +46,36 @@ const adminSchema = mongoose.Schema({
         ],
         required: true,
     },
-    permissions: {
-        addNewBrand: {
-            type: Boolean,
-            default: true,
+    permissions: [
+        {
+            name: {
+                type: String,
+                required: true,
+                enum: [
+                    "Add New Brand",
+                    "Update Brand Info",
+                    "Delete Brand",
+                    "Update Order Info",
+                    "Delete Order",
+                    "Update Order Info",
+                    "Update Order Product Info",
+                    "Delete Order Product",
+                    "Add New Category",
+                    "Update Category Info",
+                    "Delete Category",
+                    "Add New Product",
+                    "Update Product Info",
+                    "Delete Product",
+                    "Show And Hide Sections",
+                    "Change Bussiness Email Password",
+                ],
+            },
+            value: {
+                type: Boolean,
+                required: true,
+            }
         },
-        updateBrandInfo: {
-            type: Boolean,
-            default: true,
-        },
-        deleteBrand: {
-            type: Boolean,
-            default: true,
-        },
-        updateOrderInfo: {
-            type: Boolean,
-            default: true,
-        },
-        deleteOrder: {
-            type: Boolean,
-            default: true,
-        },
-        updateOrderProductInfo: {
-            type: Boolean,
-            default: true,
-        },
-        deleteOrderProduct: {
-            type: Boolean,
-            default: true,
-        },
-        addNewCategory: {
-            type: Boolean,
-            default: true,
-        },
-        updateCategoryInfo: {
-            type: Boolean,
-            default: true,
-        },
-        deleteCategory: {
-            type: Boolean,
-            default: true,
-        },
-        addNewProduct: {
-            type: Boolean,
-            default: true,
-        },
-        updateProductInfo: {
-            type: Boolean,
-            default: true,
-        },
-        deleteProduct: {
-            type: Boolean,
-            default: true,
-        },
-        showAndHideSections: {
-            type: Boolean,
-            default: false,
-        },
-        addNewAdmin: {
-            type: Boolean,
-            default: true,
-        },
-        changeBussinessEmailPassword: {
-            type: Boolean,
-            default: false,
-        },
-    },
+    ],
     isBlocked: {
         type: Boolean,
         default: false,
@@ -141,21 +97,79 @@ const userInfo = {
     email: process.env.MAIN_ADMIN_EMAIL,
     password: process.env.MAIN_ADMIN_PASSWORD,
     isWebsiteOwner: true,
-    isMainAdmin: true,
-    isAdmin: true,
     isMerchant: true,
     storeNamesAndIds: [
         {
             name: "Ubuyblues",
-            id: "660b10d0b6087fd48cf059ae",
+            id: "660b68f8877eb32dd398015c",
         }
     ],
-    permissions: {
-        deleteProduct: true,
-        showAndHideSections: true,
-        addNewAdmin: true,
-        changeBussinessEmailPassword: true,
-    },
+    permissions: [
+        {
+            name: "Add New Brand",
+            value: true,
+        },
+        {
+            name: "Update Brand Info",
+            value: true,
+        },
+        {
+            name: "Delete Brand",
+            value: true,
+        },
+        {
+            name: "Update Order Info",
+            value: true,
+        },
+        {
+            name: "Delete Order",
+            value: true,
+        },
+        {
+            name: "Update Order Info",
+            value: true,
+        },
+        {
+            name: "Update Order Product Info",
+            value: true,
+        },
+        {
+            name: "Delete Order Product",
+            value: true,
+        },
+        {
+            name: "Add New Category",
+            value: true,
+        },
+        {
+            name: "Update Category Info",
+            value: true,
+        },
+        {
+            name: "Delete Category",
+            value: true,
+        },
+        {
+            name: "Add New Product",
+            value: true,
+        },
+        {
+            name: "Update Product Info",
+            value: true,
+        },
+        {
+            name: "Delete Product",
+            value: true,
+        },
+        {
+            name: "Show And Hide Sections",
+            value: true,
+        },
+        {
+            name: "Change Bussiness Email Password",
+            value: true,
+        },
+    ]
 };
 
 async function create_admin_user_account() {
