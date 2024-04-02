@@ -13,7 +13,7 @@ async function getAdminLogin(req, res) {
             return;
         }
         if (isEmail(email)) {
-            const { adminLogin } = require("../models/admin.model");
+            const { adminLogin } = require("../models/admins.model");
             const result = await adminLogin(email.toLowerCase(), password);
             if (!result.error) {
                 const { sign } = require("jsonwebtoken");
@@ -39,7 +39,7 @@ async function getAdminLogin(req, res) {
 
 async function getAdminUserInfo(req, res) {
     try{
-        const { getAdminUserInfo } = require("../models/admin.model");
+        const { getAdminUserInfo } = require("../models/admins.model");
         await res.json(await getAdminUserInfo(req.data._id));
     }
     catch(err){

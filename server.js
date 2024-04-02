@@ -42,7 +42,7 @@ app.listen(PORT, async () => {
 
 /* Start Handle The Routes */
 
-app.use("/admins", require("./routes/admin.router"));
+app.use("/admins", require("./routes/admins.router"));
 
 app.use("/products", require("./routes/products.router"));
 
@@ -61,6 +61,8 @@ app.use("/global-passwords", require("./routes/global_passwords"));
 app.use("/subscriptions", require("./routes/subscriptions.router"));
 
 app.use("/referals", require("./routes/referals.router"));
+
+app.use("/stores", require("./routes/stores.router"));
 
 /* End Handle The Routes */
 

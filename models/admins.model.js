@@ -1,6 +1,6 @@
 // Import Admin Model Object
 
-const { adminModel } = require("../models/all.models");
+const { adminModel } = require("./all.models");
 
 const { compare } = require("bcryptjs");
 
