@@ -23,6 +23,10 @@ const storeSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    ownerEmail: {
+        type: String,
+        required: true,
+    },
     isApproved: {
         type: Boolean,
         default: false,
@@ -35,6 +39,14 @@ const storeSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    creatingOrderDate: {
+        type: Date,
+        default: Date.now(),
+    },
+    approveDate: Date,
+    rejectionDate: Date,
+    blockingDate: Date,
+    dateOfCancelBlocking: Date,
 });
 
 // Create Store Model From Store Schema

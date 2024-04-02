@@ -81,6 +81,12 @@ const adminSchema = mongoose.Schema({
         default: false,
     },
     blockingReason: String,
+    creatingDate: {
+        type: Date,
+        default: Date.now(),
+    },
+    blockingDate: Date,
+    dateOfCancelBlocking: Date,
 });
 
 // create Admin User Model In Database

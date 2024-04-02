@@ -79,6 +79,12 @@ const adminSchema = mongoose.Schema({
         default: false,
     },
     blockingReason: String,
+    creatingDate: {
+        type: Date,
+        default: Date.now(),
+    },
+    blockingDate: Date,
+    dateOfCancelBlocking: Date,
 });
 
 // Create Store Model From Admin Schema
@@ -120,6 +126,14 @@ const storeSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    creatingOrderDate: {
+        type: Date,
+        default: Date.now(),
+    },
+    approveDate: Date,
+    rejectionDate: Date,
+    blockingDate: Date,
+    dateOfCancelBlocking: Date,
 });
 
 // Create Store Model From Store Schema
