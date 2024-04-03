@@ -48,7 +48,7 @@ async function getStoreDetails(storeId) {
 
 async function createNewStore(storeDetails) {
     try{
-        const store = await storeModel.findOne({ email: storeDetails.ownerEmail });
+        const store = await storeModel.findOne({ ownerEmail: storeDetails.ownerEmail });
         if (store) {
             return {
                 msg: "Sorry, This Email Is Already Exist !!",

@@ -73,8 +73,13 @@ async function getStoreDetails(req, res) {
 
 async function postNewStore(req, res) {
     try{
+        const uploadError = req.uploadError;
+        if (uploadError) {
+            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            return;
+        }
         const { createNewStore } = require("../models/stores.model");
-        await res.json(await createNewStore(req.body));
+        await res.json(await createNewStore(Object.assign({}, { ...req.body, imagePath: req.file.path })));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
