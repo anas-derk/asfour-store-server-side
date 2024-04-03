@@ -31,19 +31,8 @@ const adminSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    storeNamesAndIds: {
-        type: [
-            {
-                name: {
-                    type: String,
-                    required: true,
-                },
-                id: {
-                    type: String,
-                    required: true,
-                },
-            }
-        ],
+    storeId: {
+        type: String,
         required: true,
     },
     permissions: [
@@ -104,12 +93,7 @@ const userInfo = {
     password: process.env.MAIN_ADMIN_PASSWORD,
     isWebsiteOwner: true,
     isMerchant: true,
-    storeNamesAndIds: [
-        {
-            name: "Ubuyblues",
-            id: "660b68f8877eb32dd398015c",
-        }
-    ],
+    storeId: "660b68f8877eb32dd398015c",
     permissions: [
         {
             name: "Add New Brand",
@@ -175,7 +159,7 @@ const userInfo = {
             name: "Change Bussiness Email Password",
             value: true,
         },
-    ]
+    ],
 };
 
 async function create_admin_user_account() {

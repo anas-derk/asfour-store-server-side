@@ -29,19 +29,8 @@ const adminSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    storeNamesAndIds: {
-        type: [
-            {
-                name: {
-                    type: String,
-                    required: true,
-                },
-                id: {
-                    type: String,
-                    required: true,
-                },
-            }
-        ],
+    storeId: {
+        type: String,
         required: true,
     },
     permissions: [
