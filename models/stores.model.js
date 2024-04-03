@@ -46,6 +46,29 @@ async function getStoreDetails(storeId) {
     }
 }
 
+async function createNewStore(storeDetails) {
+    try{
+        const store = await storeModel.findOne({ email: storeDetails.ownerEmail });
+        if (store) {
+            return {
+                msg: "Sorry, This Email Is Already Exist !!",
+                error: true,
+                data: {},
+            }
+        }
+        const newStore = new storeModel(storeDetails);
+        await newStore.save();
+        return {
+            msg: "Creating New Store Process Has Been Successfully !!",
+            error: false,
+            data: {},
+        }
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 async function updateStoreInfo(storeId, newStoreDetails) {
     try {
         const store = await storeModel.findById(storeId);
@@ -92,6 +115,7 @@ module.exports = {
     getAllStoresInsideThePage,
     getStoresCount,
     getStoreDetails,
+    createNewStore,
     updateStoreInfo,
     deleteStore,
 }

@@ -70,10 +70,11 @@ async function getStoreDetails(req, res) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
+
 async function postNewStore(req, res) {
     try{
-        const { postNewStore } = require("../models/stores.model");
-        await res.json(await postNewStore(req.body));
+        const { createNewStore } = require("../models/stores.model");
+        await res.json(await createNewStore(req.body));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
