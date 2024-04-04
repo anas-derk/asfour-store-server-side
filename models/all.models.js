@@ -324,6 +324,10 @@ const orderSchema = mongoose.Schema({
         type: String,
         default: "",
     },
+    storeId: {
+        type: String,
+        required: true,
+    },
     order_amount: {
         type: Number,
         default: 0,
@@ -476,8 +480,18 @@ const orderModel = mongoose.model("order", orderSchema);
 // Create Brand Schema
 
 const brandSchema = mongoose.Schema({
-    imagePath: String,
-    title: String,
+    imagePath: {
+        type: String,
+        required: true,
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    storeId: {
+        type: String,
+        required: true,
+    }
 });
 
 // Create Brand Model From Brand Schema
