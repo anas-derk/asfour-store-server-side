@@ -103,10 +103,6 @@ const storeSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    isApproved: {
-        type: Boolean,
-        default: false,
-    },
     productsType: {
         type: String,
         required: true,
@@ -114,6 +110,16 @@ const storeSchema = mongoose.Schema({
     productsDescription: {
         type: String,
         required: true,
+    },
+    status: {
+        type: String,
+        default: "pending",
+        enum: [
+            "pending",
+            "approved",
+            "rejected",
+            "blocked",
+        ],
     },
     creatingOrderDate: {
         type: Date,
