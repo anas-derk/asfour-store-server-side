@@ -7,17 +7,20 @@ async function postNewBrand(req, res) {
             await res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
-        const newBrandTitle = req.body.title;
+        const brandInfo = {
+            ...Object.assign({}, req.body),
+            imagePath: req.file.path,
+        };
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "new Brand Title", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
+            { fieldName: "Brand Title", fieldValue: brandInfo.title, dataType: "string", isRequiredValue: true },
+            { fieldName: "Store Id", fieldValue: brandInfo.storeId, dataType: "ObjectId", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
             return;
         }
-        const newBrandImagePath = req.file.path;
         const { addNewBrand } = require("../models/brands.model");
-        await res.json(await addNewBrand({ imagePath: newBrandImagePath, title: newBrandTitle }));
+        await res.json(await addNewBrand(brandInfo));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -90,11 +93,11 @@ async function deleteBrand(req, res) {
 
 async function putBrandInfo(req, res) {
     try{
-        const brandId = req.params.brandId;
-        const newBrandTitle = req.body.newBrandTitle;
+        const   brandId = req.params.brandId,
+                newBrandTitle = req.body.newBrandTitle;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
-            { fieldName: "newBrandTitle", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
+            { fieldName: "Brand Id", fieldValue: brandId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "New Brand Title", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             await res.status(400).json(checkResult);
