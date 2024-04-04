@@ -34,37 +34,39 @@ const mongoose = require("mongoose");
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
+
     console.log(`The Server Is Running On: http://localhost:${PORT}`);
+    
     await mongoose.connect(process.env.DB_URL);
+
+    /* Start Handle The Routes */
+
+    app.use("/admins", require("./routes/admins.router"));
+
+    app.use("/products", require("./routes/products.router"));
+
+    app.use("/users", require("./routes/users.router"));
+
+    app.use("/categories", require("./routes/categories.router"));
+
+    app.use("/orders", require("./routes/orders.router"));
+
+    app.use("/brands", require("./routes/brands.router"));
+
+    app.use("/appeared-sections", require("./routes/appeared_sections.router"));
+
+    app.use("/global-passwords", require("./routes/global_passwords"));
+
+    app.use("/subscriptions", require("./routes/subscriptions.router"));
+
+    app.use("/referals", require("./routes/referals.router"));
+
+    app.use("/stores", require("./routes/stores.router"));
+
+    /* End Handle The Routes */
 });
 
 /* End Running The Server */
-
-/* Start Handle The Routes */
-
-app.use("/admins", require("./routes/admins.router"));
-
-app.use("/products", require("./routes/products.router"));
-
-app.use("/users", require("./routes/users.router"));
-
-app.use("/categories", require("./routes/categories.router"));
-
-app.use("/orders", require("./routes/orders.router"));
-
-app.use("/brands", require("./routes/brands.router"));
-
-app.use("/appeared-sections", require("./routes/appeared_sections.router"));
-
-app.use("/global-passwords", require("./routes/global_passwords"));
-
-app.use("/subscriptions", require("./routes/subscriptions.router"));
-
-app.use("/referals", require("./routes/referals.router"));
-
-app.use("/stores", require("./routes/stores.router"));
-
-/* End Handle The Routes */
 
 /* Start Handling Events */
 
