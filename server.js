@@ -37,7 +37,12 @@ app.listen(PORT, async () => {
 
     console.log(`The Server Is Running On: http://localhost:${PORT}`);
     
-    await mongoose.connect(process.env.DB_URL);
+    try{
+        await mongoose.connect(process.env.DB_URL);
+    }
+    catch(err) {
+        console.log(err);
+    }
 
     /* Start Handle The Routes */
 
