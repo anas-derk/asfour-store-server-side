@@ -116,9 +116,9 @@ const storeSchema = mongoose.Schema({
         default: "pending",
         enum: [
             "pending",
-            "approved",
-            "rejected",
-            "blocked",
+            "approving",
+            "rejecting",
+            "blocking",
         ],
     },
     creatingOrderDate: {
