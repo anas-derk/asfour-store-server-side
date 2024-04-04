@@ -132,10 +132,22 @@ const storeModel = mongoose.model("store", storeSchema);
 // Create Product Schema
 
 const productSchema = mongoose.Schema({
-    name: String,
-    price: Number,
-    description: String,
-    category: String,
+    name: {
+        type: String,
+        required: true,
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    category: {
+        type: String,
+        required: true,
+    },
     discount: {
         type: Number,
         default: 0,
@@ -148,10 +160,17 @@ const productSchema = mongoose.Schema({
         type: Date,
         default: Date.now(),
     },
-    imagePath: String,
+    imagePath: {
+        type: String,
+        required: true,
+    },
     galleryImagesPaths: Array,
     startDiscountPeriod: Date,
     endDiscountPeriod: Date,
+    storeId: {
+        type: String,
+        required: true,
+    }
 });
 
 // Create Product Model From Product Schema
@@ -284,7 +303,14 @@ const userModel = mongoose.model("user", userSchema);
 // Create Category Schema
 
 const categorySchema = mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true,
+    },
+    storeId: {
+        type: String,
+        required: true,
+    }
 });
 
 // Create Category Model From Category Schema

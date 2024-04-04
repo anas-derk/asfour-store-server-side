@@ -94,7 +94,7 @@ function checkIsExistValueForFieldsAndDataTypes(fieldNamesAndValuesAndDataTypes)
                     {}
                 );
             }
-            if (typeof fieldnameAndValueAndDataType.fieldValue !== fieldnameAndValueAndDataType.dataType)
+            if (typeof fieldnameAndValueAndDataType.fieldValue !== fieldnameAndValueAndDataType.dataType && fieldnameAndValueAndDataType.dataType !== "ObjectId")
                 return getResponseObject(
                     `Invalid Request, Please Fix Type Of ${fieldnameAndValueAndDataType.fieldName} ( Required: ${fieldnameAndValueAndDataType.dataType} ) !!`,
                     true,
