@@ -116,7 +116,7 @@ async function deleteStore(req, res) {
             return;
         }
         const { deleteStore } = require("../models/stores.model");
-        await res.json(await deleteStore(storeId));
+        await res.json(await deleteStore(req.data._id, storeId));
     }
     catch(err){
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
