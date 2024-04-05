@@ -1,6 +1,6 @@
 // Import  Order Model Object
 
-const { storeModel, adminModel } = require("../models/all.models");
+const { storeModel, adminModel, categoryModel, productModel, brandModel } = require("../models/all.models");
 
 async function getAllStoresInsideThePage(pageNumber, pageSize, filters) {
     try {
@@ -74,9 +74,8 @@ async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
             if (admin.isWebsiteOwner) {
-                const store = await storeModel.findById(storeId);
+                const store = await storeModel.findOneAndUpdate({ _id: storeId }, { ...newStoreDetails });
                 if (store) {
-                    await storeModel.updateOne({ _id: storeId }, { ...newStoreDetails });
                     return {
                         msg: `Update Details For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
                         error: false,
@@ -94,20 +93,45 @@ async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
                 error: true,
                 data: {},
             }
-        } else {
-            return {
-                msg: "Sorry, This Admin Is Not Valid !!",
-                error: true,
-                data: {},
-            }
+        }
+        return {
+            msg: "Sorry, This Admin Is Not Valid !!",
+            error: true,
+            data: {},
         }
     } catch (err) {
         throw Error(err);
     }
 }
 
-async function deleteStore(storeId){
+async function deleteStore(authorizationId, storeId){
     try{
+        const admin = await adminModel.findById(authorizationId);
+        if (admin) {
+            if (admin.isWebsiteOwner) {
+                const store = await storeModel.findOneAndDelete({ _id: storeId });
+                if (store) {
+                    await categoryModel.deleteMany({ storeId });
+                    await productModel.deleteMany({ storeId });
+                    await brandModel.deleteMany({ storeId });
+                    return {
+                        msg: `Delete Store Process Has Been Successfully !!`,
+                        error: false,
+                        data: {},
+                    };
+                }
+                return {
+                    msg: "Sorry, This Store Is Not Found !!",
+                    error: true,
+                    data: {},
+                };
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
         const store = await storeModel.deleteOne({ _id: storeId });
         if (store) {
             return {
