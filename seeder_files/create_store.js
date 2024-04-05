@@ -50,7 +50,6 @@ const storeSchema = mongoose.Schema({
         default: Date.now(),
     },
     approveDate: Date,
-    rejectionDate: Date,
     blockingDate: Date,
     dateOfCancelBlocking: Date,
 });

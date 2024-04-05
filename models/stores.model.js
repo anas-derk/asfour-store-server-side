@@ -83,6 +83,24 @@ async function approveStore(authorizationId, storeId) {
                             data: {},
                         };
                     }
+                    if (store.status === "blocking") {
+                        return {
+                            msg: `Sorry, This Store Is Blocked !!`,
+                            error: true,
+                            data: {
+                                blockingDate: store.blockingDate,
+                                blockingReason: store.blockingReason,
+                            },
+                        };
+                    }
+                    const newMerchant = new admin({
+                        firstName: store.ownerFirstName,
+                        lastName: store.ownerLastName,
+                        email: store.ownerEmail,
+                        password: "",
+                        isMerchant: true,
+                        storeId,
+                    })
                     return {
                         msg: `Update Details For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
                         error: false,
@@ -157,6 +175,7 @@ async function deleteStore(authorizationId, storeId){
                     await categoryModel.deleteMany({ storeId });
                     await productModel.deleteMany({ storeId });
                     await brandModel.deleteMany({ storeId });
+                    await admin.deleteOne({ storeId });
                     return {
                         msg: `Delete Store Process Has Been Successfully !!`,
                         error: false,

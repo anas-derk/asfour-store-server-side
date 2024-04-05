@@ -126,9 +126,9 @@ const storeSchema = mongoose.Schema({
         default: Date.now(),
     },
     approveDate: Date,
-    rejectionDate: Date,
     blockingDate: Date,
     dateOfCancelBlocking: Date,
+    blockingReason: String,
 });
 
 // Create Store Model From Store Schema
