@@ -1,6 +1,6 @@
 // Import  Order Model Object
 
-const { storeModel } = require("../models/all.models");
+const { storeModel, adminModel } = require("../models/all.models");
 
 async function getAllStoresInsideThePage(pageNumber, pageSize, filters) {
     try {
@@ -69,22 +69,38 @@ async function createNewStore(storeDetails) {
     }
 }
 
-async function updateStoreInfo(storeId, newStoreDetails) {
+async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
     try {
-        const store = await storeModel.findById(storeId);
-        if (store) {
-            await storeModel.updateOne({ _id: storeId }, { ...newStoreDetails });
+        const admin = await adminModel.findById(authorizationId);
+        if (admin) {
+            if (admin.isWebsiteOwner) {
+                const store = await storeModel.findById(storeId);
+                if (store) {
+                    await storeModel.updateOne({ _id: storeId }, { ...newStoreDetails });
+                    return {
+                        msg: `Update Details For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
+                        error: false,
+                        data: {},
+                    };
+                }
+                return {
+                    msg: "Sorry, This Store Is Not Found !!",
+                    error: true,
+                    data: {},
+                };
+            }
             return {
-                msg: `Update Details For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
-                error: false,
+                msg: "Sorry, Permission Denied !!",
+                error: true,
                 data: {},
-            };
+            }
+        } else {
+            return {
+                msg: "Sorry, This Admin Is Not Valid !!",
+                error: true,
+                data: {},
+            }
         }
-        return {
-            msg: "Sorry, This Store Is Not Found !!",
-            error: true,
-            data: {},
-        };
     } catch (err) {
         throw Error(err);
     }

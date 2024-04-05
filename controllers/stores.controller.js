@@ -98,7 +98,7 @@ async function putStoreInfo(req, res) {
             return;
         }
         const { updateStoreInfo } = require("../models/stores.model");
-        await res.json(await updateStoreInfo(storeId, newStoreDetails));
+        await res.json(await updateStoreInfo(req.data._id, storeId, newStoreDetails));
     }
     catch(err){
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

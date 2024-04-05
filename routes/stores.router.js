@@ -19,7 +19,7 @@ storesRouter.get("/all-stores-inside-the-page", storesController.getAllStoresIns
 
 storesRouter.get("/stores-count", storesController.getStoresCount);
 
-storesRouter.get("/store-details/:orderId", storesController.getStoreDetails);
+storesRouter.get("/store-details/:storeId", storesController.getStoreDetails);
 
 storesRouter.post("/create-new-store", multer({
     storage,
@@ -40,8 +40,8 @@ storesRouter.post("/create-new-store", multer({
     }
 }).single("storeImg") ,storesController.postNewStore);
 
-storesRouter.post("/update-store/:orderId", validateJWT, storesController.putStoreInfo);
+storesRouter.post("/update-store-info/:storeId", validateJWT, storesController.putStoreInfo);
 
-storesRouter.delete("/delete-store/:orderId", validateJWT, storesController.deleteStore);
+storesRouter.delete("/delete-store/:storeId", validateJWT, storesController.deleteStore);
 
 module.exports = storesRouter;
