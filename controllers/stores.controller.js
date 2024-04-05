@@ -81,7 +81,11 @@ async function postNewStore(req, res) {
             return;
         }
         const { createNewStore } = require("../models/stores.model");
-        res.json(await createNewStore(Object.assign({}, { ...req.body, imagePath: req.file.path })));
+        const result = await createNewStore(Object.assign({}, { ...req.body, imagePath: req.file.path }));
+        res.json(result);
+        if (result.error) {
+            unlinkSync(req.file.path);
+        }
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -100,8 +104,11 @@ async function postApproveStore(req, res) {
         }
         const { approveStore } = require("../models/stores.model");
         const result = await approveStore(req.data._id, storeId);
-        if (result.error && result.msg === "Sorry, Permission Denied !!") {
-            res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
         }
         res.json(result);
     }
@@ -122,7 +129,14 @@ async function putStoreInfo(req, res) {
             return;
         }
         const { updateStoreInfo } = require("../models/stores.model");
-        res.json(await updateStoreInfo(req.data._id, storeId, newStoreDetails));
+        const result = await updateStoreInfo(req.data._id, storeId, newStoreDetails);
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        res.json(result);
     }
     catch(err){
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -141,7 +155,13 @@ async function deleteStore(req, res) {
         }
         const { deleteStore } = require("../models/stores.model");
         const result = await deleteStore(req.data._id, storeId);
-        if (!result.error) {
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        else {
             unlinkSync(result.data.storeImagePath);
         }
         res.json(result);

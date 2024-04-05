@@ -132,7 +132,7 @@ async function approveStore(authorizationId, storeId) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Valid !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -168,7 +168,7 @@ async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Valid !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -187,7 +187,7 @@ async function deleteStore(authorizationId, storeId){
                     await categoryModel.deleteMany({ storeId });
                     await productModel.deleteMany({ storeId });
                     await brandModel.deleteMany({ storeId });
-                    await admin.deleteOne({ storeId });
+                    await adminModel.deleteOne({ storeId });
                     return {
                         msg: `Delete Store Process Has Been Successfully !!`,
                         error: false,
@@ -208,16 +208,8 @@ async function deleteStore(authorizationId, storeId){
                 data: {},
             }
         }
-        const store = await storeModel.deleteOne({ _id: storeId });
-        if (store) {
-            return {
-                msg: "Deleting This Store Has Been Successfuly !!",
-                error: false,
-                data: {},
-            }
-        }
         return {
-            msg: "Sorry, This Store Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
