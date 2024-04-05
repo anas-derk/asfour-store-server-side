@@ -69,6 +69,49 @@ async function createNewStore(storeDetails) {
     }
 }
 
+async function approveStore(authorizationId, storeId) {
+    try{
+        const admin = await adminModel.findById(authorizationId);
+        if (admin) {
+            if (admin.isWebsiteOwner) {
+                const store = await storeModel.findById(storeId);
+                if (store) {
+                    if (store.status === "approving") {
+                        return {
+                            msg: `Sorry, This Store Is Already Approved !!`,
+                            error: true,
+                            data: {},
+                        };
+                    }
+                    return {
+                        msg: `Update Details For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
+                        error: false,
+                        data: {},
+                    };
+                }
+                return {
+                    msg: "Sorry, This Store Is Not Found !!",
+                    error: true,
+                    data: {},
+                };
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Admin Is Not Valid !!",
+            error: true,
+            data: {},
+        }
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
     try {
         const admin = await adminModel.findById(authorizationId);
@@ -156,6 +199,7 @@ module.exports = {
     getStoresCount,
     getStoreDetails,
     createNewStore,
+    approveStore,
     updateStoreInfo,
     deleteStore,
 }

@@ -86,6 +86,24 @@ async function postNewStore(req, res) {
     }
 }
 
+async function postApproveStore(req, res) {
+    try{
+        const storeId = req.params.storeId;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            await res.status(400).json(checkResult);
+            return;
+        }
+        const { approveStore } = require("../models/stores.model");
+        await res.json(await approveStore(req.data._id, storeId));
+    }
+    catch(err) {
+        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function putStoreInfo(req, res) {
     try{
         const storeId = req.params.storeId;
@@ -128,6 +146,7 @@ module.exports = {
     getStoresCount,
     getStoreDetails,
     postNewStore,
+    postApproveStore,
     putStoreInfo,
     deleteStore,
 }

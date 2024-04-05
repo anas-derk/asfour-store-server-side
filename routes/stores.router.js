@@ -40,7 +40,9 @@ storesRouter.post("/create-new-store", multer({
     }
 }).single("storeImg") ,storesController.postNewStore);
 
-storesRouter.post("/update-store-info/:storeId", validateJWT, storesController.putStoreInfo);
+storesRouter.post("/approve-store/:storeId", validateJWT, storesController.postApproveStore);
+
+storesRouter.put("/update-store-info/:storeId", validateJWT, storesController.putStoreInfo);
 
 storesRouter.delete("/delete-store/:storeId", validateJWT, storesController.deleteStore);
 
