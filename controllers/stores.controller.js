@@ -1,5 +1,7 @@
 const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
+const { unlinkSync } = require("fs");
+
 function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
@@ -22,14 +24,14 @@ async function getAllStoresInsideThePage(req, res) {
             { fieldName: "Store Id", fieldValue: filters._id, dataType: "ObjectId", isRequiredValue: false },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getAllStoresInsideThePage } = require("../models/stores.model");
-        await res.json(await getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -42,14 +44,14 @@ async function getStoresCount(req, res) {
             { fieldName: "Store Id", fieldValue: filters._id, dataType: "ObjectId", isRequiredValue: false },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getStoresCount } = require("../models/stores.model");
-        await res.json(await getStoresCount(getFiltersObject(filters)));
+        res.json(await getStoresCount(getFiltersObject(filters)));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -60,14 +62,14 @@ async function getStoreDetails(req, res) {
             { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getStoreDetails } = require("../models/stores.model");
-        await res.json(await getStoreDetails(storeId));
+        res.json(await getStoreDetails(storeId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -75,14 +77,14 @@ async function postNewStore(req, res) {
     try{
         const uploadError = req.uploadError;
         if (uploadError) {
-            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
         const { createNewStore } = require("../models/stores.model");
-        await res.json(await createNewStore(Object.assign({}, { ...req.body, imagePath: req.file.path })));
+        res.json(await createNewStore(Object.assign({}, { ...req.body, imagePath: req.file.path })));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -93,15 +95,18 @@ async function postApproveStore(req, res) {
             { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { approveStore } = require("../models/stores.model");
-        await res.json(await approveStore(req.data._id, storeId));
+        const result = await approveStore(req.data._id, storeId);
+        if (result.error && result.msg === "Sorry, Permission Denied !!") {
+            res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+        }
+        res.json(result);
     }
     catch(err) {
-        console.log(err);
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -113,14 +118,14 @@ async function putStoreInfo(req, res) {
             { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { updateStoreInfo } = require("../models/stores.model");
-        await res.json(await updateStoreInfo(req.data._id, storeId, newStoreDetails));
+        res.json(await updateStoreInfo(req.data._id, storeId, newStoreDetails));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -131,14 +136,18 @@ async function deleteStore(req, res) {
             { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { deleteStore } = require("../models/stores.model");
-        await res.json(await deleteStore(req.data._id, storeId));
+        const result = await deleteStore(req.data._id, storeId);
+        if (!result.error) {
+            unlinkSync(result.data.storeImagePath);
+        }
+        res.json(result);
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

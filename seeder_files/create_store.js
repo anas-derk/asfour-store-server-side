@@ -67,6 +67,8 @@ const storeInfo = {
     isApproved: true,
     productsType: "Multiple",
     productsDescription: "Welcome To Ubuyblues Store",
+    status: "approving",
+    approveDate: Date.now(),
 };
 
 async function createStore() {

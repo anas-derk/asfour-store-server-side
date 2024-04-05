@@ -191,7 +191,9 @@ async function deleteStore(authorizationId, storeId){
                     return {
                         msg: `Delete Store Process Has Been Successfully !!`,
                         error: false,
-                        data: {},
+                        data: {
+                            storeImagePath: store.imagePath,
+                        },
                     };
                 }
                 return {

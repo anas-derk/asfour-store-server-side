@@ -160,6 +160,7 @@ const userInfo = {
             value: true,
         },
     ],
+    
 };
 
 async function create_admin_user_account() {
