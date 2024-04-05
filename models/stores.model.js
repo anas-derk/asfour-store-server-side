@@ -2,6 +2,12 @@
 
 const { storeModel, adminModel, categoryModel, productModel, brandModel } = require("../models/all.models");
 
+const CodeGenerator = require("node-code-generator");
+
+// require bcryptjs module for password encrypting
+
+const { hash } = require("bcryptjs");
+
 async function getAllStoresInsideThePage(pageNumber, pageSize, filters) {
     try {
         return {
@@ -93,18 +99,24 @@ async function approveStore(authorizationId, storeId) {
                             },
                         };
                     }
-                    const newMerchant = new admin({
+                    await storeModel.updateOne({ _id: storeId }, { status: "approving", approveDate: Date.now() });
+                    const generator = new CodeGenerator();
+                    const generatedPassword = generator.generateCodes("****##**")[0];
+                    const newMerchant = new adminModel({
                         firstName: store.ownerFirstName,
                         lastName: store.ownerLastName,
                         email: store.ownerEmail,
-                        password: "",
+                        password: await hash(generatedPassword, 10),
                         isMerchant: true,
                         storeId,
-                    })
+                    });
+                    await newMerchant.save();
                     return {
-                        msg: `Update Details For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
+                        msg: `Approve Store: ( Store Id: ${ storeId }) And Create Merchant Account Process Has Been Successfully !!`,
                         error: false,
-                        data: {},
+                        data: {
+                            password: generatedPassword,
+                        },
                     };
                 }
                 return {

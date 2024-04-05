@@ -2,9 +2,9 @@ const { Types } = require("mongoose");
 
 const { getPasswordForBussinessEmail } = require("../models/global_passwords.model");
 
-const { createTransport } = require('nodemailer');
+const { createTransport } = require("nodemailer");
 
-const CodeGenerator = require('node-code-generator');
+const CodeGenerator = require("node-code-generator");
 
 const { join } = require("path");
 

@@ -100,6 +100,7 @@ async function postApproveStore(req, res) {
         await res.json(await approveStore(req.data._id, storeId));
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
