@@ -171,6 +171,36 @@ async function deleteStore(req, res) {
     }
 }
 
+async function deleteRejectStore(req, res) {
+    try{
+        const storeId = req.params.storeId;
+        const rejectReason = req.query.rejectReason;
+        const checkResult = checkIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Reject Reason", fieldValue: rejectReason, dataType: "string", isRequiredValue: true },
+        ]);
+        if (checkResult.error) {
+            res.status(400).json(checkResult);
+            return;
+        }
+        const { rejectStore } = require("../models/stores.model");
+        const result = await rejectStore(req.data._id, storeId);
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        else {
+            unlinkSync(result.data.storeImagePath);
+        }
+        res.json(result);
+    }
+    catch(err){
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 module.exports = {
     getAllStoresInsideThePage,
     getStoresCount,
@@ -179,4 +209,5 @@ module.exports = {
     postApproveStore,
     putStoreInfo,
     deleteStore,
+    deleteRejectStore,
 }

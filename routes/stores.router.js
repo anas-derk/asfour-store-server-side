@@ -46,4 +46,6 @@ storesRouter.put("/update-store-info/:storeId", validateJWT, storesController.pu
 
 storesRouter.delete("/delete-store/:storeId", validateJWT, storesController.deleteStore);
 
+storesRouter.delete("/reject-store/:storeId", validateJWT, storesController.deleteRejectStore);
+
 module.exports = storesRouter;

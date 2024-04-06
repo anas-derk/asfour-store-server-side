@@ -219,6 +219,44 @@ async function deleteStore(authorizationId, storeId){
     }
 }
 
+async function rejectStore(authorizationId, storeId){
+    try{
+        const admin = await adminModel.findById(authorizationId);
+        if (admin) {
+            if (admin.isWebsiteOwner) {
+                const store = await storeModel.findOneAndDelete({ _id: storeId });
+                if (store) {
+                    return {
+                        msg: `Delete Store Process Has Been Successfully !!`,
+                        error: false,
+                        data: {
+                            storeImagePath: store.imagePath,
+                        },
+                    };
+                }
+                return {
+                    msg: "Sorry, This Store Is Not Found !!",
+                    error: true,
+                    data: {},
+                };
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Admin Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    }
+    catch(err){
+        throw Error(err);
+    }
+}
+
 module.exports = {
     getAllStoresInsideThePage,
     getStoresCount,
@@ -227,4 +265,5 @@ module.exports = {
     approveStore,
     updateStoreInfo,
     deleteStore,
+    rejectStore,
 }
