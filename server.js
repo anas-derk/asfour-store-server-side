@@ -60,7 +60,7 @@ app.listen(PORT, async () => {
 
     app.use("/appeared-sections", require("./routes/appeared_sections.router"));
 
-    app.use("/global-passwords", require("./routes/global_passwords"));
+    app.use("/global-passwords", require("./routes/global_passwords.router"));
 
     app.use("/subscriptions", require("./routes/subscriptions.router"));
 
