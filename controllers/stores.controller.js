@@ -174,10 +174,10 @@ async function deleteStore(req, res) {
 async function deleteRejectStore(req, res) {
     try{
         const storeId = req.params.storeId;
-        const rejectReason = req.query.rejectReason;
+        const rejectingReason = req.query.rejectingReason;
         const checkResult = checkIsExistValueForFieldsAndDataTypes([
             { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
-            { fieldName: "Reject Reason", fieldValue: rejectReason, dataType: "string", isRequiredValue: true },
+            { fieldName: "Reject Reason", fieldValue: rejectingReason, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
             res.status(400).json(checkResult);
