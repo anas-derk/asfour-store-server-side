@@ -1,4 +1,4 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, isEmail } = require("../global/functions");
 const { verify } = require("jsonwebtoken");
 
 function validateJWT(req, res, next) {
@@ -13,6 +13,24 @@ function validateJWT(req, res, next) {
     });
 }
 
+function validateEmail(email, res, nextFunc) {
+    if (!isEmail(email)) {
+        res.status(400).json(getResponseObject("Sorry, Please Send Valid Email !!", true, {}));
+        return;
+    }
+    nextFunc();
+}
+
+function validateCode(code, res, nextFunc) {
+    if (code.length !== 4) {
+        res.status(400).json(getResponseObject("Please Send Valid Code !!", true, {}));
+        return;
+    }
+    nextFunc();
+}
+
 module.exports = {
     validateJWT,
+    validateEmail,
+    validateCode
 }

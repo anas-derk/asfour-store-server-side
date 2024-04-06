@@ -4,6 +4,8 @@ const brandsController = require("../controllers/brands.controller");
 
 const { validateJWT } = require("../middlewares/global.middlewares");
 
+const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
+
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -15,52 +17,100 @@ const storage = multer.diskStorage({
     },
 });
 
-brandsRouter.post("/add-new-brand", validateJWT, multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        if (!file) {
-            req.uploadError = "Sorry, No File Uploaded, Please Upload The File";
-            return cb(null, false);
+brandsRouter.post("/add-new-brand",
+    validateJWT,
+    multer({
+        storage,
+        fileFilter: (req, file, cb) => {
+            if (!file) {
+                req.uploadError = "Sorry, No File Uploaded, Please Upload The File";
+                return cb(null, false);
+            }
+            if (
+                file.mimetype !== "image/jpeg" &&
+                file.mimetype !== "image/png" &&
+                file.mimetype !== "image/webp"
+            ){
+                req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG, PNG And Webp files are allowed !!";
+                return cb(null, false);
+            }
+            cb(null, true);
         }
-        if (
-            file.mimetype !== "image/jpeg" &&
-            file.mimetype !== "image/png" &&
-            file.mimetype !== "image/webp"
-        ){
-            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG, PNG And Webp files are allowed !!";
-            return cb(null, false);
-        }
-        cb(null, true);
-    }
-}).single("brandImg"), brandsController.postNewBrand);
+    }).single("brandImg"),
+    async (req, res, next) => {
+        const brandInfo = {
+            ...Object.assign({}, req.body),
+            imagePath: req.file.path,
+        };
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Brand Title", fieldValue: brandInfo.title, dataType: "string", isRequiredValue: true },
+            { fieldName: "Store Id", fieldValue: brandInfo.storeId, dataType: "ObjectId", isRequiredValue: true },
+        ], res, next);
+    },
+    brandsController.postNewBrand
+);
 
 brandsRouter.get("/all-brands", brandsController.getAllBrands);
 
 brandsRouter.get("/brands-count", brandsController.getBrandsCount);
 
-brandsRouter.get("/all-brands-inside-the-page", brandsController.getAllBrandsInsideThePage);
+brandsRouter.get("/all-brands-inside-the-page",
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    brandsController.getAllBrandsInsideThePage
+);
 
-brandsRouter.delete("/:brandId", validateJWT, brandsController.deleteBrand);
+brandsRouter.delete("/:brandId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "brand Id", fieldValue: req.params.brandId, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    brandsController.deleteBrand
+);
 
-brandsRouter.put("/:brandId", validateJWT, brandsController.putBrandInfo);
+brandsRouter.put("/:brandId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "brand Id", fieldValue: req.params.brandId, dataType: "string", isRequiredValue: true },
+            { fieldName: "New Brand Title", fieldValue: req.body.newBrandTitle, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    brandsController.putBrandInfo
+);
 
-brandsRouter.put("/update-brand-image/:brandId", validateJWT, multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        if (!file) {
-            req.uploadError = "Sorry, No Files Uploaded, Please Upload The Files";
-            return cb(null, false);
+brandsRouter.put("/update-brand-image/:brandId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "brand Id", fieldValue: req.params.brandId, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    multer({
+        storage,
+        fileFilter: (req, file, cb) => {
+            if (!file) {
+                req.uploadError = "Sorry, No Files Uploaded, Please Upload The Files";
+                return cb(null, false);
+            }
+            if (
+                file.mimetype !== "image/jpeg" &&
+                file.mimetype !== "image/png" &&
+                file.mimetype !== "image/webp"
+            ){
+                req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG, PNG And Webp files are allowed !!";
+                return cb(null, false);
+            }
+            cb(null, true);
         }
-        if (
-            file.mimetype !== "image/jpeg" &&
-            file.mimetype !== "image/png" &&
-            file.mimetype !== "image/webp"
-        ){
-            req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG, PNG And Webp files are allowed !!";
-            return cb(null, false);
-        }
-        cb(null, true);
-    }
-}).single("brandImage") , brandsController.putBrandImage);
+    }).single("brandImage") ,
+    brandsController.putBrandImage
+);
 
 module.exports = brandsRouter;

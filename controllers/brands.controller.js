@@ -1,4 +1,8 @@
-const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
+const { getResponseObject } = require("../global/functions");
+
+const brandsManagmentFunctions = require("../models/brands.model");
+
+const { unlinkSync } = require("fs");
 
 async function postNewBrand(req, res) {
     try{
@@ -11,16 +15,7 @@ async function postNewBrand(req, res) {
             ...Object.assign({}, req.body),
             imagePath: req.file.path,
         };
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Brand Title", fieldValue: brandInfo.title, dataType: "string", isRequiredValue: true },
-            { fieldName: "Store Id", fieldValue: brandInfo.storeId, dataType: "ObjectId", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { addNewBrand } = require("../models/brands.model");
-        res.json(await addNewBrand(brandInfo));
+        res.json(await brandsManagmentFunctions.addNewBrand(brandInfo));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -29,8 +24,7 @@ async function postNewBrand(req, res) {
 
 async function getAllBrands(req, res) {
     try{
-        const { getAllBrands } = require("../models/brands.model");
-        res.json(await getAllBrands());
+        res.json(await brandsManagmentFunctions.getAllBrands());
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -40,8 +34,7 @@ async function getAllBrands(req, res) {
 async function getBrandsCount(req, res) {
     try {
         const filters = req.query;
-        const { getBrandsCount } = require("../models/brands.model");
-        res.json(await getBrandsCount(filters));
+        res.json(await brandsManagmentFunctions.getBrandsCount(filters));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -51,16 +44,7 @@ async function getBrandsCount(req, res) {
 async function getAllBrandsInsideThePage(req, res) {
     try {
         const filters = req.query;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { getAllBrandsInsideThePage } = require("../models/brands.model");
-        res.json(await getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize));
+        res.json(await brandsManagmentFunctions.getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -69,42 +53,20 @@ async function getAllBrandsInsideThePage(req, res) {
 
 async function deleteBrand(req, res) {
     try{
-        const brandId = req.params.brandId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { deleteBrand } = require("../models/brands.model");
-        const result = await deleteBrand(brandId);
+        const result = await brandsManagmentFunctions.deleteBrand(req.params.brandId);
         if (!result.error) {
-            const { unlinkSync } = require("fs");
             unlinkSync(result.data.deletedBrandPath);
         }
         res.json(result);
     }
     catch(err) {
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function putBrandInfo(req, res) {
     try{
-        const   brandId = req.params.brandId,
-                newBrandTitle = req.body.newBrandTitle;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Brand Id", fieldValue: brandId, dataType: "ObjectId", isRequiredValue: true },
-            { fieldName: "New Brand Title", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { updateBrandInfo } = require("../models/brands.model");
-        res.json(await updateBrandInfo(brandId, newBrandTitle));
+        res.json(await brandsManagmentFunctions.updateBrandInfo(req.params.brandId, req.body.newBrandTitle));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -116,14 +78,6 @@ async function putBrandImage(req, res) {
         const uploadError = req.uploadError;
         if (uploadError) {
             res.status(400).json(getResponseObject(uploadError, true, {}));
-            return;
-        }
-        const brandId = req.params.brandId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
             return;
         }
         const newBrandImagePath = req.file.path.replace(/\\/g, '/');

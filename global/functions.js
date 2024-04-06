@@ -111,10 +111,20 @@ function checkIsExistValueForFieldsAndDataTypes(fieldNamesAndValuesAndDataTypes)
     return getResponseObject("Success In Check Is Exist Value For Fields And Data Types !!", false, {});
 }
 
+function validateIsExistValueForFieldsAndDataTypes(fieldsDetails, res, nextFunc) {
+    const checkResult = checkIsExistValueForFieldsAndDataTypes(fieldsDetails);
+    if (checkResult.error) {
+        res.status(400).json(checkResult);
+        return;
+    }
+    nextFunc();
+}
+
 module.exports = {
     isEmail,
     calcOrderAmount,
     sendCodeToUserEmail,
     getResponseObject,
     checkIsExistValueForFieldsAndDataTypes,
+    validateIsExistValueForFieldsAndDataTypes,
 }

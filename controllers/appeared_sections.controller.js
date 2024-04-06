@@ -1,9 +1,10 @@
 const { getResponseObject } = require("../global/functions");
 
+const appearedSectionsOPerationsManagmentFunctions = require("../models/appeared_sections.model");
+
 async function getAllSections(req, res) {
     try{
-        const { getAllSections } = require("../models/appeared_sections.model");
-        res.json(await getAllSections());
+        res.json(await appearedSectionsOPerationsManagmentFunctions.getAllSections());
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -13,8 +14,7 @@ async function getAllSections(req, res) {
 async function putSectionsStatus(req, res) {
     try{
         const sectionsStatus = req.body.sectionsStatus;
-        const { updateSectionsStatus } = require("../models/appeared_sections.model");
-        res.json(await updateSectionsStatus(sectionsStatus));
+        res.json(await appearedSectionsOPerationsManagmentFunctions.updateSectionsStatus(sectionsStatus));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
