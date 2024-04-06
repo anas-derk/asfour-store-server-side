@@ -330,10 +330,10 @@ const orderSchema = mongoose.Schema({
         type: String,
         default: "",
     },
-    // storeId: {
-    //     type: String,
-    //     required: true,
-    // },
+    storeId: {
+        type: String,
+        required: true,
+    },
     order_amount: {
         type: Number,
         default: 0,
