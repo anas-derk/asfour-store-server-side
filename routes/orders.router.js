@@ -49,10 +49,36 @@ ordersRouter.post("/update-order/:orderId",
     ordersController.putOrder
 );
 
-ordersRouter.put("/products/update-product/:orderId/:productId", validateJWT, ordersController.putOrderProduct);
+ordersRouter.put("/products/update-product/:orderId/:productId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Order Id", fieldValue: req.params.orderId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    ordersController.putOrderProduct
+);
 
-ordersRouter.delete("/delete-order/:orderId", validateJWT, ordersController.deleteOrder);
+ordersRouter.delete("/delete-order/:orderId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Order Id", fieldValue: req.params.orderId, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    ordersController.deleteOrder
+);
 
-ordersRouter.delete("/products/delete-product/:orderId/:productId", validateJWT, ordersController.deleteProductFromOrder);
+ordersRouter.delete("/products/delete-product/:orderId/:productId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Order Id", fieldValue: req.params.orderId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    ordersController.deleteProductFromOrder
+);
 
 module.exports = ordersRouter;

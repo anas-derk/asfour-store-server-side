@@ -14,7 +14,7 @@ adminsRouter.get("/login",
             { fieldName: "Password", fieldValue: emailAndPassword.password, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
-    validateEmail,
+    (req, res, next) => validateEmail(req.query.email, res, next),
     adminsController.getAdminLogin
 );
 

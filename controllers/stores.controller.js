@@ -1,5 +1,7 @@
 const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
+const storesManagmentFunctions = require("../models/stores.model");
+
 const { unlinkSync } = require("fs");
 
 function getFiltersObject(filters) {
@@ -18,17 +20,7 @@ function getFiltersObject(filters) {
 async function getAllStoresInsideThePage(req, res) {
     try{
         const filters = req.query;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
-            { fieldName: "Store Id", fieldValue: filters._id, dataType: "ObjectId", isRequiredValue: false },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { getAllStoresInsideThePage } = require("../models/stores.model");
-        res.json(await getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await storesManagmentFunctions.getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -38,17 +30,7 @@ async function getAllStoresInsideThePage(req, res) {
 async function getStoresCount(req, res) {
     try{
         const filters = req.query;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: false },
-            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: false },
-            { fieldName: "Store Id", fieldValue: filters._id, dataType: "ObjectId", isRequiredValue: false },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { getStoresCount } = require("../models/stores.model");
-        res.json(await getStoresCount(getFiltersObject(filters)));
+        res.json(await storesManagmentFunctions.getStoresCount(getFiltersObject(filters)));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -57,16 +39,7 @@ async function getStoresCount(req, res) {
 
 async function getStoreDetails(req, res) {
     try{
-        const storeId = req.params.storeId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { getStoreDetails } = require("../models/stores.model");
-        res.json(await getStoreDetails(storeId));
+        res.json(await storesManagmentFunctions.getStoreDetails(req.params.storeId));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -80,11 +53,11 @@ async function postNewStore(req, res) {
             res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
-        const { createNewStore } = require("../models/stores.model");
-        const result = await createNewStore(Object.assign({}, { ...req.body, imagePath: req.file.path }));
+        const imagePath = req.file.path;
+        const result = await storesManagmentFunctions.createNewStore(Object.assign({}, { ...req.body, imagePath }));
         res.json(result);
         if (result.error) {
-            unlinkSync(req.file.path);
+            unlinkSync(imagePath);
         }
     }
     catch(err) {
@@ -94,16 +67,11 @@ async function postNewStore(req, res) {
 
 async function postApproveStore(req, res) {
     try{
-        const storeId = req.params.storeId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
-        ]);
         if (checkResult.error) {
             res.status(400).json(checkResult);
             return;
         }
-        const { approveStore } = require("../models/stores.model");
-        const result = await approveStore(req.data._id, storeId);
+        const result = await storesManagmentFunctions.approveStore(req.data._id, req.params.storeId);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
@@ -119,17 +87,7 @@ async function postApproveStore(req, res) {
 
 async function putStoreInfo(req, res) {
     try{
-        const storeId = req.params.storeId;
-        const newStoreDetails = req.body;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { updateStoreInfo } = require("../models/stores.model");
-        const result = await updateStoreInfo(req.data._id, storeId, newStoreDetails);
+        const result = await storesManagmentFunctions.updateStoreInfo(req.data._id, req.params.storeId, req.body);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
@@ -145,16 +103,7 @@ async function putStoreInfo(req, res) {
 
 async function deleteStore(req, res) {
     try{
-        const storeId = req.params.storeId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { deleteStore } = require("../models/stores.model");
-        const result = await deleteStore(req.data._id, storeId);
+        const result = await storesManagmentFunctions.deleteStore(req.data._id, req.params.storeId);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
@@ -174,16 +123,6 @@ async function deleteStore(req, res) {
 async function deleteRejectStore(req, res) {
     try{
         const storeId = req.params.storeId;
-        const rejectingReason = req.query.rejectingReason;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
-            { fieldName: "Reject Reason", fieldValue: rejectingReason, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { rejectStore } = require("../models/stores.model");
         const result = await rejectStore(req.data._id, storeId);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {

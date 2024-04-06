@@ -1,4 +1,6 @@
-const { getResponseObject, checkIsExistValueForFieldsAndDataTypes, isEmail } = require("../global/functions");
+const { getResponseObject } = require("../global/functions");
+
+const referalsManagmentFunctions = require("../models/referals.model");
 
 function getFiltersObject(filters) {
     let filtersObject = {};
@@ -11,23 +13,7 @@ function getFiltersObject(filters) {
 
 async function postAddNewReferal(req, res) {
     try{
-        const referalDetails = req.body;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: referalDetails.productId, dataType: "string", isRequiredValue: true },
-            { fieldName: "name", fieldValue: referalDetails.name, dataType: "string", isRequiredValue: true },
-            { fieldName: "email", fieldValue: referalDetails.email, dataType: "string", isRequiredValue: true },
-            { fieldName: "Referal Content", fieldValue: referalDetails.content, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        if (isEmail(referalDetails.email)) {
-            const { addNewReferal } = require("../models/referals.model");
-            res.json(await addNewReferal(referalDetails));
-            return;
-        }
-        res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        res.json(await referalsManagmentFunctions.addNewReferal(req.body));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -37,16 +23,7 @@ async function postAddNewReferal(req, res) {
 async function getProductReferalsCount(req, res) {
     try {
         const productId = req.params.productId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const filters = req.query;
-        const { getProductReferalsCount } = require("../models/referals.model");
-        res.json(await getProductReferalsCount(getFiltersObject({ ...filters, productId})));
+        res.json(await referalsManagmentFunctions.getProductReferalsCount(getFiltersObject({ ...req.query, productId})));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

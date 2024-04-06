@@ -1,5 +1,9 @@
 const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
+const productsManagmentFunctions = require("../models/products.model");
+
+const { unlinkSync } = require("fs");
+
 async function postNewProduct(req, res) {
     try {
         const uploadError = req.uploadError;
@@ -13,24 +17,11 @@ async function postNewProduct(req, res) {
             imagePath: productImages.productImage[0].path.replace(/\\/g, '/'),
             galleryImagesPaths: productImages.galleryImages.map((galleryImage) => galleryImage.path.replace(/\\/g, '/')),
         };
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Name", fieldValue: productInfo.name, dataType: "string", isRequiredValue: true },
-            { fieldName: "Price", fieldValue: Number(productInfo.price), dataType: "number", isRequiredValue: true },
-            { fieldName: "Description", fieldValue: productInfo.description, dataType: "string", isRequiredValue: true },
-            { fieldName: "Category", fieldValue: productInfo.category, dataType: "string", isRequiredValue: true },
-            { fieldName: "discount", fieldValue: Number(productInfo.discount), dataType: "number", isRequiredValue: false },
-            { fieldName: "Store Id", fieldValue: productInfo.storeId, dataType: "ObjectId", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
         if(Number(productInfo.discount) < 0 || Number(productInfo.discount) > Number(productInfo.price)) {
             res.status(400).json(getResponseObject("Sorry, Please Send Valid Discount Value !!", true, {}));
             return;
         }
-        const { addNewProduct } = require("../models/products.model");
-        res.json(await addNewProduct(productInfo));
+        res.json(await productsManagmentFunctions.addNewProduct(productInfo));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -44,17 +35,7 @@ async function postNewImagesToProductGallery(req, res) {
             res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
-        const productId = req.params.productId,
-            newGalleryImagePaths = req.files.map(file => file.path);
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { addingNewImagesToProductGallery } = require("../models/products.model");
-        res.json(await addingNewImagesToProductGallery(productId, newGalleryImagePaths));
+        res.json(await productsManagmentFunctions.addingNewImagesToProductGallery(req.params.productId, req.files.map(file => file.path)));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -92,9 +73,7 @@ async function getProductInfo(req, res) {
 
 async function getProductsCount(req, res) {
     try {
-        const queryObject = req.query;
-        const { getProductsCount } = require("../models/products.model");
-        res.json(await getProductsCount(getFiltersAndSortDetailsObject(queryObject).filtersObject));
+        res.json(await productsManagmentFunctions.getProductsCount(getFiltersAndSortDetailsObject(req.query).filtersObject));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -104,23 +83,12 @@ async function getProductsCount(req, res) {
 async function getAllProductsInsideThePage(req, res) {
     try {
         const queryObject = req.query;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: queryObject.pageNumber, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: queryObject.pageSize, dataType: "string", isRequiredValue: true },
-            { fieldName: "Sort By", fieldValue: queryObject.sortBy, dataType: "string", isRequiredValue: false },
-            { fieldName: "Sort Type", fieldValue: queryObject.sortType, dataType: "string", isRequiredValue: false },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { getAllProductsInsideThePage } = require("../models/products.model");
         const filtersAndSortDetailsObject = getFiltersAndSortDetailsObject(queryObject);
         let sortDetailsObject = {};
         if (filtersAndSortDetailsObject.sortDetailsObject) {
             sortDetailsObject[filtersAndSortDetailsObject.sortDetailsObject.sortBy] = Number(filtersAndSortDetailsObject.sortDetailsObject.sortType);
         }
-        res.json(await getAllProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
+        res.json(await productsManagmentFunctions.getAllProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -129,16 +97,7 @@ async function getAllProductsInsideThePage(req, res) {
 
 async function getRelatedProductsInTheProduct(req, res) {
     try{
-        const productId = req.params.productId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { getRelatedProductsInTheProduct } = require("../models/products.model");
-        res.json(await getRelatedProductsInTheProduct(productId));
+        res.json(await productsManagmentFunctions.getRelatedProductsInTheProduct(req.params.productId));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -147,18 +106,8 @@ async function getRelatedProductsInTheProduct(req, res) {
 
 async function deleteProduct(req, res) {
     try {
-        const productId = req.params.productId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { deleteProduct } = require("../models/products.model");
-        const result = await deleteProduct(productId);
+        const result = await productsManagmentFunctions.deleteProduct(req.params.productId);
         if(!result.error) {
-            const { unlinkSync } = require("fs");
             unlinkSync(result.data.deletedProductPath);
             for (let productImagePath of result.data.galleryImagePathsForDeletedProduct) {
                 unlinkSync(productImagePath);
@@ -173,19 +122,8 @@ async function deleteProduct(req, res) {
 
 async function deleteImageFromProductGallery(req, res) {
     try {
-        const productId = req.params.productId,
-            galleryImagePath = req.query.galleryImagePath;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-            { fieldName: "Gallery Image Path", fieldValue: galleryImagePath, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { deleteImageFromProductGallery } = require("../models/products.model");
-        res.json(await deleteImageFromProductGallery(productId, galleryImagePath));
-        const { unlinkSync } = require("fs");
+        const galleryImagePath = req.query.galleryImagePath;
+        res.json(await productsManagmentFunctions.deleteImageFromProductGallery(req.params.productId, req.query.galleryImagePath));
         unlinkSync(galleryImagePath);
     }
     catch (err) {
@@ -195,22 +133,7 @@ async function deleteImageFromProductGallery(req, res) {
 
 async function putProduct(req, res) {
     try {
-        const productId = req.params.productId;
-        const newProductData = req.body;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: false },
-            { fieldName: "Name", fieldValue: newProductData.name, dataType: "string", isRequiredValue: false },
-            { fieldName: "Price", fieldValue: Number(newProductData.price), dataType: "number", isRequiredValue: false },
-            { fieldName: "Description", fieldValue: newProductData.description, dataType: "string", isRequiredValue: false },
-            { fieldName: "Category", fieldValue: newProductData.category, dataType: "string", isRequiredValue: false },
-            { fieldName: "discount", fieldValue: Number(newProductData.discount), dataType: "number", isRequiredValue: false },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { updateProduct } = require("../models/products.model");
-        res.json(await updateProduct(productId, newProductData));
+        res.json(await productsManagmentFunctions.updateProduct(req.params.productId, req.body));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -224,21 +147,9 @@ async function putProductGalleryImage(req, res) {
             res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
-        const productId = req.params.productId,
-            oldGalleryImagePath = req.query.oldGalleryImagePath,
-            newGalleryImagePath = req.file.path;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-            { fieldName: "Old Gallery Image Path", fieldValue: oldGalleryImagePath, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { updateProductGalleryImage } = require("../models/products.model");
-        const result = await updateProductGalleryImage(productId, oldGalleryImagePath, newGalleryImagePath);
+        const oldGalleryImagePath = req.query.oldGalleryImagePath;
+        const result = await productsManagmentFunctions.updateProductGalleryImage(req.params.productId, oldGalleryImagePath, req.file.path);
         if (!result.error) {
-            const { unlinkSync } = require("fs");
             unlinkSync(oldGalleryImagePath);
         }
         res.json(result);
@@ -255,19 +166,8 @@ async function putProductImage(req, res) {
             res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
-        const productId = req.params.productId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const newProductImagePath = req.file.path.replace(/\\/g, '/');
-        const { updateProductImage } = require("../models/products.model");
-        const result = await updateProductImage(productId, newProductImagePath);
+        const result = await productsManagmentFunctions.updateProductImage(req.params.productId, req.file.path.replace(/\\/g, '/'));
         if (!result.error) {
-            const { unlinkSync } = require("fs");
             unlinkSync(result.data.deletedProductImagePath);
         }
         res.json(result);

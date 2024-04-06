@@ -62,38 +62,16 @@ async function putOrder(req, res) {
 
 async function putOrderProduct(req, res) {
     try{
-        const   orderId = req.params.orderId,
-                productId = req.params.productId;
-        const newOrderProductDetails = req.body;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Order Id", fieldValue: orderId, dataType: "string", isRequiredValue: true },
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            await res.status(400).json(checkResult);
-            return;
-        }
-        const { updateOrderProduct } = require("../models/orders.model");
-        await res.json(await updateOrderProduct(orderId, productId, newOrderProductDetails));
+        await res.json(await ordersManagmentFunctions.updateOrderProduct(req.params.orderId, req.params.productId, newOrderProductDetails));
     }
     catch(err){
-        console.log(err);
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function deleteOrder(req, res) {
     try{
-        const orderId = req.params.orderId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Order Id", fieldValue: orderId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            await res.status(400).json(checkResult);
-            return;
-        }
-        const { deleteOrder } = require("../models/orders.model");
-        await res.json(await deleteOrder(orderId));
+        await res.json(await ordersManagmentFunctions.deleteOrder(req.params.orderId));
     }
     catch(err){
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -102,18 +80,7 @@ async function deleteOrder(req, res) {
 
 async function deleteProductFromOrder(req, res) {
     try{
-        const   orderId = req.params.orderId,
-                productId = req.params.productId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Order Id", fieldValue: orderId, dataType: "string", isRequiredValue: true },
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            await res.status(400).json(checkResult);
-            return;
-        }
-        const { deleteProductFromOrder } = require("../models/orders.model");
-        await res.json(await deleteProductFromOrder(orderId, productId));
+        await res.json(await deleteProductFromOrder(req.params.orderId, req.params.productId));
     }
     catch(err){
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
