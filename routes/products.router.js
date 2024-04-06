@@ -80,7 +80,7 @@ productsRouter.post("/adding-new-images-to-product-gallery/:productId",
     }).array("productGalleryImage", 10),
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
     productsController.postNewImagesToProductGallery
@@ -89,7 +89,7 @@ productsRouter.post("/adding-new-images-to-product-gallery/:productId",
 productsRouter.get("/product-info/:productId",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
     productsController.getProductInfo
