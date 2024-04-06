@@ -11,19 +11,19 @@ async function putChangeBussinessEmailPassword(req, res) {
             { fieldName: "New Bussiness Password", fieldValue: newPassword, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { isEmail } = require("../global/functions");
         if (isEmail(email)) {
             const { changeBussinessEmailPassword } = require("../models/global_passwords.model");
-            await res.json(await changeBussinessEmailPassword(email.toLowerCase(), password, newPassword));
+            res.json(await changeBussinessEmailPassword(email.toLowerCase(), password, newPassword));
             return;
         }
-        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

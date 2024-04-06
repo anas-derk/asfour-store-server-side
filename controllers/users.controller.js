@@ -9,18 +9,18 @@ async function createNewUser(req, res) {
             { fieldName: "Password", fieldValue: password, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         if (isEmail(email)) {
             const { createNewUser } = require("../models/users.model");
-            await res.json(await createNewUser(email.toLowerCase(), password));
+            res.json(await createNewUser(email.toLowerCase(), password));
             return;
         }
-        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -31,14 +31,14 @@ async function postNewFavoriteProduct(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { addNewFavoriteProduct } = require("../models/users.model");
-        await res.json(await addNewFavoriteProduct(req.data._id, productId));
+        res.json(await addNewFavoriteProduct(req.data._id, productId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -49,22 +49,22 @@ async function postAccountVerificationCode(req, res) {
             { fieldName: "User Email", fieldValue: userEmail, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { isEmail } = require("../global/functions");
         if (!isEmail(userEmail)) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Valid Email !!", true, {}));
+            res.status(400).json(getResponseObject("Sorry, Please Send Valid Email !!", true, {}));
             return;
         }
         const { isExistUserAndVerificationEmail } = require("../models/users.model");
         const result = await isExistUserAndVerificationEmail(userEmail);
         if (result.error) {
-            await res.json(result);
+            res.json(result);
             return;
         }
         const { sendCodeToUserEmail } = require("../global/functions");
-        await res.json({
+        res.json({
             msg: "Sending Verification Code Process Has Been Successfully !!",
             error: false,
             data: {
@@ -73,7 +73,7 @@ async function postAccountVerificationCode(req, res) {
         });
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -86,7 +86,7 @@ async function login(req, res) {
             { fieldName: "Password", fieldValue: password, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         if (isEmail(email)) {
@@ -97,7 +97,7 @@ async function login(req, res) {
                 const token = sign(result.data, process.env.secretKey, {
                     expiresIn: "1h",
                 });
-                await res.json({
+                res.json({
                     msg: result.msg,
                     error: result.error,
                     data: {
@@ -107,13 +107,13 @@ async function login(req, res) {
                 });
                 return;
             }
-            await res.json(result);
+            res.json(result);
             return;
         }
-        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -130,7 +130,7 @@ async function loginWithGoogle(req, res) {
             { fieldName: "Preview Name", fieldValue: preview_name, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         if (isEmail(email)) {
@@ -140,7 +140,7 @@ async function loginWithGoogle(req, res) {
             const token = sign(result.data, process.env.secretKey, {
                 expiresIn: "1h",
             });
-            await res.json({
+            res.json({
                 msg: result.msg,
                 error: result.error,
                 data: {
@@ -150,31 +150,31 @@ async function loginWithGoogle(req, res) {
             });
             return;
         }
-        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
         console.log(err)
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function getUserInfo(req, res) {
     try{
         const { getUserInfo } = require("../models/users.model");
-        await res.json(await getUserInfo(req.data._id));
+        res.json(await getUserInfo(req.data._id));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function getAllUsers(req, res) {
     try{
         const { getAllUsers } = require("../models/users.model");
-        await res.json(await getAllUsers());
+        res.json(await getAllUsers());
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -185,7 +185,7 @@ async function getForgetPassword(req, res) {
             { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         if (isEmail(email)) {
@@ -193,7 +193,7 @@ async function getForgetPassword(req, res) {
             const result = await isUserAccountExist(email);
             if (!result.error) {
                 const { sendCodeToUserEmail } = require("../global/functions");
-                await res.json({
+                res.json({
                     ...result,
                     data: {
                         ...result.data,
@@ -202,13 +202,13 @@ async function getForgetPassword(req, res) {
                 });
                 return;
             }
-            await res.json(getResponseObject("Sorry, This Email Is Not Exist !!", true, {}));
+            res.json(getResponseObject("Sorry, This Email Is Not Exist !!", true, {}));
             return;
         }
-        await res.status(400).json(getResponseObject("Sorry, Please Send Email !!", true, {}));
+        res.status(400).json(getResponseObject("Sorry, Please Send Email !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -227,14 +227,14 @@ async function getFavoriteProductsCount(req, res) {
             { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getFavoriteProductsCount } = require("../models/users.model");
-        await res.json(await getFavoriteProductsCount(getFiltersObject(filters)));
+        res.json(await getFavoriteProductsCount(getFiltersObject(filters)));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -245,14 +245,14 @@ async function getWalletProductsCount(req, res) {
             { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getWalletProductsCount } = require("../models/users.model");
-        await res.json(await getWalletProductsCount(getFiltersObject(filters)));
+        res.json(await getWalletProductsCount(getFiltersObject(filters)));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -265,14 +265,14 @@ async function getAllFavoriteProductsInsideThePage(req, res) {
             { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getAllFavoriteProductsInsideThePage } = require("../models/users.model");
-        await res.json(await getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -285,14 +285,14 @@ async function getAllWalletProductsInsideThePage(req, res) {
             { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getAllWalletProductsInsideThePage } = require("../models/users.model");
-        await res.json(await getAllWalletProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await getAllWalletProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -300,10 +300,10 @@ async function putUserInfo(req, res) {
     try{
         const newUserData = req.body;
         const { updateUserInfo } = require("../models/users.model");
-        await res.json(await updateUserInfo(req.data._id, newUserData));
+        res.json(await updateUserInfo(req.data._id, newUserData));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -314,7 +314,7 @@ async function putVerificationStatus(req, res) {
             { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         if (isEmail(email)) {
@@ -325,7 +325,7 @@ async function putVerificationStatus(req, res) {
                 const token = sign(result.data, process.env.secretKey, {
                     expiresIn: "1h",
                 });
-                await res.json({
+                res.json({
                     msg: result.msg,
                     error: result.error,
                     data: {
@@ -335,13 +335,13 @@ async function putVerificationStatus(req, res) {
                 });
                 return;
             }
-            await res.json(result);
+            res.json(result);
             return;
         }
-        await res.status(400).json(getResponseObject("Sorry, Inavalid Email !!", true, {}));
+        res.status(400).json(getResponseObject("Sorry, Inavalid Email !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -354,14 +354,14 @@ async function putResetPassword(req, res) {
             { fieldName: "New Password", fieldValue: newPassword, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { resetUserPassword } = require("../models/users.model");
-        await res.json(await resetUserPassword(userId, newPassword));
+        res.json(resetUserPassword(userId, newPassword));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -372,14 +372,14 @@ async function deleteProductFromFavoriteUserProducts(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { deleteProductFromFavoriteUserProducts } = require("../models/users.model");
-        await res.json(await deleteProductFromFavoriteUserProducts(req.data._id, productId));
+        res.json(await deleteProductFromFavoriteUserProducts(req.data._id, productId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -390,15 +390,15 @@ async function deleteProductFromUserProductsWallet(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { deleteProductFromUserProductsWallet } = require("../models/users.model");
-        await res.json(await deleteProductFromUserProductsWallet(req.data._id, productId));
+        res.json(await deleteProductFromUserProductsWallet(req.data._id, productId));
     }
     catch(err) {
         console.log(err);
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

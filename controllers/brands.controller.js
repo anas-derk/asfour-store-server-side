@@ -4,7 +4,7 @@ async function postNewBrand(req, res) {
     try{
         const uploadError = req.uploadError;
         if (uploadError) {
-            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
         const brandInfo = {
@@ -16,24 +16,24 @@ async function postNewBrand(req, res) {
             { fieldName: "Store Id", fieldValue: brandInfo.storeId, dataType: "ObjectId", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { addNewBrand } = require("../models/brands.model");
-        await res.json(await addNewBrand(brandInfo));
+        res.json(await addNewBrand(brandInfo));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function getAllBrands(req, res) {
     try{
         const { getAllBrands } = require("../models/brands.model");
-        await res.json(await getAllBrands());
+        res.json(await getAllBrands());
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -41,10 +41,10 @@ async function getBrandsCount(req, res) {
     try {
         const filters = req.query;
         const { getBrandsCount } = require("../models/brands.model");
-        await res.json(await getBrandsCount(filters));
+        res.json(await getBrandsCount(filters));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -56,14 +56,14 @@ async function getAllBrandsInsideThePage(req, res) {
             { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getAllBrandsInsideThePage } = require("../models/brands.model");
-        await res.json(await getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize));
+        res.json(await getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -74,7 +74,7 @@ async function deleteBrand(req, res) {
             { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { deleteBrand } = require("../models/brands.model");
@@ -83,11 +83,11 @@ async function deleteBrand(req, res) {
             const { unlinkSync } = require("fs");
             unlinkSync(result.data.deletedBrandPath);
         }
-        await res.json(result);
+        res.json(result);
     }
     catch(err) {
         console.log(err);
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -100,14 +100,14 @@ async function putBrandInfo(req, res) {
             { fieldName: "New Brand Title", fieldValue: newBrandTitle, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { updateBrandInfo } = require("../models/brands.model");
-        await res.json(await updateBrandInfo(brandId, newBrandTitle));
+        res.json(await updateBrandInfo(brandId, newBrandTitle));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -115,7 +115,7 @@ async function putBrandImage(req, res) {
     try {
         const uploadError = req.uploadError;
         if (uploadError) {
-            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
         const brandId = req.params.brandId;
@@ -123,7 +123,7 @@ async function putBrandImage(req, res) {
             { fieldName: "brand Id", fieldValue: brandId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const newBrandImagePath = req.file.path.replace(/\\/g, '/');
@@ -133,11 +133,10 @@ async function putBrandImage(req, res) {
             const { unlinkSync } = require("fs");
             unlinkSync(result.data.deletedBrandImagePath);
         }
-        await res.json(result);
+        res.json(result);
 }
     catch (err) {
-        console.log(err);
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

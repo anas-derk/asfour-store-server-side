@@ -19,19 +19,18 @@ async function postAddNewReferal(req, res) {
             { fieldName: "Referal Content", fieldValue: referalDetails.content, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         if (isEmail(referalDetails.email)) {
             const { addNewReferal } = require("../models/referals.model");
-            await res.json(await addNewReferal(referalDetails));
+            res.json(await addNewReferal(referalDetails));
             return;
         }
-        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
-        console.log(err);
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -42,15 +41,15 @@ async function getProductReferalsCount(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const filters = req.query;
         const { getProductReferalsCount } = require("../models/referals.model");
-        await res.json(await getProductReferalsCount(getFiltersObject({ ...filters, productId})));
+        res.json(await getProductReferalsCount(getFiltersObject({ ...filters, productId})));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -64,14 +63,14 @@ async function getAllProductReferalsInsideThePage(req, res) {
             { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getAllProductReferalsInsideThePage } = require("../models/referals.model");
-        await res.json(await getAllProductReferalsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({...filters, productId})));
+        res.json(await getAllProductReferalsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({...filters, productId})));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

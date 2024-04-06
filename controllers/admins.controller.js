@@ -9,7 +9,7 @@ async function getAdminLogin(req, res) {
             { fieldName: "password", fieldValue: password, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         if (isEmail(email)) {
@@ -17,7 +17,7 @@ async function getAdminLogin(req, res) {
             const result = await adminLogin(email.toLowerCase(), password);
             if (!result.error) {
                 const { sign } = require("jsonwebtoken");
-                await res.json({
+                res.json({
                     ...result,
                     data: {
                         token: sign(result.data, process.env.secretKey, {
@@ -27,23 +27,23 @@ async function getAdminLogin(req, res) {
                 });
                 return;
             }
-            await res.json(result);
+            res.json(result);
             return;
         }
-        await res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
+        res.status(400).json(getResponseObject("Error, This Is Not Email Valid !!", true, {}));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function getAdminUserInfo(req, res) {
     try{
         const { getAdminUserInfo } = require("../models/admins.model");
-        await res.json(await getAdminUserInfo(req.data._id));
+        res.json(await getAdminUserInfo(req.data._id));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

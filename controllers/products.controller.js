@@ -4,7 +4,7 @@ async function postNewProduct(req, res) {
     try {
         const uploadError = req.uploadError;
         if (uploadError) {
-            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
         const productImages = Object.assign({}, req.files);
@@ -22,18 +22,18 @@ async function postNewProduct(req, res) {
             { fieldName: "Store Id", fieldValue: productInfo.storeId, dataType: "ObjectId", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         if(Number(productInfo.discount) < 0 || Number(productInfo.discount) > Number(productInfo.price)) {
-            await res.status(400).json(getResponseObject("Sorry, Please Send Valid Discount Value !!", true, {}));
+            res.status(400).json(getResponseObject("Sorry, Please Send Valid Discount Value !!", true, {}));
             return;
         }
         const { addNewProduct } = require("../models/products.model");
-        await res.json(await addNewProduct(productInfo));
+        res.json(await addNewProduct(productInfo));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -41,7 +41,7 @@ async function postNewImagesToProductGallery(req, res) {
     try {
         const uploadError = req.uploadError;
         if (uploadError) {
-            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
         const productId = req.params.productId,
@@ -50,14 +50,14 @@ async function postNewImagesToProductGallery(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { addingNewImagesToProductGallery } = require("../models/products.model");
-        await res.json(await addingNewImagesToProductGallery(productId, newGalleryImagePaths));
+        res.json(await addingNewImagesToProductGallery(productId, newGalleryImagePaths));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -79,14 +79,14 @@ async function getProductInfo(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getProductInfo } = require("../models/products.model");
-        await res.json(await getProductInfo(productId));
+        res.json(await getProductInfo(productId));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -94,10 +94,10 @@ async function getProductsCount(req, res) {
     try {
         const queryObject = req.query;
         const { getProductsCount } = require("../models/products.model");
-        await res.json(await getProductsCount(getFiltersAndSortDetailsObject(queryObject).filtersObject));
+        res.json(await getProductsCount(getFiltersAndSortDetailsObject(queryObject).filtersObject));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -111,7 +111,7 @@ async function getAllProductsInsideThePage(req, res) {
             { fieldName: "Sort Type", fieldValue: queryObject.sortType, dataType: "string", isRequiredValue: false },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getAllProductsInsideThePage } = require("../models/products.model");
@@ -120,10 +120,10 @@ async function getAllProductsInsideThePage(req, res) {
         if (filtersAndSortDetailsObject.sortDetailsObject) {
             sortDetailsObject[filtersAndSortDetailsObject.sortDetailsObject.sortBy] = Number(filtersAndSortDetailsObject.sortDetailsObject.sortType);
         }
-        await res.json(await getAllProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
+        res.json(await getAllProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -134,14 +134,14 @@ async function getRelatedProductsInTheProduct(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getRelatedProductsInTheProduct } = require("../models/products.model");
-        await res.json(await getRelatedProductsInTheProduct(productId));
+        res.json(await getRelatedProductsInTheProduct(productId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -152,7 +152,7 @@ async function deleteProduct(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { deleteProduct } = require("../models/products.model");
@@ -164,10 +164,10 @@ async function deleteProduct(req, res) {
                 unlinkSync(productImagePath);
             }
         }
-        await res.json(result);
+        res.json(result);
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -180,16 +180,16 @@ async function deleteImageFromProductGallery(req, res) {
             { fieldName: "Gallery Image Path", fieldValue: galleryImagePath, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { deleteImageFromProductGallery } = require("../models/products.model");
-        await res.json(await deleteImageFromProductGallery(productId, galleryImagePath));
+        res.json(await deleteImageFromProductGallery(productId, galleryImagePath));
         const { unlinkSync } = require("fs");
         unlinkSync(galleryImagePath);
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -206,14 +206,14 @@ async function putProduct(req, res) {
             { fieldName: "discount", fieldValue: Number(newProductData.discount), dataType: "number", isRequiredValue: false },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { updateProduct } = require("../models/products.model");
-        await res.json(await updateProduct(productId, newProductData));
+        res.json(await updateProduct(productId, newProductData));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -221,7 +221,7 @@ async function putProductGalleryImage(req, res) {
     try {
         const uploadError = req.uploadError;
         if (uploadError) {
-            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
         const productId = req.params.productId,
@@ -232,7 +232,7 @@ async function putProductGalleryImage(req, res) {
             { fieldName: "Old Gallery Image Path", fieldValue: oldGalleryImagePath, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { updateProductGalleryImage } = require("../models/products.model");
@@ -241,10 +241,10 @@ async function putProductGalleryImage(req, res) {
             const { unlinkSync } = require("fs");
             unlinkSync(oldGalleryImagePath);
         }
-        await res.json(result);
+        res.json(result);
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -252,7 +252,7 @@ async function putProductImage(req, res) {
     try {
         const uploadError = req.uploadError;
         if (uploadError) {
-            await res.status(400).json(getResponseObject(uploadError, true, {}));
+            res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
         const productId = req.params.productId;
@@ -260,7 +260,7 @@ async function putProductImage(req, res) {
             { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const newProductImagePath = req.file.path.replace(/\\/g, '/');
@@ -270,10 +270,10 @@ async function putProductImage(req, res) {
             const { unlinkSync } = require("fs");
             unlinkSync(result.data.deletedProductImagePath);
         }
-        await res.json(result);
+        res.json(result);
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 

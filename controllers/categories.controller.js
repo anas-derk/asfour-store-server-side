@@ -7,24 +7,24 @@ async function postNewCategory(req, res) {
             { fieldName: "Category Name", fieldValue: categoryName, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { addNewCategory } = require("../models/categories.model");
-        await res.json(await addNewCategory(categoryName));
+        res.json(await addNewCategory(categoryName));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function getAllCategories(req, res) {
     try {
         const { getAllCategories } = require("../models/categories.model");
-        await res.json(await getAllCategories());
+        res.json(await getAllCategories());
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -32,10 +32,10 @@ async function getCategoriesCount(req, res) {
     try {
         const filters = req.query;
         const { getCategoriesCount } = require("../models/categories.model");
-        await res.json(await getCategoriesCount(filters));
+        res.json(await getCategoriesCount(filters));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -47,14 +47,14 @@ async function getAllCategoriesInsideThePage(req, res) {
             { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { getAllCategoriesInsideThePage } = require("../models/categories.model");
-        await res.json(await getAllCategoriesInsideThePage(filters.pageNumber, filters.pageSize));
+        res.json(await getAllCategoriesInsideThePage(filters.pageNumber, filters.pageSize));
     }
     catch (err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -65,14 +65,14 @@ async function deleteCategory(req, res) {
             { fieldName: "category Id", fieldValue: categoryId, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { deleteCategory } = require("../models/categories.model");
-        await res.json(await deleteCategory(categoryId));
+        res.json(await deleteCategory(categoryId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
@@ -85,14 +85,14 @@ async function putCategory(req, res) {
             { fieldName: "new Category Name", fieldValue: newCategoryName, dataType: "string", isRequiredValue: true },
         ]);
         if (checkResult.error) {
-            await res.status(400).json(checkResult);
+            res.status(400).json(checkResult);
             return;
         }
         const { updateCategory } = require("../models/categories.model");
-        await res.json(await updateCategory(categoryId, newCategoryName));
+        res.json(await updateCategory(categoryId, newCategoryName));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
