@@ -96,15 +96,22 @@ async function updateBrandInfo(brandId, newBrandTitle) {
     }
 }
 
-async function updateBrandImage(brandId, newBrandImagePath) {
+async function changeBrandImage(brandId, newBrandImagePath) {
     try{
         const brand = await brandModel.findOneAndUpdate({ _id: brandId }, {
             imagePath: newBrandImagePath,
         });
+        if (brand) {
+            return {
+                msg: "Updating Brand Image Process Has Been Successfully !!",
+                error: false,
+                data: { deletedBrandImagePath: brand.imagePath }
+            };    
+        }
         return {
-            msg: brand ? "Updating Brand Image Process Has Been Successfully !!" : "Sorry, This Brand Is Not Exist !!",
-            error: brand ? false : true,
-            data: brand ? { deletedBrandImagePath: brand.imagePath } : {}
+            msg: "Sorry, This Brand Is Not Exist !!",
+            error: true,
+            data: {}
         };
     }
     catch(err) {
@@ -119,5 +126,5 @@ module.exports = {
     getAllBrandsInsideThePage,
     deleteBrand,
     updateBrandInfo,
-    updateBrandImage,
+    changeBrandImage,
 }

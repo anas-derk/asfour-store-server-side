@@ -86,7 +86,7 @@ brandsRouter.put("/:brandId",
     brandsController.putBrandInfo
 );
 
-brandsRouter.put("/update-brand-image/:brandId",
+brandsRouter.put("/change-brand-image/:brandId",
     validateJWT,
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([

@@ -80,7 +80,7 @@ async function putBrandImage(req, res) {
             res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
-        const result = await brandsManagmentFunctions.updateBrandImage(req.params.brandId, req.file.path.replace(/\\/g, '/'));
+        const result = await brandsManagmentFunctions.changeBrandImage(req.params.brandId, req.file.path.replace(/\\/g, '/'));
         if (!result.error) {
             unlinkSync(result.data.deletedBrandImagePath);
         }

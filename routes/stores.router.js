@@ -103,6 +103,34 @@ storesRouter.put("/cancel-blocking/:storeId",
     storesController.putCancelBlockingStore
 );
 
+storesRouter.put("/change-store-image/:storeId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: true },
+        ], res, next);
+    },
+    multer({
+        storage,
+        fileFilter: (req, file, cb) => {
+            if (!file) {
+                req.uploadError = "Sorry, No Files Uploaded, Please Upload The Files";
+                return cb(null, false);
+            }
+            if (
+                file.mimetype !== "image/jpeg" &&
+                file.mimetype !== "image/png" &&
+                file.mimetype !== "image/webp"
+            ){
+                req.uploadError = "Sorry, Invalid File Mimetype, Only JPEG, PNG And Webp files are allowed !!";
+                return cb(null, false);
+            }
+            cb(null, true);
+        }
+    }).single("storeImage") ,
+    storesController.putStoreImage
+);
+
 storesRouter.delete("/delete-store/:storeId",
     validateJWT,
     async (req, res, next) => {

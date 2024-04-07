@@ -129,6 +129,33 @@ async function putCancelBlockingStore(req, res) {
     }
 }
 
+async function putStoreImage(req, res) {
+    try {
+        const uploadError = req.uploadError;
+        if (uploadError) {
+            res.status(400).json(getResponseObject(uploadError, true, {}));
+            return;
+        }
+        const newStoreImagePath = req.file.path;
+        const result = await storesManagmentFunctions.changeStoreImage(req.params.storeId, newStoreImagePath.replace(/\\/g, '/'));
+        if (!result.error) {
+            unlinkSync(result.data.deletedStoreImagePath);
+            res.json({
+                ...result,
+                data: {
+                    newStoreImagePath: req.file.path,
+                }
+            });
+        } else {
+            unlinkSync(newStoreImagePath);
+            res.json(result);
+        }
+}
+    catch (err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function deleteStore(req, res) {
     try{
         const result = await storesManagmentFunctions.deleteStore(req.data._id, req.params.storeId);
@@ -175,6 +202,7 @@ module.exports = {
     postApproveStore,
     putStoreInfo,
     putBlockingStore,
+    putStoreImage,
     putCancelBlockingStore,
     deleteStore,
     deleteRejectStore,

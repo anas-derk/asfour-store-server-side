@@ -281,6 +281,29 @@ async function cancelBlockingStore(authorizationId, storeId) {
     }
 }
 
+async function changeStoreImage(storeId, newStoreImagePath) {
+    try{
+        const store = await storeModel.findOneAndUpdate({ _id: storeId }, {
+            imagePath: newStoreImagePath,
+        });
+        if (store) {
+            return {
+                msg: "Updating Store Image Process Has Been Successfully !!",
+                error: false,
+                data: { deletedStoreImagePath: store.imagePath }
+            };    
+        }
+        return {
+            msg: "Sorry, This Store Is Not Exist !!",
+            error: true,
+            data: {}
+        };
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 async function deleteStore(authorizationId, storeId){
     try{
         const admin = await adminModel.findById(authorizationId);
@@ -370,6 +393,7 @@ module.exports = {
     updateStoreInfo,
     blockingStore,
     cancelBlockingStore,
+    changeStoreImage,
     deleteStore,
     rejectStore,
 }
