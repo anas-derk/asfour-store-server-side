@@ -82,6 +82,27 @@ storesRouter.put("/update-store-info/:storeId",
     storesController.putStoreInfo
 );
 
+storesRouter.put("/blocking-store/:storeId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Blocking Reason", fieldValue: req.query.blockingReason, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    storesController.putBlockingStore
+);
+
+storesRouter.put("/cancel-blocking/:storeId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: true },
+        ], res, next);
+    },
+    storesController.putCancelBlockingStore
+);
+
 storesRouter.delete("/delete-store/:storeId",
     validateJWT,
     async (req, res, next) => {

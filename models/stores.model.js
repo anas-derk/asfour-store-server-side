@@ -177,6 +177,101 @@ async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
     }
 }
 
+async function blockingStore(authorizationId, storeId, blockingReason) {
+    try {
+        const admin = await adminModel.findById(authorizationId);
+        if (admin) {
+            if (admin.isWebsiteOwner) {
+                const store = await storeModel.findById(storeId);
+                if (store) {
+                    if (store.status === "pending" || store.status === "approving") {
+                        await storeModel.updateOne({ _id: storeId }, {
+                            blockingReason,
+                            blockingDate: Date.now(),
+                            status: "blocking"
+                        });
+                        return {
+                            msg: `Blocking For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
+                            error: false,
+                            data: {},
+                        };
+                    }
+                    if (store.status === "blocking") {
+                        return {
+                            msg: "Sorry, This Store Is Already Blocked !!",
+                            error: true,
+                            data: {},
+                        };
+                    }
+                }
+                return {
+                    msg: "Sorry, This Store Is Not Found !!",
+                    error: true,
+                    data: {},
+                };
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Admin Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    } catch (err) {
+        throw Error(err);
+    }
+}
+
+async function cancelBlockingStore(authorizationId, storeId) {
+    try {
+        const admin = await adminModel.findById(authorizationId);
+        if (admin) {
+            if (admin.isWebsiteOwner) {
+                const store = await storeModel.findById(storeId);
+                if (store) {
+                    if (store.status === "blocking") {
+                        await storeModel.updateOne({ _id: storeId }, {
+                            dateOfCancelBlocking: Date.now(),
+                            status: "approving"
+                        });
+                        return {
+                            msg: `Cancel Blocking For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
+                            error: false,
+                            data: {},
+                        };
+                    }
+                    return {
+                        msg: "Sorry, This Store Is Not Blocked !!",
+                        error: true,
+                        data: {},
+                    };
+                }
+                return {
+                    msg: "Sorry, This Store Is Not Found !!",
+                    error: true,
+                    data: {},
+                };
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Admin Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    } catch (err) {
+        throw Error(err);
+    }
+}
+
 async function deleteStore(authorizationId, storeId){
     try{
         const admin = await adminModel.findById(authorizationId);
@@ -264,6 +359,8 @@ module.exports = {
     createNewStore,
     approveStore,
     updateStoreInfo,
+    blockingStore,
+    cancelBlockingStore,
     deleteStore,
     rejectStore,
 }

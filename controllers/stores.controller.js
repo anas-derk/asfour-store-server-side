@@ -96,6 +96,39 @@ async function putStoreInfo(req, res) {
     }
 }
 
+async function putBlockingStore(req, res) {
+    try{
+        const result = await storesManagmentFunctions.blockingStore(req.data._id, req.params.storeId, req.query.blockingReason);
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        res.json(result);
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function putCancelBlockingStore(req, res) {
+    try{
+        const result = await storesManagmentFunctions.cancelBlockingStore(req.data._id, req.params.storeId);
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        res.json(result);
+    }
+    catch(err){
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function deleteStore(req, res) {
     try{
         const result = await storesManagmentFunctions.deleteStore(req.data._id, req.params.storeId);
@@ -141,6 +174,8 @@ module.exports = {
     postNewStore,
     postApproveStore,
     putStoreInfo,
+    putBlockingStore,
+    putCancelBlockingStore,
     deleteStore,
     deleteRejectStore,
 }
