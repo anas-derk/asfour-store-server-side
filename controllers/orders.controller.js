@@ -15,20 +15,22 @@ function getFiltersObject(filters) {
     return filtersObject;
 }
 
-async function getAllOrdersInsideThePage(req, res) {
+async function getOrdersCount(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.getAllOrdersInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        await res.json(await ordersManagmentFunctions.getOrdersCount(getFiltersObject(req.query)));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
-async function getOrdersCount(req, res) {
+async function getAllOrdersInsideThePage(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.getOrdersCount(getFiltersObject(filters)));
+        const filters = req.query;
+        await res.json(await ordersManagmentFunctions.getAllOrdersInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err) {
+        console.log(err);
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -44,7 +46,7 @@ async function getOrderDetails(req, res) {
 
 async function postNewOrder(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.postNewOrder(req.body));
+        await res.json(await ordersManagmentFunctions.createNewOrder(req.body));
     }
     catch(err) {
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

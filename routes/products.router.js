@@ -110,7 +110,7 @@ productsRouter.get("/all-products-inside-the-page",
     productsController.getAllProductsInsideThePage
 );
 
-productsRouter.get("/related-products-in-the-product/:productId",
+productsRouter.get("/sample-from-related-products-in-the-product/:productId",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "string", isRequiredValue: true },

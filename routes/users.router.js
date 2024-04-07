@@ -103,12 +103,13 @@ usersRouter.post("/create-new-user",
 );
 
 usersRouter.post("/add-favorite-product",
+    validateJWT,
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: req.query.productId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
-    validateJWT, usersController.postNewFavoriteProduct
+    usersController.postNewFavoriteProduct
 );
 
 usersRouter.post("/send-account-verification-code",

@@ -34,8 +34,8 @@ referalsRouter.get("/all-product-referals-inside-the-page/:productId",
         const filters = req.query;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "string", isRequiredValue: true },
+            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
         ], res, next);
     },
     referalsController.getAllProductReferalsInsideThePage

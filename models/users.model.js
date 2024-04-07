@@ -413,7 +413,6 @@ async function resetUserPassword(userId, newPassword) {
 
 async function deleteProductFromFavoriteUserProducts(userId, productId) {
     try {
-        // Check If Email Is Exist
         const user = await userModel.findById(userId);
         if (user) {
             const newFavoriteProductsList = user.favorite_products_list.filter((favorite_product) => favorite_product._id != productId);

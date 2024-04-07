@@ -16,7 +16,7 @@ async function login(req, res) {
     try{
         const   email = req.query.email,
                 password = req.query.password;
-        const result = await login(email.toLowerCase(), password);
+        const result = await usersOPerationsManagmentFunctions.login(email.toLowerCase(), password);
         if (!result.error) {
             const token = sign(result.data, process.env.secretKey, {
                 expiresIn: "1h",
@@ -149,15 +149,7 @@ async function createNewUser(req, res) {
 async function postNewFavoriteProduct(req, res) {
     try{
         const productId = req.query.productId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { addNewFavoriteProduct } = require("../models/users.model");
-        res.json(await addNewFavoriteProduct(req.data._id, productId));
+        res.json(await usersOPerationsManagmentFunctions.addNewFavoriteProduct(req.data._id, productId));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

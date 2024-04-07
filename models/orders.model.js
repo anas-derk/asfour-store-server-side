@@ -46,7 +46,7 @@ async function getOrderDetails(orderId) {
     }
 }
 
-async function postNewOrder(orderDetails) {
+async function createNewOrder(orderDetails) {
     try {
         const ordersCount = await orderModel.countDocuments();
         const newOrder = new orderModel({ ...orderDetails, orderNumber: ordersCount + 1 });
@@ -200,7 +200,7 @@ module.exports = {
     getAllOrdersInsideThePage,
     getOrdersCount,
     getOrderDetails,
-    postNewOrder,
+    createNewOrder,
     updateOrder,
     updateOrderProduct,
     deleteOrder,

@@ -24,8 +24,8 @@ categoriesRouter.get("/all-categories-inside-the-page",
     async (req, res, next) => {
         const filters = req.query;
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "string", isRequiredValue: true },
+            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
         ], res, next);
     },
     categoriesController.getAllCategoriesInsideThePage

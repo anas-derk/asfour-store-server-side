@@ -6,17 +6,6 @@ const { validateJWT } = require("../middlewares/global.middlewares");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
-ordersRouter.get("/all-orders-inside-the-page",
-    async (req, res, next) => {
-        const filters = req.query;
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
-        ], res, next);
-    },
-    ordersController.getAllOrdersInsideThePage
-);
-
 ordersRouter.get("/orders-count",
     async (req, res, next) => {
         const filters = req.query;
@@ -26,6 +15,17 @@ ordersRouter.get("/orders-count",
         ], res, next);
     },
     ordersController.getOrdersCount
+);
+
+ordersRouter.get("/all-orders-inside-the-page",
+    async (req, res, next) => {
+        const filters = req.query;
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
+        ], res, next);
+    },
+    ordersController.getAllOrdersInsideThePage
 );
 
 ordersRouter.get("/order-details/:orderId",
