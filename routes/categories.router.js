@@ -45,7 +45,7 @@ categoriesRouter.put("/:categoryId",
     validateJWT,
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "category Id", fieldValue: req.params.categoryId, dataType: "string", isRequiredValue: true },
+            { fieldName: "category Id", fieldValue: req.params.categoryId, dataType: "ObjectId", isRequiredValue: true },
             { fieldName: "new Category Name", fieldValue: req.body.newCategoryName, dataType: "string", isRequiredValue: true },
         ], res, next);
     },

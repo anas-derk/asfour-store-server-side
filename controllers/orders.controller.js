@@ -64,7 +64,7 @@ async function putOrder(req, res) {
 
 async function putOrderProduct(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.updateOrderProduct(req.params.orderId, req.params.productId, newOrderProductDetails));
+        await res.json(await ordersManagmentFunctions.updateOrderProduct(req.params.orderId, req.params.productId, req.body));
     }
     catch(err){
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -82,7 +82,7 @@ async function deleteOrder(req, res) {
 
 async function deleteProductFromOrder(req, res) {
     try{
-        await res.json(await deleteProductFromOrder(req.params.orderId, req.params.productId));
+        await res.json(await ordersManagmentFunctions.deleteProductFromOrder(req.params.orderId, req.params.productId));
     }
     catch(err){
         await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

@@ -89,7 +89,7 @@ async function deleteCategory(categoryId) {
 
 async function updateCategory(categoryId, newCategoryName) {
     try {
-        const category = await categoryModel.findOneAndUpdate( { _id: categoryId } , { name: newCategoryName })
+        const category = await categoryModel.findOneAndUpdate( { _id: categoryId } , { name: newCategoryName });
         if (category) {
             return {
                 msg: "Updating Category Process Has Been Successfuly !!",

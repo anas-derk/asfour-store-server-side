@@ -80,11 +80,8 @@ async function putBrandImage(req, res) {
             res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
-        const newBrandImagePath = req.file.path.replace(/\\/g, '/');
-        const { updateBrandImage } = require("../models/brands.model");
-        const result = await updateBrandImage(brandId, newBrandImagePath);
+        const result = await brandsManagmentFunctions.updateBrandImage(req.params.brandId, req.file.path.replace(/\\/g, '/'));
         if (!result.error) {
-            const { unlinkSync } = require("fs");
             unlinkSync(result.data.deletedBrandImagePath);
         }
         res.json(result);

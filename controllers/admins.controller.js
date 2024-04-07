@@ -6,7 +6,8 @@ const { sign } = require("jsonwebtoken");
 
 async function getAdminLogin(req, res) {
     try{
-        const result = await adminsOPerationsManagmentFunctions.adminLogin(email.toLowerCase(), password);
+        const emailAndPassword = req.query;
+        const result = await adminsOPerationsManagmentFunctions.adminLogin(emailAndPassword.email.toLowerCase(), emailAndPassword.password);
         if (!result.error) {
             res.json({
                 ...result,

@@ -4,6 +4,8 @@ const storesController = require("../controllers/stores.controller");
 
 const { validateJWT } = require("../middlewares/global.middlewares");
 
+const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
+
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -15,28 +17,18 @@ const storage = multer.diskStorage({
     },
 });
 
+storesRouter.get("/stores-count", storesController.getStoresCount);
+
 storesRouter.get("/all-stores-inside-the-page",
     async (req, res, next) => {
         const filters = req.query;
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "string", isRequiredValue: true },
+            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
             { fieldName: "Store Id", fieldValue: filters._id, dataType: "ObjectId", isRequiredValue: false },
         ], res, next);
     },
     storesController.getAllStoresInsideThePage
-);
-
-storesRouter.get("/stores-count",
-    async (req, res, next) => {
-        const filters = req.query;
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "string", isRequiredValue: true },
-            { fieldName: "Store Id", fieldValue: filters._id, dataType: "ObjectId", isRequiredValue: false },
-        ], res, next);
-    },
-    storesController.getStoresCount
 );
 
 storesRouter.get("/store-details/:storeId",

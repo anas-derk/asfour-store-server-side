@@ -51,7 +51,7 @@ async function deleteCategory(req, res) {
 
 async function putCategory(req, res) {
     try{
-        res.json(await categoriesManagmentFunctions.updateCategory(req.query.categoryId, req.body.newCategoryName));
+        res.json(await categoriesManagmentFunctions.updateCategory(req.params.categoryId, req.body.newCategoryName));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

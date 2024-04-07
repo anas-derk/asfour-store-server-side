@@ -17,20 +17,19 @@ function getFiltersObject(filters) {
     return filtersObject;
 }
 
-async function getAllStoresInsideThePage(req, res) {
+async function getStoresCount(req, res) {
     try{
-        const filters = req.query;
-        res.json(await storesManagmentFunctions.getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await storesManagmentFunctions.getStoresCount(getFiltersObject(req.query)));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
-async function getStoresCount(req, res) {
+async function getAllStoresInsideThePage(req, res) {
     try{
         const filters = req.query;
-        res.json(await storesManagmentFunctions.getStoresCount(getFiltersObject(filters)));
+        res.json(await storesManagmentFunctions.getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
