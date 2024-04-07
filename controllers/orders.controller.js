@@ -11,6 +11,12 @@ function getFiltersObject(filters) {
         if (objectKey === "customerName") filtersObject[`billing_address.given_name`] = filters[objectKey];
         if (objectKey === "email") filtersObject[`billing_address.email`] = filters[objectKey];
         if (objectKey === "customerId") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "isDeleted") {
+            if (filters[objectKey] === "yes") {
+                filtersObject[objectKey] = true;
+            }
+            else filtersObject[objectKey] = false;
+        }
     }
     return filtersObject;
 }
