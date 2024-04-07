@@ -34,7 +34,7 @@ storesRouter.get("/all-stores-inside-the-page",
 storesRouter.get("/store-details/:storeId",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: false },
+            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
     storesController.getStoreDetails
@@ -66,7 +66,7 @@ storesRouter.post("/approve-store/:storeId",
     validateJWT,
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: false },
+            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
     storesController.postApproveStore
@@ -96,7 +96,7 @@ storesRouter.delete("/reject-store/:storeId",
     validateJWT,
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: false },
+            { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: true },
             { fieldName: "Reject Reason", fieldValue: req.query.rejectingReason, dataType: "string", isRequiredValue: true },
         ], res, next);
     },

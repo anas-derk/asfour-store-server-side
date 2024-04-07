@@ -66,10 +66,6 @@ async function postNewStore(req, res) {
 
 async function postApproveStore(req, res) {
     try{
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
         const result = await storesManagmentFunctions.approveStore(req.data._id, req.params.storeId);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
@@ -121,8 +117,7 @@ async function deleteStore(req, res) {
 
 async function deleteRejectStore(req, res) {
     try{
-        const storeId = req.params.storeId;
-        const result = await rejectStore(req.data._id, storeId);
+        const result = await storesManagmentFunctions.rejectStore(req.data._id, req.params.storeId);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
