@@ -190,6 +190,11 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
                             blockingDate: Date.now(),
                             status: "blocking"
                         });
+                        await adminModel.updateOne({ email: store.ownerEmail }, {
+                            blockingReason,
+                            blockingDate: Date.now(),
+                            isBlocked: true
+                        });
                         return {
                             msg: `Blocking For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
                             error: false,
@@ -237,6 +242,10 @@ async function cancelBlockingStore(authorizationId, storeId) {
                         await storeModel.updateOne({ _id: storeId }, {
                             dateOfCancelBlocking: Date.now(),
                             status: "approving"
+                        });
+                        await adminModel.updateOne({ email: store.ownerEmail }, {
+                            dateOfCancelBlocking: Date.now(),
+                            isBlocked: false
                         });
                         return {
                             msg: `Cancel Blocking For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
