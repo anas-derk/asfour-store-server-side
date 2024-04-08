@@ -6,7 +6,7 @@ async function addNewProduct(authorizationId, productInfo) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const product = await productModel.findOne({ name: productInfo.name, category: productInfo.category });
                 if (!product) {
                     const category = await categoryModel.findOne({ name: productInfo.category });
@@ -52,7 +52,7 @@ async function addingNewImagesToProductGallery(authorizationId, productId, newGa
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const product = await productModel.findById(productId);
                 if (product) {
                     await productModel.updateOne({ _id: productId },
@@ -165,7 +165,7 @@ async function deleteProduct(authorizationId, productId) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const productInfo = await productModel.findOneAndDelete({
                     _id: productId,
                 });
@@ -206,7 +206,7 @@ async function deleteImageFromProductGallery(authorizationId, productId, gallery
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const product = await productModel.findById(productId);
                 if (product) {
                     await productModel.updateOne({ _id: productId }, {
@@ -245,7 +245,7 @@ async function updateProduct(authorizationId, productId, newData) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const product = await productModel.findOneAndUpdate({ _id: productId }, { ...newData });
                 if (product) {
                     return {
@@ -282,7 +282,7 @@ async function updateProductGalleryImage(authorizationId, productId, oldGalleryI
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const product = await productModel.findById(productId);
                 if (product) {
                     const galleryImagePathIndex = product.galleryImagesPaths.findIndex((galleryImagePath) => galleryImagePath === oldGalleryImagePath);
@@ -330,7 +330,7 @@ async function updateProductImage(authorizationId, productId, newProductImagePat
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const product = await productModel.findById(productId);
                 if (product) {
                     await productModel.updateOne({ _id: productId }, {

@@ -1,6 +1,6 @@
 // Import  Order Model Object
 
-const { orderModel, userModel, adminModel, mongoose } = require("../models/all.models");
+const { orderModel, userModel, adminModel } = require("../models/all.models");
 
 async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
     try {
@@ -93,7 +93,7 @@ async function updateOrder(authorizationId, orderId, newOrderDetails) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const order = await orderModel.findById(orderId);
                 if (order) {
                     await orderModel.updateOne({ _id: orderId }, { ...newOrderDetails });
@@ -129,7 +129,7 @@ async function updateOrderProduct(authorizationId, orderId, productId, newOrderP
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const order = await orderModel.findOne({ _id: orderId });
                 if (order) {
                     const productIndex = order.order_products.findIndex((order_product) => order_product.productId == productId);
@@ -178,7 +178,7 @@ async function deleteOrder(authorizationId, orderId){
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const order = await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
                 if (order) {
                     return {
@@ -214,7 +214,7 @@ async function deleteProductFromOrder(authorizationId, orderId, productId) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const order = await orderModel.findOne({ _id: orderId });
                 if (order) {
                     const newOrderProducts = order.order_products.filter((order_product) => order_product.productId !== productId);

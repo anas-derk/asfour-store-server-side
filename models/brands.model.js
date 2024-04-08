@@ -1,12 +1,12 @@
 // Import Brand Model Object
 
-const { brandModel, adminModel, mongoose } = require("../models/all.models");
+const { brandModel, adminModel } = require("../models/all.models");
 
 async function addNewBrand(authorizationId, brandInfo) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const newBrandInfo = new brandModel(brandInfo);
                 await newBrandInfo.save();
                 return {
@@ -75,7 +75,7 @@ async function deleteBrand(authorizationId, brandId) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const brandInfo = await brandModel.findOneAndDelete({
                     _id: brandId,
                 });
@@ -115,7 +115,7 @@ async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const brand = await brandModel.findOneAndUpdate( { _id: brandId } , { title: newBrandTitle });
                 return {
                     msg: brand ?
@@ -145,7 +145,7 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const brand = await brandModel.findOneAndUpdate({ _id: brandId }, {
                     imagePath: newBrandImagePath,
                 });

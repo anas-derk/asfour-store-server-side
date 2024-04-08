@@ -1,12 +1,12 @@
 // Import Category Model Object
 
-const { categoryModel, adminModel, mongoose } = require("../models/all.models");
+const { categoryModel, adminModel } = require("../models/all.models");
 
 async function addNewCategory(authorizationId, storeIdAndCategoryName) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const category = await categoryModel.findOne({ name: storeIdAndCategoryName.categoryName });
                 if (category) {
                     return {
@@ -86,7 +86,7 @@ async function deleteCategory(authorizationId, categoryId) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const category = await categoryModel.findOneAndDelete({
                     _id: categoryId,
                 });
@@ -124,7 +124,7 @@ async function updateCategory(authorizationId, categoryId, newCategoryName) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (!admin.isBlocked) {
                 const category = await categoryModel.findOneAndUpdate( { _id: categoryId } , { name: newCategoryName });
                 if (category) {
                     return {
