@@ -1,4 +1,4 @@
-const { getResponseObject, checkIsExistValueForFieldsAndDataTypes } = require("../global/functions");
+const { getResponseObject } = require("../global/functions");
 
 const productsManagmentFunctions = require("../models/products.model");
 
