@@ -1,6 +1,6 @@
-// Import Password Model Object
+// Import Global Password Model And Admin Model Object
 
-const { globalPasswordModel } = require("./all.models");
+const { globalPasswordModel, adminModel, mongoose } = require("./all.models");
 
 // require cryptoJs module for password encrypting
 
@@ -31,31 +31,44 @@ async function getPasswordForBussinessEmail(email){
     }
 }
 
-async function changeBussinessEmailPassword(email, password, newPassword) {
+async function changeBussinessEmailPassword(authorizationId, email, password, newPassword) {
     try {
-        // Check If Email Is Exist
-        const user = await globalPasswordModel.findOne({ email });
-        if (user) {
-            // Check From Password
-            const bytes = cryptoJS.AES.decrypt(user.password, process.env.secretKey);
-            const decryptedPassword = bytes.toString(cryptoJS.enc.Utf8);
-            if (decryptedPassword === password) {
-                const encrypted_password = cryptoJS.AES.encrypt(newPassword, process.env.secretKey).toString();
-                await globalPasswordModel.updateOne({ password: encrypted_password });
+        const admin = await adminModel.findById(authorizationId);
+        if (admin){
+            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+                const user = await globalPasswordModel.findOne({ email });
+                if (user) {
+                    const bytes = cryptoJS.AES.decrypt(user.password, process.env.secretKey);
+                    const decryptedPassword = bytes.toString(cryptoJS.enc.Utf8);
+                    if (decryptedPassword === password) {
+                        const encrypted_password = cryptoJS.AES.encrypt(newPassword, process.env.secretKey).toString();
+                        await globalPasswordModel.updateOne({ password: encrypted_password });
+                        return {
+                            msg: "Changing Global Password Process Has Been Successfully !!",
+                            error: false,
+                            data: {},
+                        }
+                    }
+                    return {
+                        msg: "Sorry, Email Or Password Incorrect !!",
+                        error: true,
+                        data: {},
+                    }
+                }
                 return {
-                    msg: "Changing Global Password Process Has Been Successfully !!",
-                    error: false,
+                    msg: "Sorry, Email Or Password Incorrect !!",
+                    error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, Email Or Password Incorrect !!",
+                msg: "Sorry, Permission Denied !!",
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, Email Or Password Incorrect !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
