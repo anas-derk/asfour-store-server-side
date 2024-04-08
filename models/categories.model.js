@@ -6,7 +6,7 @@ async function addNewCategory(authorizationId, storeIdAndCategoryName) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if (!admin.isBlocked) {
+            if (!admin.isBlocked && admin.storeId === storeIdAndCategoryName.storeId) {
                 const category = await categoryModel.findOne({ name: storeIdAndCategoryName.categoryName });
                 if (category) {
                     return {
@@ -87,15 +87,25 @@ async function deleteCategory(authorizationId, categoryId) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const category = await categoryModel.findOneAndDelete({
+                const category = await categoryModel.findOne({
                     _id: categoryId,
                 });
                 if (category) {
+                    if (category.storeId === admin.storeId) {
+                        await categoryModel.deleteOne({
+                            _id: categoryId,
+                        });
+                        return {
+                            msg: "Deleting Category Process Has Been Successfuly ...",
+                            error: false,
+                            data: {},
+                        };
+                    }
                     return {
-                        msg: "Deleting Category Process Has Been Successfuly ...",
-                        error: false,
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
                         data: {},
-                    };
+                    }
                 }
                 return {
                     msg: "Sorry, This Category Is Not Exist !!",
@@ -125,13 +135,21 @@ async function updateCategory(authorizationId, categoryId, newCategoryName) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const category = await categoryModel.findOneAndUpdate( { _id: categoryId } , { name: newCategoryName });
+                const category = await categoryModel.findOne( { _id: categoryId });
                 if (category) {
+                    if (category.storeId === admin.storeId) {
+                        await categoryModel.updateOne( { _id: categoryId } , { name: newCategoryName });
+                        return {
+                            msg: "Updating Category Process Has Been Successfuly !!",
+                            error: false,
+                            data: {},
+                        };
+                    }
                     return {
-                        msg: "Updating Category Process Has Been Successfuly !!",
-                        error: false,
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
                         data: {},
-                    };
+                    }
                 }
                 return {
                     msg: "Sorry, This Category Is Not Exist !!",

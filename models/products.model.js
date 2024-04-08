@@ -6,7 +6,7 @@ async function addNewProduct(authorizationId, productInfo) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if (!admin.isBlocked) {
+            if (!admin.isBlocked && admin.storeId === productInfo.storeId) {
                 const product = await productModel.findOne({ name: productInfo.name, category: productInfo.category });
                 if (!product) {
                     const category = await categoryModel.findOne({ name: productInfo.category });
@@ -55,16 +55,23 @@ async function addingNewImagesToProductGallery(authorizationId, productId, newGa
             if (!admin.isBlocked) {
                 const product = await productModel.findById(productId);
                 if (product) {
-                    await productModel.updateOne({ _id: productId },
-                    {
-                        galleryImagesPaths: product.galleryImagesPaths.concat(newGalleryImagePaths),
-                    });
+                    if (product.storeId === admin.storeId) {
+                        await productModel.updateOne({ _id: productId },
+                        {
+                            galleryImagesPaths: product.galleryImagesPaths.concat(newGalleryImagePaths),
+                        });
+                        return {
+                            msg: "Adding New Images To Product Gallery Process Has Been Successfuly !!",
+                            error: false,
+                            data: {
+                                newGalleryImagePaths,
+                            },
+                        }
+                    }
                     return {
-                        msg: "Adding New Images To Product Gallery Process Has Been Successfuly !!",
-                        error: false,
-                        data: {
-                            newGalleryImagePaths,
-                        },
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
+                        data: {},
                     }
                 }
                 return {
@@ -166,17 +173,27 @@ async function deleteProduct(authorizationId, productId) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const productInfo = await productModel.findOneAndDelete({
+                const productInfo = await productModel.findOne({
                     _id: productId,
                 });
                 if (productInfo) {
+                    if (productInfo.storeId === admin.storeId) {
+                        await productModel.deleteOne({
+                            _id: productId,
+                        });
+                        return {
+                            msg: "Deleting Product Process Has Been Successfuly !!",
+                            error: false,
+                            data: {
+                                deletedProductPath: productInfo.imagePath,
+                                galleryImagePathsForDeletedProduct: productInfo.galleryImagesPaths,
+                            },
+                        }
+                    }
                     return {
-                        msg: "Deleting Product Process Has Been Successfuly !!",
-                        error: false,
-                        data: {
-                            deletedProductPath: productInfo.imagePath,
-                            galleryImagePathsForDeletedProduct: productInfo.galleryImagesPaths,
-                        },
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
+                        data: {},
                     }
                 }
                 return {
@@ -209,12 +226,19 @@ async function deleteImageFromProductGallery(authorizationId, productId, gallery
             if (!admin.isBlocked) {
                 const product = await productModel.findById(productId);
                 if (product) {
-                    await productModel.updateOne({ _id: productId }, {
-                        galleryImagesPaths: product.galleryImagesPaths.filter((path) => galleryImagePath !== path)
-                    });
+                    if (product.storeId === admin.storeId) {
+                        await productModel.updateOne({ _id: productId }, {
+                            galleryImagesPaths: product.galleryImagesPaths.filter((path) => galleryImagePath !== path)
+                        });
+                        return {
+                            msg: "Deleting Image From Product Gallery Process Has Been Successfully !!",
+                            error: false,
+                            data: {},
+                        }
+                    }
                     return {
-                        msg: "Deleting Image From Product Gallery Process Has Been Successfully !!",
-                        error: false,
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
                         data: {},
                     }
                 }
@@ -246,11 +270,19 @@ async function updateProduct(authorizationId, productId, newData) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const product = await productModel.findOneAndUpdate({ _id: productId }, { ...newData });
+                const product = await productModel.findOne({ _id: productId });
                 if (product) {
+                    if (product.storeId === admin.storeId) {
+                        await productModel.updateOne({ _id: productId }, { ...newData });
+                        return {
+                            msg: "Updating Product Process Has Been Successfully !!",
+                            error: false,
+                            data: {},
+                        }
+                    }
                     return {
-                        msg: "Updating Product Process Has Been Successfully !!",
-                        error: false,
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
                         data: {},
                     }
                 }
@@ -285,20 +317,27 @@ async function updateProductGalleryImage(authorizationId, productId, oldGalleryI
             if (!admin.isBlocked) {
                 const product = await productModel.findById(productId);
                 if (product) {
-                    const galleryImagePathIndex = product.galleryImagesPaths.findIndex((galleryImagePath) => galleryImagePath === oldGalleryImagePath);
-                    if (galleryImagePathIndex >= 0) {
-                        product.galleryImagesPaths[galleryImagePathIndex] = newGalleryImagePath;
-                        await productModel.updateOne({ _id: productId }, {
-                            galleryImagesPaths: product.galleryImagesPaths
-                        });
+                    if (product.storeId === admin.storeId) {
+                        const galleryImagePathIndex = product.galleryImagesPaths.findIndex((galleryImagePath) => galleryImagePath === oldGalleryImagePath);
+                        if (galleryImagePathIndex >= 0) {
+                            product.galleryImagesPaths[galleryImagePathIndex] = newGalleryImagePath;
+                            await productModel.updateOne({ _id: productId }, {
+                                galleryImagesPaths: product.galleryImagesPaths
+                            });
+                            return {
+                                msg: "Updating Product Galley Image Process Has Been Successfully !!",
+                                error: false,
+                                data: {},
+                            }
+                        }
                         return {
-                            msg: "Updating Product Galley Image Process Has Been Successfully !!",
-                            error: false,
+                            msg: "Sorry, This Path Is Not Found !!",
+                            error: true,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, This Path Is Not Found !!",
+                        msg: "Sorry, Permission Denied !!",
                         error: true,
                         data: {},
                     }
@@ -333,15 +372,22 @@ async function updateProductImage(authorizationId, productId, newProductImagePat
             if (!admin.isBlocked) {
                 const product = await productModel.findById(productId);
                 if (product) {
-                    await productModel.updateOne({ _id: productId }, {
-                        imagePath: newProductImagePath,
-                    });
+                    if (product.storeId === admin.storeId) {
+                        await productModel.updateOne({ _id: productId }, {
+                            imagePath: newProductImagePath,
+                        });
+                        return {
+                            msg: "Change Product Image Process Has Been Successfully !!",
+                            error: false,
+                            data: {
+                                deletedProductImagePath: product.imagePath,
+                            },
+                        }
+                    }
                     return {
-                        msg: "Change Product Image Process Has Been Successfully !!",
-                        error: false,
-                        data: {
-                            deletedProductImagePath: product.imagePath,
-                        },
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
+                        data: {},
                     }
                 }
                 return {
