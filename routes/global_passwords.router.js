@@ -16,7 +16,7 @@ globalPasswordRouter.put("/change-bussiness-email-password",
             { fieldName: "New Bussiness Password", fieldValue: emailAndPasswordAndNewPassword.newPassword, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
-    validateEmail,
+    (req, res, next) => validateEmail(req.query.email, res, next),
     globalPasswordController.putChangeBussinessEmailPassword
 );
 
