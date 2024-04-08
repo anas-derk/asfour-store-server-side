@@ -43,12 +43,12 @@ async function getBrandsCount(filters) {
     }
 }
 
-async function getAllBrandsInsideThePage(pageNumber, pageSize) {
+async function getAllBrandsInsideThePage(pageNumber, pageSize, filters) {
     try {
         return {
             msg: `Get All Brands Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
-            data: await brandModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize),
+            data: await brandModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize),
         };
     }
     catch (err) {

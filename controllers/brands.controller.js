@@ -4,6 +4,14 @@ const brandsManagmentFunctions = require("../models/brands.model");
 
 const { unlinkSync } = require("fs");
 
+function getFiltersObject(filters) {
+    let filtersObject = {};
+    for (let objectKey in filters) {
+        if (objectKey === "_id") filtersObject[objectKey] = filters[objectKey];
+    }
+    return filtersObject;
+}
+
 async function postNewBrand(req, res) {
     try{
         const uploadError = req.uploadError;
@@ -34,7 +42,8 @@ async function getAllBrands(req, res) {
 async function getBrandsCount(req, res) {
     try {
         const filters = req.query;
-        res.json(await brandsManagmentFunctions.getBrandsCount(filters));
+        console.log(getFiltersObject(filters));
+        res.json(await brandsManagmentFunctions.getBrandsCount(getFiltersObject(filters)));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -44,7 +53,7 @@ async function getBrandsCount(req, res) {
 async function getAllBrandsInsideThePage(req, res) {
     try {
         const filters = req.query;
-        res.json(await brandsManagmentFunctions.getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize));
+        res.json(await brandsManagmentFunctions.getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
