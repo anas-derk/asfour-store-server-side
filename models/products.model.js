@@ -202,7 +202,7 @@ async function deleteProduct(authorizationId, productId) {
     }
 }
 
-async function deleteImageFromProductGallery(productId, galleryImagePath) {
+async function deleteImageFromProductGallery(authorizationId, productId, galleryImagePath) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){

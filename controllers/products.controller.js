@@ -112,7 +112,7 @@ async function getRelatedProductsInTheProduct(req, res) {
 
 async function deleteProduct(req, res) {
     try {
-        const result = await productsManagmentFunctions.deleteProduct(req.params.productId);
+        const result = await productsManagmentFunctions.deleteProduct(req.data._id, req.params.productId);
         if(!result.error) {
             unlinkSync(result.data.deletedProductPath);
             for (let productImagePath of result.data.galleryImagePathsForDeletedProduct) {
@@ -135,7 +135,7 @@ async function deleteProduct(req, res) {
 async function deleteImageFromProductGallery(req, res) {
     try {
         const galleryImagePath = req.query.galleryImagePath;
-        const result = await productsManagmentFunctions.deleteImageFromProductGallery(req.params.productId, req.query.galleryImagePath);
+        const result = await productsManagmentFunctions.deleteImageFromProductGallery(req.data._id, req.params.productId, req.query.galleryImagePath);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
@@ -178,7 +178,7 @@ async function putProductGalleryImage(req, res) {
             return;
         }
         const oldGalleryImagePath = req.query.oldGalleryImagePath;
-        const result = await productsManagmentFunctions.updateProductGalleryImage(req.params.productId, oldGalleryImagePath, req.file.path);
+        const result = await productsManagmentFunctions.updateProductGalleryImage(req.data._id, req.params.productId, oldGalleryImagePath, req.file.path);
         if (!result.error) {
             unlinkSync(oldGalleryImagePath);
         }
@@ -202,7 +202,7 @@ async function putProductImage(req, res) {
             res.status(400).json(getResponseObject(uploadError, true, {}));
             return;
         }
-        const result = await productsManagmentFunctions.updateProductImage(req.params.productId, req.file.path.replace(/\\/g, '/'));
+        const result = await productsManagmentFunctions.updateProductImage(req.data._id, req.params.productId, req.file.path.replace(/\\/g, '/'));
         if (!result.error) {
             unlinkSync(result.data.deletedProductImagePath);
         }
