@@ -170,8 +170,8 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
             if (!admin.isBlocked) {
                 const brand = await brandModel.findOne({ _id: brandId });
                 if (brand) {
-                    if (brandInfo.storeId === admin.storeId) {
-                        const brand = await brandModel.updateOne({ _id: brandId }, {
+                    if (brand.storeId === admin.storeId) {
+                        await brandModel.updateOne({ _id: brandId }, {
                             imagePath: newBrandImagePath,
                         });
                         return {
