@@ -1,6 +1,6 @@
 // Import  Order Model Object
 
-const { orderModel, userModel } = require("../models/all.models");
+const { orderModel, userModel, adminModel, mongoose } = require("../models/all.models");
 
 async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
     try {
@@ -89,53 +89,34 @@ async function createNewOrder(orderDetails) {
     }
 }
 
-async function updateOrder(orderId, newOrderDetails) {
+async function updateOrder(authorizationId, orderId, newOrderDetails) {
     try {
-        const order = await orderModel.findById(orderId);
-        if (order) {
-            await orderModel.updateOne({ _id: orderId }, { ...newOrderDetails });
-            return {
-                msg: `Update Details For Order That : ( Id: ${ orderId }) Process Has Been Successfully !!`,
-                error: false,
-                data: {},
-            };
-        }
-        return {
-            msg: "Sorry, This Order Is Not Found !!",
-            error: true,
-            data: {},
-        };
-    } catch (err) {
-        throw Error(err);
-    }
-}
-
-async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
-    try {
-        const order = await orderModel.findOne({ _id: orderId });
-        if (order) {
-            const productIndex = order.order_products.findIndex((order_product) => order_product.productId == productId);
-            if (productIndex >= 0) {
-                order.order_products[productIndex].quantity = newOrderProductDetails.quantity;
-                order.order_products[productIndex].name = newOrderProductDetails.name;
-                order.order_products[productIndex].unit_price = newOrderProductDetails.unit_price;
-                order.order_products[productIndex].total_amount = newOrderProductDetails.total_amount;
-                const { calcOrderAmount } = require("../global/functions");
-                await orderModel.updateOne({ _id: orderId }, { order_products: order.order_products, order_amount: calcOrderAmount(order.order_products) });
-                return {
-                    msg: "Updating Order Details Process Has Been Successfuly !!",
-                    error: false,
-                    data: {},
+        const admin = await adminModel.findById(authorizationId);
+        if (admin){
+            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+                const order = await orderModel.findById(orderId);
+                if (order) {
+                    await orderModel.updateOne({ _id: orderId }, { ...newOrderDetails });
+                    return {
+                        msg: `Update Details For Order That : ( Id: ${ orderId }) Process Has Been Successfully !!`,
+                        error: false,
+                        data: {},
+                    };
                 }
+                return {
+                    msg: "Sorry, This Order Is Not Found !!",
+                    error: true,
+                    data: {},
+                };
             }
             return {
-                msg: `Sorry, This Product For Order Id: ${orderId} Is Not Found !!`,
+                msg: "Sorry, Permission Denied !!",
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Order Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -144,18 +125,82 @@ async function updateOrderProduct(orderId, productId, newOrderProductDetails) {
     }
 }
 
-async function deleteOrder(orderId){
-    try{
-        const order = await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
-        if (order) {
+async function updateOrderProduct(authorizationId, orderId, productId, newOrderProductDetails) {
+    try {
+        const admin = await adminModel.findById(authorizationId);
+        if (admin){
+            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+                const order = await orderModel.findOne({ _id: orderId });
+                if (order) {
+                    const productIndex = order.order_products.findIndex((order_product) => order_product.productId == productId);
+                    if (productIndex >= 0) {
+                        order.order_products[productIndex].quantity = newOrderProductDetails.quantity;
+                        order.order_products[productIndex].name = newOrderProductDetails.name;
+                        order.order_products[productIndex].unit_price = newOrderProductDetails.unit_price;
+                        order.order_products[productIndex].total_amount = newOrderProductDetails.total_amount;
+                        const { calcOrderAmount } = require("../global/functions");
+                        await orderModel.updateOne({ _id: orderId }, { order_products: order.order_products, order_amount: calcOrderAmount(order.order_products) });
+                        return {
+                            msg: "Updating Order Details Process Has Been Successfuly !!",
+                            error: false,
+                            data: {},
+                        }
+                    }
+                    return {
+                        msg: `Sorry, This Product For Order Id: ${orderId} Is Not Found !!`,
+                        error: true,
+                        data: {},
+                    }
+                }
+                return {
+                    msg: "Sorry, This Order Is Not Found !!",
+                    error: true,
+                    data: {},
+                }
+            }
             return {
-                msg: "Deleting This Order Has Been Successfuly !!",
-                error: false,
+                msg: "Sorry, Permission Denied !!",
+                error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Order Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    } catch (err) {
+        throw Error(err);
+    }
+}
+
+async function deleteOrder(authorizationId, orderId){
+    try{
+        const admin = await adminModel.findById(authorizationId);
+        if (admin){
+            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+                const order = await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
+                if (order) {
+                    return {
+                        msg: "Deleting This Order Has Been Successfuly !!",
+                        error: false,
+                        data: {},
+                    }
+                }
+                return {
+                    msg: "Sorry, This Order Is Not Found !!",
+                    error: true,
+                    data: {},
+                }
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -165,29 +210,44 @@ async function deleteOrder(orderId){
     }
 }
 
-async function deleteProductFromOrder(orderId, productId) {
+async function deleteProductFromOrder(authorizationId, orderId, productId) {
     try {
-        const order = await orderModel.findOne({ _id: orderId });
-        if (order) {
-            const newOrderProducts = order.order_products.filter((order_product) => order_product.productId !== productId);
-            if (newOrderProducts.length < order.order_products.length) {
-                await orderModel.updateOne({ _id: orderId }, { order_products: newOrderProducts });
+        const admin = await adminModel.findById(authorizationId);
+        if (admin){
+            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+                const order = await orderModel.findOne({ _id: orderId });
+                if (order) {
+                    const newOrderProducts = order.order_products.filter((order_product) => order_product.productId !== productId);
+                    if (newOrderProducts.length < order.order_products.length) {
+                        await orderModel.updateOne({ _id: orderId }, { order_products: newOrderProducts });
+                        return {
+                            msg: "Deleting Product From Order Has Been Successfuly !!",
+                            error: false,
+                            data: {
+                                newOrderProducts,
+                            },
+                        }
+                    }
+                    return {
+                        msg: `Sorry, This Product For Order Id: ${orderId} Is Not Found !!`,
+                        error: true,
+                        data: {},
+                    }
+                }
                 return {
-                    msg: "Deleting Product From Order Has Been Successfuly !!",
-                    error: false,
-                    data: {
-                        newOrderProducts,
-                    },
+                    msg: "Sorry, This Order Is Not Found !!",
+                    error: true,
+                    data: {},
                 }
             }
             return {
-                msg: `Sorry, This Product For Order Id: ${orderId} Is Not Found !!`,
+                msg: "Sorry, Permission Denied !!",
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Order Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }

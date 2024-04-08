@@ -2,8 +2,6 @@
 
 const { storeModel, adminModel, categoryModel, productModel, brandModel } = require("../models/all.models");
 
-const CodeGenerator = require("node-code-generator");
-
 // require bcryptjs module for password encrypting
 
 const { hash } = require("bcryptjs");

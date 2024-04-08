@@ -1,6 +1,6 @@
 // Import Global Password Model And Admin Model Object
 
-const { globalPasswordModel, adminModel, mongoose } = require("./all.models");
+const { globalPasswordModel, adminModel } = require("./all.models");
 
 // require cryptoJs module for password encrypting
 
@@ -35,7 +35,7 @@ async function changeBussinessEmailPassword(authorizationId, email, password, ne
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if ((new mongoose.Types.ObjectId(authorizationId)).equals(admin._id) && !admin.isBlocked) {
+            if (admin.isWebsiteOwner) {
                 const user = await globalPasswordModel.findOne({ email });
                 if (user) {
                     const bytes = cryptoJS.AES.decrypt(user.password, process.env.secretKey);
