@@ -5,6 +5,7 @@ const ordersManagmentFunctions = require("../models/orders.model");
 function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
+        if (objectKey === "storeId") filtersObject[objectKey] = filters[objectKey];
         if (objectKey === "orderNumber") filtersObject[objectKey] = Number(filters[objectKey]);
         if (objectKey === "_id") filtersObject[objectKey] = filters[objectKey];
         if (objectKey === "status") filtersObject[objectKey] = filters[objectKey];
@@ -23,75 +24,74 @@ function getFiltersObject(filters) {
 
 async function getOrdersCount(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.getOrdersCount(getFiltersObject(req.query)));
+        res.json(await ordersManagmentFunctions.getOrdersCount(getFiltersObject(req.query)));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function getAllOrdersInsideThePage(req, res) {
     try{
         const filters = req.query;
-        await res.json(await ordersManagmentFunctions.getAllOrdersInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await ordersManagmentFunctions.getAllOrdersInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
     }
     catch(err) {
-        console.log(err);
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function getOrderDetails(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.getOrderDetails(req.params.orderId));
+        res.json(await ordersManagmentFunctions.getOrderDetails(req.params.orderId));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function postNewOrder(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.createNewOrder(req.body));
+        res.json(await ordersManagmentFunctions.createNewOrder(req.body));
     }
     catch(err) {
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function putOrder(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.updateOrder(req.params.orderId, req.body));
+        res.json(await ordersManagmentFunctions.updateOrder(req.params.orderId, req.body));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function putOrderProduct(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.updateOrderProduct(req.params.orderId, req.params.productId, req.body));
+        res.json(await ordersManagmentFunctions.updateOrderProduct(req.params.orderId, req.params.productId, req.body));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function deleteOrder(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.deleteOrder(req.params.orderId));
+        res.json(await ordersManagmentFunctions.deleteOrder(req.params.orderId));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
 async function deleteProductFromOrder(req, res) {
     try{
-        await res.json(await ordersManagmentFunctions.deleteProductFromOrder(req.params.orderId, req.params.productId));
+        res.json(await ordersManagmentFunctions.deleteProductFromOrder(req.params.orderId, req.params.productId));
     }
     catch(err){
-        await res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
 
