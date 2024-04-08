@@ -60,6 +60,7 @@ function getFiltersAndSortDetailsObject(queryObject) {
     let filtersObject = {}, sortDetailsObject = {};
     for (let objectKey in queryObject) {
         if (objectKey === "category") filtersObject[objectKey] = queryObject[objectKey];
+        if (objectKey === "storeId") filtersObject[objectKey] = queryObject[objectKey];
         if (objectKey === "name") filtersObject[objectKey] = { $regex: new RegExp(queryObject[objectKey], 'i') }
         if (objectKey === "sortBy") sortDetailsObject[objectKey] = queryObject[objectKey];
         if (objectKey === "sortType") sortDetailsObject[objectKey] = queryObject[objectKey];
@@ -69,16 +70,7 @@ function getFiltersAndSortDetailsObject(queryObject) {
 
 async function getProductInfo(req, res) {
     try {
-        const productId = req.params.productId;
-        const checkResult = checkIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: productId, dataType: "string", isRequiredValue: true },
-        ]);
-        if (checkResult.error) {
-            res.status(400).json(checkResult);
-            return;
-        }
-        const { getProductInfo } = require("../models/products.model");
-        res.json(await getProductInfo(productId));
+        res.json(await productsManagmentFunctions.getProductInfo(req.params.productId));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

@@ -21,7 +21,7 @@ async function postNewCategory(req, res) {
 
 async function getAllCategories(req, res) {
     try {
-        res.json(await categoriesManagmentFunctions.getAllCategories());
+        res.json(await categoriesManagmentFunctions.getAllCategories(getFiltersObject(req.query)));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
