@@ -51,12 +51,12 @@ async function getCategoriesCount(filters) {
     }
 }
 
-async function getAllCategoriesInsideThePage(pageNumber, pageSize) {
+async function getAllCategoriesInsideThePage(pageNumber, pageSize, filters) {
     try {
         return {
             msg: `Get All Categories Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
-            data: await categoryModel.find({}).skip((pageNumber - 1) * pageSize).limit(pageSize),
+            data: await categoryModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize),
         }
     }
     catch (err) {
