@@ -56,7 +56,7 @@ async function getAllCategoriesInsideThePage(req, res) {
 
 async function deleteCategory(req, res) {
     try{
-        const result = await categoriesManagmentFunctions.deleteCategory(req.params.categoryId);
+        const result = await categoriesManagmentFunctions.deleteCategory(req.data._id, req.params.categoryId);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
