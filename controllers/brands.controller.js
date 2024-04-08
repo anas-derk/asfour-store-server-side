@@ -42,7 +42,6 @@ async function getAllBrands(req, res) {
 async function getBrandsCount(req, res) {
     try {
         const filters = req.query;
-        console.log(getFiltersObject(filters));
         res.json(await brandsManagmentFunctions.getBrandsCount(getFiltersObject(filters)));
     }
     catch (err) {
