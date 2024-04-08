@@ -67,6 +67,7 @@ storesRouter.post("/approve-store/:storeId",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Password", fieldValue: req.query.password, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
     storesController.postApproveStore
@@ -146,7 +147,6 @@ storesRouter.delete("/reject-store/:storeId",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Store Id", fieldValue: req.params.storeId, dataType: "ObjectId", isRequiredValue: true },
-            { fieldName: "Reject Reason", fieldValue: req.query.rejectingReason, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
     storesController.deleteRejectStore

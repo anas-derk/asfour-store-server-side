@@ -75,7 +75,7 @@ async function createNewStore(storeDetails) {
     }
 }
 
-async function approveStore(authorizationId, storeId) {
+async function approveStore(authorizationId, storeId, password) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
@@ -100,13 +100,11 @@ async function approveStore(authorizationId, storeId) {
                         };
                     }
                     await storeModel.updateOne({ _id: storeId }, { status: "approving", approveDate: Date.now() });
-                    const generator = new CodeGenerator();
-                    const generatedPassword = generator.generateCodes("****##**")[0];
                     const newMerchant = new adminModel({
                         firstName: store.ownerFirstName,
                         lastName: store.ownerLastName,
                         email: store.ownerEmail,
-                        password: await hash(generatedPassword, 10),
+                        password: await hash(password, 10),
                         isMerchant: true,
                         storeId,
                     });
@@ -114,9 +112,7 @@ async function approveStore(authorizationId, storeId) {
                     return {
                         msg: `Approve Store: ( Store Id: ${ storeId }) And Create Merchant Account Process Has Been Successfully !!`,
                         error: false,
-                        data: {
-                            password: generatedPassword,
-                        },
+                        data: {},
                     };
                 }
                 return {
