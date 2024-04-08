@@ -72,7 +72,7 @@ async function deleteCategory(req, res) {
 
 async function putCategory(req, res) {
     try{
-        const result = await categoriesManagmentFunctions.updateCategory(req.params.categoryId, req.body.newCategoryName);
+        const result = await categoriesManagmentFunctions.updateCategory(req.data._id, req.params.categoryId, req.body.newCategoryName);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));

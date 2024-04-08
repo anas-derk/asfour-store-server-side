@@ -120,7 +120,7 @@ async function deleteCategory(authorizationId, categoryId) {
     }
 }
 
-async function updateCategory(categoryId, newCategoryName) {
+async function updateCategory(authorizationId, categoryId, newCategoryName) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
