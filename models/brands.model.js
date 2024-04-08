@@ -6,7 +6,7 @@ async function addNewBrand(authorizationId, brandInfo) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if (!admin.isBlocked) {
+            if (!admin.isBlocked && admin.storeId === brandInfo.storeId) {
                 const newBrandInfo = new brandModel(brandInfo);
                 await newBrandInfo.save();
                 return {
@@ -76,17 +76,25 @@ async function deleteBrand(authorizationId, brandId) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const brandInfo = await brandModel.findOneAndDelete({
+                const brandInfo = await brandModel.findOne({
                     _id: brandId,
                 });
                 if (brandInfo) {
+                    if (brandInfo.storeId === admin.storeId) {
+                        await brandModel.deleteOne({ _id: brandId });
+                        return {
+                            error: false,
+                            msg: "Deleting Brand Process Has Been Successfuly ...",
+                            data: {
+                                deletedBrandPath: brandInfo.imagePath,
+                            },
+                        };
+                    }
                     return {
-                        error: false,
-                        msg: "Deleting Brand Process Has Been Successfuly ...",
-                        data: {
-                            deletedBrandPath: brandInfo.imagePath,
-                        },
-                    };
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
+                        data: {},
+                    }
                 }
                 return {
                     msg: "Sorry, This Brand Id Is Not Exist !!",
@@ -116,19 +124,33 @@ async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const brand = await brandModel.findOneAndUpdate( { _id: brandId } , { title: newBrandTitle });
+                const brandInfo = await brandModel.findOne({ _id: brandId });
+                if (brandInfo) {
+                    if (brandInfo.storeId === admin.storeId) {
+                        await brandModel.updateOne( { _id: brandId } , { title: newBrandTitle });
+                        return {
+                            msg:  "Updating Brand Info Process Has Been Successfuly ...",
+                            error: false,
+                            data: {},
+                        };
+                    }
+                    return {
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
+                        data: {},
+                    }
+                }
                 return {
-                    msg: brand ?
-                        "Updating Brand Info Process Has Been Successfuly ..." : "Sorry This Brand Is Not Exist !!",
-                    error: brand ? false : true,
+                    msg: "Sorry, This Brand Is Not Exist !!",
+                    error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, This Brand Id Is Not Exist !!",
+                msg: "Sorry, Permission Denied !!",
                 error: true,
                 data: {},
-            };
+            }
         }
         return {
             msg: "Sorry, This Admin Is Not Exist !!",
@@ -146,15 +168,23 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const brand = await brandModel.findOneAndUpdate({ _id: brandId }, {
-                    imagePath: newBrandImagePath,
-                });
+                const brand = await brandModel.findOne({ _id: brandId });
                 if (brand) {
+                    if (brandInfo.storeId === admin.storeId) {
+                        const brand = await brandModel.updateOne({ _id: brandId }, {
+                            imagePath: newBrandImagePath,
+                        });
+                        return {
+                            msg: "Updating Brand Image Process Has Been Successfully !!",
+                            error: false,
+                            data: { deletedBrandImagePath: brand.imagePath }
+                        };
+                    }
                     return {
-                        msg: "Updating Brand Image Process Has Been Successfully !!",
-                        error: false,
-                        data: { deletedBrandImagePath: brand.imagePath }
-                    };    
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
+                        data: {},
+                    }
                 }
                 return {
                     msg: "Sorry, This Brand Is Not Exist !!",
