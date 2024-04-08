@@ -221,7 +221,8 @@ async function putResetPassword(req, res) {
 
 async function deleteProductFromFavoriteUserProducts(req, res) {
     try{
-        res.json(await usersOPerationsManagmentFunctions.deleteProductFromFavoriteUserProducts(req.data._id, req.query.productId));
+        const result = await usersOPerationsManagmentFunctions.deleteProductFromFavoriteUserProducts(req.data._id, req.query.productId);
+        res.json(result);
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

@@ -1,29 +1,36 @@
 // Import Admin Model Object
 
-const { adminModel } = require("./all.models");
+const { adminModel, mongoose } = require("./all.models");
 
 const { compare } = require("bcryptjs");
 
 async function adminLogin(email, password) {
     try {
-        // Check If Email Is Exist
-        const user = await adminModel.findOne({ email });
-        if (user) {
-            // require bcryptjs module for password encrypting
-            // Check From Password
-            const isTruePassword = await compare(password, user.password);
-            if (isTruePassword)
+        const admin = await adminModel.findOne({ email });
+        if (admin) {
+            if (!admin.isBlocked) {
+                const isTruePassword = await compare(password, admin.password);
+                if (isTruePassword)
+                    return {
+                        msg: "Admin Logining Process Has Been Successfully !!",
+                        error: false,
+                        data: {
+                            _id: admin._id,
+                        },
+                    };
                 return {
-                    msg: "Admin Logining Process Has Been Successfully !!",
-                    error: false,
-                    data: {
-                        _id: user._id,
-                    },
-                };
+                    msg: "Sorry, The Email Or Password Is Not Valid !!",
+                    error: true,
+                    data: {},
+                }
+            }
             return {
-                msg: "Sorry, The Email Or Password Is Not Valid !!",
+                msg: `Sorry, This Account Has Been Blocked !!`,
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
