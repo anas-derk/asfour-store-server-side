@@ -63,7 +63,7 @@ async function createNewStore(storeDetails) {
         const newStore = new storeModel(storeDetails);
         await newStore.save();
         return {
-            msg: "Creating New Store Process Has Been Successfully !!",
+            msg: "Creating Licence Request New Store Process Has Been Successfully !!",
             error: false,
             data: {},
         }
