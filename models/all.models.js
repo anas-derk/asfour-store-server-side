@@ -121,6 +121,7 @@ const storeSchema = mongoose.Schema({
             "blocking",
         ],
     },
+    isMainStore: Boolean,
     creatingOrderDate: {
         type: Date,
         default: Date.now(),

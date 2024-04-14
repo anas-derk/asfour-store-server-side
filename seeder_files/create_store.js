@@ -45,6 +45,7 @@ const storeSchema = mongoose.Schema({
             "blocking",
         ],
     },
+    isMainStore: Boolean,
     creatingOrderDate: {
         type: Date,
         default: Date.now(),
@@ -68,13 +69,14 @@ const storeInfo = {
     productsType: "Multiple",
     productsDescription: "Welcome To Ubuyblues Store",
     status: "approving",
+    isMainStore: true,
     approveDate: Date.now(),
 };
 
 async function createStore() {
     try {
         await mongoose.connect(process.env.DB_URL);
-        let newStore = new storeModel(storeInfo);
+        const newStore = new storeModel(storeInfo);
         await newStore.save();
         await mongoose.disconnect();
         return "Ok !!, Create Store Process Has Been Successfuly !!";
