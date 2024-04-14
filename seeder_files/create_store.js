@@ -61,7 +61,7 @@ const storeModel = mongoose.model("store", storeSchema);
 
 const storeInfo = {
     name: "Ubuyblues",
-    imagePath: "/",
+    imagePath: "assets/images/stores/UbuyBlues_Logo_merged_Purple.jpg",
     ownerFirstName: "Soliman",
     ownerLastName: "Asfour",
     ownerEmail: "admin@gmail.com",
