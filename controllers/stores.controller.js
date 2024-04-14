@@ -45,6 +45,15 @@ async function getStoreDetails(req, res) {
     }
 }
 
+async function getMainStoreDetails(req, res) {
+    try{
+        res.json(await storesManagmentFunctions.getMainStoreDetails());
+    }
+    catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function postNewStore(req, res) {
     try{
         const uploadError = req.uploadError;
@@ -199,6 +208,7 @@ module.exports = {
     getAllStoresInsideThePage,
     getStoresCount,
     getStoreDetails,
+    getMainStoreDetails,
     postNewStore,
     postApproveStore,
     putStoreInfo,

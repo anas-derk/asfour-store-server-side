@@ -40,6 +40,8 @@ storesRouter.get("/store-details/:storeId",
     storesController.getStoreDetails
 );
 
+storesRouter.get("/main-store-details", storesController.getMainStoreDetails);
+
 storesRouter.post("/create-new-store",
     multer({
         storage,

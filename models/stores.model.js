@@ -50,6 +50,26 @@ async function getStoreDetails(storeId) {
     }
 }
 
+async function getMainStoreDetails() {
+    try {
+        const store = await storeModel.findOne({ isMainStore: true });
+        if (store) {
+            return {
+                msg: `Get Main Store Details Process Has Been Successfully !!`,
+                error: false,
+                data: store,
+            }
+        }
+        return {
+            msg: "Sorry, This Store Is Not Found !!",
+            error: true,
+            data: {},
+        }
+    } catch (err) {
+        throw Error(err);
+    }
+}
+
 async function createNewStore(storeDetails) {
     try{
         const store = await storeModel.findOne({ ownerEmail: storeDetails.ownerEmail });
@@ -382,6 +402,7 @@ module.exports = {
     getAllStoresInsideThePage,
     getStoresCount,
     getStoreDetails,
+    getMainStoreDetails,
     createNewStore,
     approveStore,
     updateStoreInfo,
