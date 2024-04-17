@@ -86,7 +86,9 @@ productsRouter.post("/adding-new-images-to-product-gallery/:productId",
     productsController.postNewImagesToProductGallery
 );
 
-productsRouter.post("/products-by-ids", productsController.getProductsByAds);
+productsRouter.post("/products-by-ids", productsController.getProductsByIds);
+
+productsRouter.post("/products-by-ids-and-store-id", productsController.getProductsByIdsAndStoreId);
 
 productsRouter.get("/product-info/:productId",
     async (req, res, next) => {

@@ -97,7 +97,7 @@ async function addingNewImagesToProductGallery(authorizationId, productId, newGa
     }
 }
 
-async function getProductsByAds(productsIds) {
+async function getProductsByIds(productsIds) {
     try{
         const products = await productModel.find({ _id: { $in: productsIds } });
         if (products.length === 0) {
@@ -124,6 +124,19 @@ async function getProductsByAds(productsIds) {
     }
     catch(err) {
         console.log(err);
+        throw Error(err);
+    }
+}
+
+async function getProductsByIdsAndStoreId(storeId, productsIds) {
+    try{
+        return {
+            msg: "Get Products By Store Id And Ids Process Has Been Successfully !!",
+            error: false,
+            data: await productModel.find({ _id: { $in: productsIds }, storeId }),
+        }
+    }
+    catch(err) {
         throw Error(err);
     }
 }
@@ -447,7 +460,8 @@ async function updateProductImage(authorizationId, productId, newProductImagePat
 module.exports = {
     addNewProduct,
     addingNewImagesToProductGallery,
-    getProductsByAds,
+    getProductsByIds,
+    getProductsByIdsAndStoreId,
     getProductInfo,
     getProductsCount,
     getAllProductsInsideThePage,

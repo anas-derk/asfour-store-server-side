@@ -56,11 +56,21 @@ async function postNewImagesToProductGallery(req, res) {
     }
 }
 
-async function getProductsByAds(req, res) {
+async function getProductsByIds(req, res) {
     try{
-        res.json(await productsManagmentFunctions.getProductsByAds(req.body.productsIds));
+        res.json(await productsManagmentFunctions.getProductsByIds(req.body.productsIds));
     }
     catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function getProductsByIdsAndStoreId(req, res) {
+    try{
+        res.json(await productsManagmentFunctions.getProductsByIdsAndStoreId(req.query.storeId, req.body.productsIds));
+    }
+    catch(err) {
+        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -235,7 +245,8 @@ module.exports = {
     getAllProductsInsideThePage,
     getProductInfo,
     getRelatedProductsInTheProduct,
-    getProductsByAds,
+    getProductsByIds,
+    getProductsByIdsAndStoreId,
     deleteProduct,
     deleteImageFromProductGallery,
     putProduct,
