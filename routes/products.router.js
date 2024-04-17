@@ -86,6 +86,8 @@ productsRouter.post("/adding-new-images-to-product-gallery/:productId",
     productsController.postNewImagesToProductGallery
 );
 
+productsRouter.post("/products-by-ids", productsController.getProductsByAds);
+
 productsRouter.get("/product-info/:productId",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([

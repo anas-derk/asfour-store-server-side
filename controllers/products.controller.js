@@ -56,6 +56,15 @@ async function postNewImagesToProductGallery(req, res) {
     }
 }
 
+async function getProductsByAds(req, res) {
+    try{
+        res.json(await productsManagmentFunctions.getProductsByAds(req.body.productsIds));
+    }
+    catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 function getFiltersAndSortDetailsObject(queryObject) {
     let filtersObject = {}, sortDetailsObject = {};
     for (let objectKey in queryObject) {
@@ -226,6 +235,7 @@ module.exports = {
     getAllProductsInsideThePage,
     getProductInfo,
     getRelatedProductsInTheProduct,
+    getProductsByAds,
     deleteProduct,
     deleteImageFromProductGallery,
     putProduct,

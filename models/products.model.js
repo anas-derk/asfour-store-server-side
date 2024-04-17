@@ -97,6 +97,37 @@ async function addingNewImagesToProductGallery(authorizationId, productId, newGa
     }
 }
 
+async function getProductsByAds(productsIds) {
+    try{
+        const products = await productModel.find({ _id: { $in: productsIds } });
+        if (products.length === 0) {
+            return {
+                msg: "Get Products By Ids Process Has Been Successfully !!",
+                error: false,
+                data: [],
+            }
+        } else {
+            let groupedProducts = {};
+            products.forEach((product) => {
+                const storeId = product.storeId;
+                if (!groupedProducts[storeId]) {
+                    groupedProducts[storeId] = [];
+                }
+                groupedProducts[storeId].push(product);
+            });
+            return {
+                msg: "Get Products By Ids Process Has Been Successfully !!",
+                error: false,
+                data: Object.keys(groupedProducts).map((storeId) => ({ storeId, products: groupedProducts[storeId] })),
+            }
+        }
+    }
+    catch(err) {
+        console.log(err);
+        throw Error(err);
+    }
+}
+
 async function getProductInfo(productId) {
     try {
         const productInfo = await productModel.findById(productId);
@@ -416,6 +447,7 @@ async function updateProductImage(authorizationId, productId, newProductImagePat
 module.exports = {
     addNewProduct,
     addingNewImagesToProductGallery,
+    getProductsByAds,
     getProductInfo,
     getProductsCount,
     getAllProductsInsideThePage,
