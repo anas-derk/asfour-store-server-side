@@ -39,7 +39,7 @@ async function postNewBrand(req, res) {
 
 async function getAllBrands(req, res) {
     try{
-        res.json(await brandsManagmentFunctions.getAllBrands());
+        res.json(await brandsManagmentFunctions.getAllBrands(getFiltersObject(req.query)));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -48,8 +48,7 @@ async function getAllBrands(req, res) {
 
 async function getBrandsCount(req, res) {
     try {
-        const filters = req.query;
-        res.json(await brandsManagmentFunctions.getBrandsCount(getFiltersObject(filters)));
+        res.json(await brandsManagmentFunctions.getBrandsCount(getFiltersObject(req.query)));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

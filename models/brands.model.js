@@ -32,12 +32,12 @@ async function addNewBrand(authorizationId, brandInfo) {
     }
 }
 
-async function getAllBrands() {
+async function getAllBrands(filters) {
     try {
         return {
             msg: "Get All Brands Process Has Been Successfully !!",
             error: false,
-            data: await brandModel.find({}),
+            data: await brandModel.find(filters),
         }
     }
     catch (err) {
