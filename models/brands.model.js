@@ -1,6 +1,6 @@
 // Import Brand Model Object
 
-const { brandModel, adminModel } = require("../models/all.models");
+const { brandModel, adminModel, storeModel } = require("../models/all.models");
 
 async function addNewBrand(authorizationId, brandInfo) {
     try {
@@ -34,6 +34,10 @@ async function addNewBrand(authorizationId, brandInfo) {
 
 async function getAllBrands(filters) {
     try {
+        if (filters["isMainStore"]) {
+            const mainStoreDetails = await storeModel.findOne({ isMainStore: true });
+            filters = { storeId: mainStoreDetails._id };
+        }
         return {
             msg: "Get All Brands Process Has Been Successfully !!",
             error: false,

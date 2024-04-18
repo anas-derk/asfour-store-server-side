@@ -9,6 +9,7 @@ function getFiltersObject(filters) {
     for (let objectKey in filters) {
         if (objectKey === "storeId") filtersObject[objectKey] = filters[objectKey];
     }
+    if (!filtersObject["storeId"]) filtersObject["isMainStore"] = true;
     return filtersObject;
 }
 
@@ -37,7 +38,7 @@ async function postNewBrand(req, res) {
     }
 }
 
-async function getAllBrands(req, res) {
+async function getAllBrandsByStoreId(req, res) {
     try{
         res.json(await brandsManagmentFunctions.getAllBrands(getFiltersObject(req.query)));
     }
@@ -128,7 +129,7 @@ async function putBrandImage(req, res) {
 module.exports = {
     postNewBrand,
     getBrandsCount,
-    getAllBrands,
+    getAllBrandsByStoreId,
     getAllBrandsInsideThePage,
     deleteBrand,
     putBrandInfo,
