@@ -39,32 +39,28 @@ function transporterObj(bussinessEmailPassword) {
     return transporter;
 }
 
-async function sendCodeToUserEmail(email) {
-    const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
-    if (!result.error) {
-        const generator = new CodeGenerator();
-        const generatedCode = generator.generateCodes("####")[0];
-        const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_template.ejs"), "utf-8");
-        const compiledTemplate = compile(templateContent);
-        const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ generatedCode });
-        // إعداد الرسالة قبل إرسالها
-        const mailConfigurations = {
-            from: process.env.BUSSINESS_EMAIL,
-            to: email,
-            subject: "Account Verification Code On Asfour International Store",
-            html: htmlContentAfterCompilingEjsTemplateFile,
-        };
-        return new Promise((resolve, reject) => {
-            // إرسال رسالة الكود إلى الإيميل
-            transporterObj(result.data).sendMail(mailConfigurations, function (error, info) {
-                // في حالة حدث خطأ في الإرسال أرجع خطأ
-                if (error) reject(error);
-                // في حالة لم يحدث خطأ أعد الكود المولد
-                resolve(generatedCode);
+function sendCodeToUserEmail(email) {
+    const generator = new CodeGenerator();
+    const generatedCode = generator.generateCodes("####")[0];
+    const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_template.ejs"), "utf-8");
+    const compiledTemplate = compile(templateContent);
+    const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ generatedCode });
+    const mailConfigurations = {
+        from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
+        to: email,
+        subject: "Account Verification Code On Ubuyblue Store",
+        html: htmlContentAfterCompilingEjsTemplateFile,
+    };
+    return new Promise((resolve, reject) => {
+        transporterObj().sendMail(mailConfigurations, function (error, info) {
+            if (error) reject(error);
+            resolve({
+                msg: "Sending Confirmation Code Process Has Been Successfully !!",
+                error: false,
+                data: generatedCode,
             });
         });
-    }
-    return result;
+    });
 }
 
 function getResponseObject(msg, isError, data) {

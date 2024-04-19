@@ -128,9 +128,11 @@ usersRouter.put("/update-verification-status",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Email", fieldValue: req.query.email, dataType: "string", isRequiredValue: true },
+            { fieldName: "Code", fieldValue: req.query.code, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
+    (req, res, next) => validateCode(req.query.code, res, next),
     usersController.putVerificationStatus
 );
 

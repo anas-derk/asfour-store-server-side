@@ -307,6 +307,37 @@ const userSchema = mongoose.Schema({
 
 const userModel = mongoose.model("user", userSchema);
 
+// Create Account Verification Codes Schema
+
+const accountVerificationCodesShema = mongoose.Schema({
+    email: {
+        type: String,
+        required: true,
+    },
+    code: {
+        type: String,
+        required: true,
+    },
+    createdDate: Date,
+    expirationDate: {
+        type: Date,
+        required: true,
+    },
+    requestTimeCount: {
+        type: Number,
+        default: 1,
+    },
+    isBlockingFromReceiveTheCode: {
+        type: Boolean,
+        default: false,
+    },
+    receiveBlockingExpirationDate: Date,
+});
+
+// Create Account Verification Codes Model From Account Codes Schema
+
+const accountVerificationCodesModel = mongoose.model("account_verification_codes", accountVerificationCodesShema);
+
 // Create Category Schema
 
 const categorySchema = mongoose.Schema({
@@ -583,6 +614,7 @@ module.exports = {
     storeModel,
     productModel,
     userModel,
+    accountVerificationCodesModel,
     categoryModel,
     orderModel,
     brandModel,

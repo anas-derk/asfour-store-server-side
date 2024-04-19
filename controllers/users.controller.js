@@ -4,6 +4,12 @@ const usersOPerationsManagmentFunctions = require("../models/users.model");
 
 const { sign } = require("jsonwebtoken");
 
+const {
+    isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate,
+    addNewAccountVerificationCode,
+    isAccountVerificationCodeValid
+} = require("../models/account_codes.model");
+
 function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
@@ -158,19 +164,16 @@ async function postNewFavoriteProduct(req, res) {
 
 async function postAccountVerificationCode(req, res) {
     try{
-        const userEmail = req.query.email;
-        const result = await usersOPerationsManagmentFunctions.isExistUserAndVerificationEmail(userEmail);
+        const email = req.query.email;
+        let result = await isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(email);
         if (result.error) {
             res.json(result);
             return;
         }
-        res.json({
-            msg: "Sending Verification Code Process Has Been Successfully !!",
-            error: false,
-            data: {
-                code: await sendCodeToUserEmail(userEmail)
-            }
-        });
+        result = await sendCodeToUserEmail(email);
+        if (!result.error) {
+            res.json(await addNewAccountVerificationCode(email, result.data));
+        }
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -188,20 +191,24 @@ async function putUserInfo(req, res) {
 
 async function putVerificationStatus(req, res) {
     try{
-        const result = await usersOPerationsManagmentFunctions.updateVerificationStatus(req.query.email);
+        const emailAndCode = req.query;
+        let result = await isAccountVerificationCodeValid(emailAndCode.email, emailAndCode.code);
         if (!result.error) {
-            const token = sign(result.data, process.env.secretKey, {
-                expiresIn: "1h",
-            });
-            res.json({
-                msg: result.msg,
-                error: result.error,
-                data: {
-                    ...result.data,
-                    token,
-                },
-            });
-            return;
+            result = await usersOPerationsManagmentFunctions.updateVerificationStatus(emailAndCode.email);
+            if (!result.error) {
+                const token = sign(result.data, process.env.secretKey, {
+                    expiresIn: "1h",
+                });
+                res.json({
+                    msg: result.msg,
+                    error: result.error,
+                    data: {
+                        ...result.data,
+                        token,
+                    },
+                });
+                return;
+            }
         }
         res.json(result);
     }
