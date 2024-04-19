@@ -164,17 +164,23 @@ async function postNewFavoriteProduct(req, res) {
 async function postAccountVerificationCode(req, res) {
     try{
         const email = req.query.email;
-        let result = await isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(email);
-        if (result.error) {
-            res.json(result);
-            return;
-        }
-        result = await sendCodeToUserEmail(email);
+        let result = await usersOPerationsManagmentFunctions.isExistUserAndVerificationEmail(email);
         if (!result.error) {
-            res.json(await addNewAccountVerificationCode(email, result.data));
+            result = await isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(email);
+            if (result.error) {
+                res.json(result);
+                return;
+            }
+            result = await sendCodeToUserEmail(email);
+            if (!result.error) {
+                res.json(await addNewAccountVerificationCode(email, result.data));
+                return;
+            }
         }
+        res.json(result);
     }
     catch(err) {
+        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
