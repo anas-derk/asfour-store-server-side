@@ -19,7 +19,7 @@ async function addNewAccountVerificationCode(email, code) {
                 }
             );
             return {
-                msg: "Code Sending Again Process Successfully !!",
+                msg: "Sending Code To Your Email Process Has Been Succssfuly !!",
                 error: false,
                 data: {},
             }
@@ -32,7 +32,7 @@ async function addNewAccountVerificationCode(email, code) {
         });
         await newAccountCode.save();
         return {
-            msg: "Creating New Account Code Process Has Been Successfully !!",
+            msg: "Sending Code To Your Email Process Has Been Succssfuly !!",
             error: false,
             data: {},
         }

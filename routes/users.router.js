@@ -132,7 +132,6 @@ usersRouter.put("/update-verification-status",
         ], res, next);
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
-    (req, res, next) => validateCode(req.query.code, res, next),
     usersController.putVerificationStatus
 );
 

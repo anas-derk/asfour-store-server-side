@@ -143,9 +143,8 @@ async function getForgetPassword(req, res) {
 
 async function createNewUser(req, res) {
     try {
-        const email = req.body.email,
-            password = req.body.password;
-        res.json(await usersOPerationsManagmentFunctions.createNewUser(email.toLowerCase(), password));
+        const emailAndPassword = req.body;
+        res.json(await usersOPerationsManagmentFunctions.createNewUser(emailAndPassword.email.toLowerCase(), emailAndPassword.password));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
