@@ -18,40 +18,6 @@ require("dotenv").config();
 
 /* End Import And Create Express App */
 
-/* Start Config The Server */
-
-app.use(cors({
-    origin: "*"
-}));
-
-const globalLimiter = rateLimit({
-    windowMs: 24 * 60 * 60 * 1000,
-    limit: 5000,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: () => {
-        return {
-            msg: "Sorry, Too Many Requests, Please Try Again Later !!",
-            error: true,
-            data: {},
-        }
-    }
-});
-
-app.use(globalLimiter);
-
-app.use(bodyParser.json());
-
-/* End Config The Server */
-
-/* Start direct the browser to statics files path */
-
-app.set("trust proxy", 1);
-
-app.use("/assets", express.static(path.join(__dirname, "assets")));
-
-/* End direct the browser to statics files path */
-
 /* Start Running The Server */
 
 const PORT = process.env.PORT || 3000;
@@ -59,13 +25,50 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
 
     console.log(`The Server Is Running On: http://localhost:${PORT}`);
-    
-    try{
+
+    try {
         await mongoose.connect(process.env.DB_URL);
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
     }
+
+    const { keyGeneratorForRequestsRateLimit } = require("./middlewares/global.middlewares");
+
+    /* Start Config The Server */
+
+    app.use(cors({
+        origin: "*"
+    }));
+
+    const globalLimiter = rateLimit({
+        windowMs: 24 * 60 * 60 * 1000,
+        limit: 5000,
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: () => {
+            return {
+                msg: "Sorry, Too Many Requests, Please Try Again Later !!",
+                error: true,
+                data: {},
+            }
+        },
+        keyGenerator: keyGeneratorForRequestsRateLimit,
+    });
+
+    app.use(globalLimiter);
+
+    app.use(bodyParser.json());
+
+    /* End Config The Server */
+
+    /* Start direct the browser to statics files path */
+
+    app.set("trust proxy", 1);
+
+    app.use("/assets", express.static(path.join(__dirname, "assets")));
+
+    /* End direct the browser to statics files path */
 
     /* Start Handle The Routes */
 

@@ -29,8 +29,15 @@ function validateCode(code, res, nextFunc) {
     nextFunc();
 }
 
+function keyGeneratorForRequestsRateLimit(req) {
+    const ipAddress = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    const ipWithoutPort = ipAddress.split(',')[0];
+    return ipWithoutPort;
+}
+
 module.exports = {
     validateJWT,
     validateEmail,
-    validateCode
+    validateCode,
+    keyGeneratorForRequestsRateLimit,
 }
