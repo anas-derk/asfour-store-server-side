@@ -1,10 +1,10 @@
 const { accountVerificationCodesModel } = require("../models/all.models");
 
-async function addNewAccountVerificationCode(email, code) {
+async function addNewAccountVerificationCode(email, code, typeOfUse) {
     try{
         const creatingDate = new Date(Date.now());
         const expirationDate = new Date(creatingDate.getTime() + 24 * 60 * 60 * 1000);
-        const accountVerificationCode = await accountVerificationCodesModel.findOne({ email });
+        const accountVerificationCode = await accountVerificationCodesModel.findOne({ email, typeOfUse });
         if (accountVerificationCode) {
             const newRequestTimeCount = accountVerificationCode.requestTimeCount + 1;
             await accountVerificationCodesModel.updateOne({ email },
@@ -29,6 +29,7 @@ async function addNewAccountVerificationCode(email, code) {
             code,
             createdDate: creatingDate,
             expirationDate: expirationDate,
+            typeOfUse
         });
         await newAccountCode.save();
         return {

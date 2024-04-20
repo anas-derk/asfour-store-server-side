@@ -332,6 +332,14 @@ const accountVerificationCodesShema = mongoose.Schema({
         default: false,
     },
     receiveBlockingExpirationDate: Date,
+    typeOfUse: {
+        type: String,
+        default: "to activate account",
+        enum: [
+            "to activate account",
+            "to reset password",
+        ],
+    }
 });
 
 // Create Account Verification Codes Model From Account Codes Schema

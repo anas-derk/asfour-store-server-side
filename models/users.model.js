@@ -1,6 +1,6 @@
 // Import User And Product Model Object
 
-const { userModel, productModel } = require("../models/all.models");
+const { userModel, productModel, accountVerificationCodesModel } = require("../models/all.models");
 
 // require bcryptjs module for password encrypting
 
@@ -370,6 +370,7 @@ async function updateVerificationStatus(email) {
     try{
         const userInfo = await userModel.findOneAndUpdate({ email }, { isVerified: true });
         if(userInfo) {
+            await accountVerificationCodesModel.deleteOne({ email, typeOfUse: "to activate account" });
             return {
                 msg: "Updating Verification Status Process Has Been Successfully !!",
                 error: false ,

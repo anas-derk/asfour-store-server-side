@@ -125,9 +125,9 @@ async function getForgetPassword(req, res) {
         const email = req.query.email;
         let result = await usersOPerationsManagmentFunctions.isExistUserAccount(email);
         if (!result.error) {
-            if (result.data.isVerified) {
+            if (!result.data.isVerified) {
                 res.json({
-                    msg: "Sorry, The Email For This User Has Been Verified !!",
+                    msg: "Sorry, The Email For This User Is Not Verified !!",
                     error: true,
                     data: result.data,
                 });
@@ -140,14 +140,13 @@ async function getForgetPassword(req, res) {
             }
             result = await sendCodeToUserEmail(email);
             if (!result.error) {
-                res.json(await addNewAccountVerificationCode(email, result.data));
+                res.json(await addNewAccountVerificationCode(email, result.data, "to reset password"));
                 return;
             }
         }
         res.json(result);
     }
     catch(err) {
-        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -184,7 +183,7 @@ async function postAccountVerificationCode(req, res) {
             }
             result = await sendCodeToUserEmail(email);
             if (!result.error) {
-                res.json(await addNewAccountVerificationCode(email, result.data));
+                res.json(await addNewAccountVerificationCode(email, result.data, "to activate account"));
                 return;
             }
         }
