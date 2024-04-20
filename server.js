@@ -2,34 +2,50 @@
 
 const express = require("express");
 
+const path = require("path");
+
 const app = express();
+
+const cors = require("cors");
+
+const bodyParser = require("body-parser");
+
+const mongoose = require("mongoose");
+
+const { rateLimit } = require("express-rate-limit");
+
+require("dotenv").config();
 
 /* End Import And Create Express App */
 
 /* Start Config The Server */
 
-const cors = require("cors"),
-    bodyParser = require("body-parser");
+app.use(cors({
+    origin: "*"
+}));
 
-app.use(cors());
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+app.use(limiter);
 
 app.use(bodyParser.json());
-
-require("dotenv").config();
 
 /* End Config The Server */
 
 /* Start direct the browser to statics files path */
 
-const path = require("path");
+app.set("trust proxy", 1);
 
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 /* End direct the browser to statics files path */
 
 /* Start Running The Server */
-
-const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3000;
 
