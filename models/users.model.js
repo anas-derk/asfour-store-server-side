@@ -294,7 +294,7 @@ async function getAllWalletProductsInsideThePage(pageNumber, pageSize, filters) 
     }
 }
 
-async function isUserAccountExist(email) {
+async function isExistUserAccount(email) {
     try {
         const user = await userModel.findOne({ email });
         if (user) {
@@ -482,7 +482,7 @@ module.exports = {
     login,
     loginWithGoogle,
     getUserInfo,
-    isUserAccountExist,
+    isExistUserAccount,
     isExistUserAndVerificationEmail,
     getAllUsers,
     getFavoriteProductsCount,

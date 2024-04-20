@@ -123,20 +123,31 @@ async function getAllWalletProductsInsideThePage(req, res) {
 async function getForgetPassword(req, res) {
     try{
         const email = req.query.email;
-        const result = await usersOPerationsManagmentFunctions.isUserAccountExist(email);
+        let result = await usersOPerationsManagmentFunctions.isExistUserAccount(email);
         if (!result.error) {
-            res.json({
-                ...result,
-                data: {
-                    ...result.data,
-                    code: await sendCodeToUserEmail(email),
-                },
-            });
-            return;
+            if (result.data.isVerified) {
+                res.json({
+                    msg: "Sorry, The Email For This User Has Been Verified !!",
+                    error: true,
+                    data: result.data,
+                });
+                return;
+            }
+            result = await isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(email);
+            if (result.error) {
+                res.json(result);
+                return;
+            }
+            result = await sendCodeToUserEmail(email);
+            if (!result.error) {
+                res.json(await addNewAccountVerificationCode(email, result.data));
+                return;
+            }
         }
         res.json(result);
     }
     catch(err) {
+        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
