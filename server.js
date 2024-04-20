@@ -29,6 +29,13 @@ const limiter = rateLimit({
     limit: 10,
     standardHeaders: true,
     legacyHeaders: false,
+    message: () => {
+        return {
+            msg: "Sorry, Too Many Requests, Please Try Again Later !!",
+            error: true,
+            data: {},
+        }
+    }
 });
 
 app.use(limiter);
