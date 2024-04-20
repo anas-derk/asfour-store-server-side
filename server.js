@@ -26,7 +26,7 @@ app.use(cors({
 
 const globalLimiter = rateLimit({
     windowMs: 24 * 60 * 60 * 1000,
-    limit: 1000,
+    limit: 5000,
     standardHeaders: true,
     legacyHeaders: false,
     message: () => {
