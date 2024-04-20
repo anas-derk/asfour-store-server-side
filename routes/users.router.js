@@ -6,6 +6,8 @@ const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functio
 
 const { validateJWT, validateEmail } = require("../middlewares/global.middlewares");
 
+const usersMiddlewares = require("../middlewares/users.midddlewares");
+
 usersRouter.get("/login",
     async (req, res, next) => {
         const emailAndPassword = req.query;
@@ -113,6 +115,7 @@ usersRouter.post("/add-favorite-product",
 );
 
 usersRouter.post("/send-account-verification-code",
+    usersMiddlewares.sendingVerificationCodeLimiterMiddleware,
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Email", fieldValue: req.query.email, dataType: "string", isRequiredValue: true },

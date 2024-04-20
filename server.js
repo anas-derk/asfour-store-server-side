@@ -24,9 +24,9 @@ app.use(cors({
     origin: "*"
 }));
 
-const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000,
-    limit: 10,
+const globalLimiter = rateLimit({
+    windowMs: 24 * 60 * 60 * 1000,
+    limit: 1000,
     standardHeaders: true,
     legacyHeaders: false,
     message: () => {
@@ -38,7 +38,7 @@ const limiter = rateLimit({
     }
 });
 
-app.use(limiter);
+app.use(globalLimiter);
 
 app.use(bodyParser.json());
 
