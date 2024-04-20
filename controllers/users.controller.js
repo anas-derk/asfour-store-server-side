@@ -207,7 +207,7 @@ async function putUserInfo(req, res) {
 async function putVerificationStatus(req, res) {
     try{
         const emailAndCode = req.query;
-        let result = await isAccountVerificationCodeValid(emailAndCode.email, emailAndCode.code);
+        let result = await isAccountVerificationCodeValid(emailAndCode.email, emailAndCode.code, "to activate account");
         if (!result.error) {
             result = await usersOPerationsManagmentFunctions.updateVerificationStatus(emailAndCode.email);
             if (!result.error) {
@@ -234,7 +234,13 @@ async function putVerificationStatus(req, res) {
 
 async function putResetPassword(req, res) {
     try{
-        res.json(await usersOPerationsManagmentFunctions.resetUserPassword(req.params.userId, req.query.newPassword));
+        const emailAndCodeAndNewPassword = req.query;
+        let result = await isAccountVerificationCodeValid(emailAndCodeAndNewPassword.email, emailAndCodeAndNewPassword.code, "to reset password");
+        if (!result.error) {
+            res.json(await usersOPerationsManagmentFunctions.resetUserPassword(emailAndCodeAndNewPassword.email, emailAndCodeAndNewPassword.newPassword));
+            return;
+        }
+        res.json(result);
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

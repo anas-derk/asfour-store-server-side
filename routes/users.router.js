@@ -138,13 +138,15 @@ usersRouter.put("/update-verification-status",
     usersController.putVerificationStatus
 );
 
-usersRouter.put("/reset-password/:userId",
+usersRouter.put("/reset-password",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "User Id", fieldValue: req.params.userId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Email", fieldValue: req.query.email, dataType: "string", isRequiredValue: true },
+            { fieldName: "Code", fieldValue: req.query.code, dataType: "string", isRequiredValue: true },
             { fieldName: "New Password", fieldValue: req.query.newPassword, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
+    (req, res, next) => validateEmail(req.query.email, res, next),
     usersController.putResetPassword
 );
 

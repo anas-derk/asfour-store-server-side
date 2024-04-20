@@ -43,9 +43,9 @@ async function addNewAccountVerificationCode(email, code, typeOfUse) {
     }
 }
 
-async function isAccountVerificationCodeValid(email, code) {
+async function isAccountVerificationCodeValid(email, code, typeOfUse) {
     try{
-        const accountVerificationCode = await accountVerificationCodesModel.findOne({ email });
+        const accountVerificationCode = await accountVerificationCodesModel.findOne({ email, typeOfUse });
         if (accountVerificationCode) {
             if (accountVerificationCode.code === code) {
                 return {

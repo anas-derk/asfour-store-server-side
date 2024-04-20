@@ -391,10 +391,10 @@ async function updateVerificationStatus(email) {
     }
 }
 
-async function resetUserPassword(userId, newPassword) {
+async function resetUserPassword(email, newPassword) {
     try {
         const newEncryptedPassword = await hash(newPassword, 10);
-        const user = await userModel.findOneAndUpdate({ _id: userId }, { password: newEncryptedPassword });
+        const user = await userModel.findOneAndUpdate({ email }, { password: newEncryptedPassword });
         if (user) {
             return {
                 msg: "Reseting Password Process Has Been Successfully !!",
