@@ -2,24 +2,24 @@
 
 const { orderModel, userModel, adminModel } = require("../models/all.models");
 
-async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
-    try {
-        return {
-            msg: `Get All Orders Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
-            error: false,
-            data: await orderModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ orderNumber: -1 }),
-        }
-    } catch (err) {
-        throw Error(err);
-    }
-}
-
 async function getOrdersCount(filters) {
     try {
         return {
             msg: "Get Orders Count Process Has Been Successfully !!",
             error: false,
             data: await orderModel.countDocuments(filters),
+        }
+    } catch (err) {
+        throw Error(err);
+    }
+}
+
+async function getAllOrdersInsideThePage(pageNumber, pageSize, filters) {
+    try {
+        return {
+            msg: `Get All Orders Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: await orderModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ orderNumber: -1 }),
         }
     } catch (err) {
         throw Error(err);
