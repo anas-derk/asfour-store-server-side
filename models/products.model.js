@@ -164,7 +164,6 @@ async function getProductInfo(productId) {
 
 async function getProductsCount(filters) {
     try {
-        const currentDate = Date.now();
         return {
             msg: "Get Products Count Process Has Been Successfully !!",
             error: false,
@@ -178,6 +177,7 @@ async function getProductsCount(filters) {
 
 async function getFlashProductsCount(filters) {
     try {
+        const currentDate = new Date();
         return {
             msg: "Get Flash Products Count Process Has Been Successfully !!",
             error: false,
@@ -191,7 +191,7 @@ async function getFlashProductsCount(filters) {
 
 async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, sortDetailsObject) {
     try {
-        const currentDate = Date.now();
+        const currentDate = new Date();
         return {
             msg: `Get Flash Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
