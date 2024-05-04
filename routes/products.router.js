@@ -101,6 +101,21 @@ productsRouter.get("/product-info/:productId",
 
 productsRouter.get("/products-count", productsController.getProductsCount);
 
+productsRouter.get("/flash-products-count", productsController.getFlashProductsCount);
+
+productsRouter.get("/all-flash-products-inside-the-page",
+    async (req, res, next) => {
+        const queryObject = req.query;
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: queryObject.pageNumber, dataType: "string", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: queryObject.pageSize, dataType: "string", isRequiredValue: true },
+            { fieldName: "Sort By", fieldValue: queryObject.sortBy, dataType: "string", isRequiredValue: false },
+            { fieldName: "Sort Type", fieldValue: queryObject.sortType, dataType: "string", isRequiredValue: false },
+        ], res, next);
+    },
+    productsController.getAllFlashProductsInsideThePage
+);
+
 productsRouter.get("/all-products-inside-the-page",
     async (req, res, next) => {
         const queryObject = req.query;

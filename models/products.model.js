@@ -164,6 +164,7 @@ async function getProductInfo(productId) {
 
 async function getProductsCount(filters) {
     try {
+        const currentDate = Date.now();
         return {
             msg: "Get Products Count Process Has Been Successfully !!",
             error: false,
@@ -175,10 +176,40 @@ async function getProductsCount(filters) {
     }
 }
 
+async function getFlashProductsCount(filters) {
+    try {
+        return {
+            msg: "Get Flash Products Count Process Has Been Successfully !!",
+            error: false,
+            data: await productModel.countDocuments({ ...filters, startDiscountPeriod: { $lte: currentDate }, endDiscountPeriod: { $gte: currentDate } }),
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
+async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, sortDetailsObject) {
+    try {
+        const currentDate = Date.now();
+        return {
+            msg: `Get Flash Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: await productModel
+                    .find({...filters, startDiscountPeriod: { $lte: currentDate }, endDiscountPeriod: { $gte: currentDate }})
+                    .skip((pageNumber - 1) * pageSize)
+                    .limit(pageSize).sort(sortDetailsObject),
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
 async function getAllProductsInsideThePage(pageNumber, pageSize, filters, sortDetailsObject) {
     try {
         return {
-            msg: `Get Products Count Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            msg: `Get Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
             data: await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort(sortDetailsObject),
         }
@@ -464,6 +495,8 @@ module.exports = {
     getProductsByIdsAndStoreId,
     getProductInfo,
     getProductsCount,
+    getFlashProductsCount,
+    getAllFlashProductsInsideThePage,
     getAllProductsInsideThePage,
     getRelatedProductsInTheProduct,
     deleteProduct,

@@ -96,9 +96,33 @@ async function getProductInfo(req, res) {
     }
 }
 
+async function getFlashProductsCount(req, res) {
+    try {
+        res.json(await productsManagmentFunctions.getFlashProductsCount(getFiltersAndSortDetailsObject(req.query).filtersObject));
+    }
+    catch (err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function getProductsCount(req, res) {
     try {
         res.json(await productsManagmentFunctions.getProductsCount(getFiltersAndSortDetailsObject(req.query).filtersObject));
+    }
+    catch (err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function getAllFlashProductsInsideThePage(req, res) {
+    try {
+        const queryObject = req.query;
+        const filtersAndSortDetailsObject = getFiltersAndSortDetailsObject(queryObject);
+        let sortDetailsObject = {};
+        if (filtersAndSortDetailsObject.sortDetailsObject) {
+            sortDetailsObject[filtersAndSortDetailsObject.sortDetailsObject.sortBy] = Number(filtersAndSortDetailsObject.sortDetailsObject.sortType);
+        }
+        res.json(await productsManagmentFunctions.getAllFlashProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -242,6 +266,8 @@ module.exports = {
     postNewProduct,
     postNewImagesToProductGallery,
     getProductsCount,
+    getFlashProductsCount,
+    getAllFlashProductsInsideThePage,
     getAllProductsInsideThePage,
     getProductInfo,
     getRelatedProductsInTheProduct,
