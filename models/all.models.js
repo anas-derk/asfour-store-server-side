@@ -159,6 +159,11 @@ const productSchema = mongoose.Schema({
         type: Number,
         default: 0,
     },
+    discountInOfferPeriod: {
+        type: Number,
+        default: 0,
+    },
+    offerDescription: String,
     numberOfOrders: {
         type: Number,
         default: 0,
