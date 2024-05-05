@@ -195,10 +195,13 @@ async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, s
         return {
             msg: `Get Flash Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
-            data: await productModel
-                    .find({...filters, startDiscountPeriod: { $lte: currentDate }, endDiscountPeriod: { $gte: currentDate }})
-                    .skip((pageNumber - 1) * pageSize)
-                    .limit(pageSize).sort(sortDetailsObject),
+            data: {
+                products: await productModel
+                .find({...filters, startDiscountPeriod: { $lte: currentDate }, endDiscountPeriod: { $gte: currentDate }})
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize).sort(sortDetailsObject),
+                currentDate: new Date(),
+            },
         }
     }
     catch (err) {
