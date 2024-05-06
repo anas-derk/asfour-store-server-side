@@ -148,7 +148,10 @@ async function getProductInfo(productId) {
             return {
                 msg: "Get Product Info Process Has Been Successfuly !!",
                 error: false,
-                data: productInfo,
+                data: {
+                    productDetails: productInfo,
+                    currentDate: new Date(),
+                },
             }
         }
         return {
