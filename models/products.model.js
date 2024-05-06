@@ -118,12 +118,14 @@ async function getProductsByIds(productsIds) {
             return {
                 msg: "Get Products By Ids Process Has Been Successfully !!",
                 error: false,
-                data: Object.keys(groupedProducts).map((storeId) => ({ storeId, products: groupedProducts[storeId] })),
+                data: {
+                    productByIds: Object.keys(groupedProducts).map((storeId) => ({ storeId, products: groupedProducts[storeId] })),
+                    currentDate: new Date(),
+                },
             }
         }
     }
     catch(err) {
-        console.log(err);
         throw Error(err);
     }
 }
