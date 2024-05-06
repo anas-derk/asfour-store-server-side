@@ -199,7 +199,6 @@ async function deleteImageFromProductGallery(req, res) {
 
 async function putProduct(req, res) {
     try {
-        console.log(req.body);
         const result = await productsManagmentFunctions.updateProduct(req.data._id, req.params.productId, req.body);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
