@@ -135,7 +135,10 @@ async function getProductsByIdsAndStoreId(storeId, productsIds) {
         return {
             msg: "Get Products By Store Id And Ids Process Has Been Successfully !!",
             error: false,
-            data: await productModel.find({ _id: { $in: productsIds }, storeId }),
+            data: {
+                products: await productModel.find({ _id: { $in: productsIds }, storeId }),
+                currentDate: new Date()
+            },
         }
     }
     catch(err) {
