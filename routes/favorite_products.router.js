@@ -10,7 +10,7 @@ favoriteProductsRouter.post("/add-new-favorite-product/:productId", validateJWT,
 
 favoriteProductsRouter.post("/favorite-products-by-products-ids-and-user-id",
     validateJWT,
-    favoriteProductsController.getFavoriteProductsByProductIds
+    favoriteProductsController.getFavoriteProductsByProductsIdsAndUserId
 );
 
 favoriteProductsRouter.get("/favorite-products-count", validateJWT, favoriteProductsController.getFavoriteProductsCount);
