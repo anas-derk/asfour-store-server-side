@@ -50,7 +50,7 @@ async function addNewFavoriteProduct(userId, productId) {
 async function getFavoriteProductsCount(filters) {
     try {
         return {
-            msg: "Get All Favorite Products Process Has Been Successfully !!",
+            msg: "Get All Favorite Products Count Process Has Been Successfully !!",
             error: false,
             data: await favoriteProductModel.countDocuments(filters),
         }

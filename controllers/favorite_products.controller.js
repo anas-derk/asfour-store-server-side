@@ -52,7 +52,6 @@ async function deleteFavoriteProduct(req, res) {
         res.json(await favoriteProductsOPerationsManagmentFunctions.deleteFavoriteProduct(req.data._id, req.params.favoriteProductId));
     }
     catch(err) {
-        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
