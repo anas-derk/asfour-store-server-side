@@ -19,6 +19,15 @@ async function postNewFavoriteProducts(req, res) {
     }
 }
 
+async function getFavoriteProductsByProductsIdsAndUserId(req, res) {
+    try{
+        res.json(await favoriteProductsOPerationsManagmentFunctions.getFavoriteProductsByProductsIds(req.data._id, req.body.productsIds));
+    }
+    catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function getFavoriteProductsCount(req, res) {
     try {
         res.json(await favoriteProductsOPerationsManagmentFunctions.getFavoriteProductsCount(getFiltersObject(req.query)));
@@ -52,5 +61,6 @@ module.exports = {
     postNewFavoriteProducts,
     getFavoriteProductsCount,
     getAllFavoriteProductsInsideThePage,
+    getFavoriteProductsByProductsIdsAndUserId,
     deleteFavoriteProduct
 }

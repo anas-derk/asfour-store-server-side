@@ -73,6 +73,19 @@ async function getAllFavoriteProductsInsideThePage(pageNumber, pageSize, filters
     }
 }
 
+async function getFavoriteProductsByProductsIdsAndUserId(userId, productsIds) {
+    try{
+        return {
+            msg: "Get Favorite Products By Products Ids And User Id Process Has Been Successfully !!",
+            error: false,
+            data: await productModel.find({ productId: { $in: productsIds }, userId }),
+        }
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 async function deleteFavoriteProduct(userId, favoriteProductId) {
     try{
         const user = await userModel.findById(userId);
@@ -106,5 +119,6 @@ module.exports = {
     addNewFavoriteProduct,
     getFavoriteProductsCount,
     getAllFavoriteProductsInsideThePage,
+    getFavoriteProductsByProductsIdsAndUserId,
     deleteFavoriteProduct
 }

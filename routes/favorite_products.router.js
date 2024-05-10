@@ -8,6 +8,11 @@ const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functio
 
 favoriteProductsRouter.post("/add-new-favorite-product/:productId", validateJWT, favoriteProductsController.postNewFavoriteProducts);
 
+favoriteProductsRouter.post("/favorite-products-by-products-ids-and-user-id",
+    validateJWT,
+    favoriteProductsController.getFavoriteProductsByProductIds
+);
+
 favoriteProductsRouter.get("/favorite-products-count", validateJWT, favoriteProductsController.getFavoriteProductsCount);
 
 favoriteProductsRouter.get("/all-favorite-products-inside-the-page",
