@@ -1,4 +1,4 @@
-// Import Category Model Object
+// Import Category And Admin Model Object
 
 const { categoryModel, adminModel } = require("../models/all.models");
 

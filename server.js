@@ -94,6 +94,8 @@ app.listen(PORT, async () => {
 
     app.use("/stores", require("./routes/stores.router"));
 
+    app.use("/favorite-products", require("./routes/favorite_products.router"));
+
     /* End Handle The Routes */
 });
 
