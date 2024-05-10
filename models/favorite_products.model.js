@@ -78,7 +78,7 @@ async function getFavoriteProductsByProductsIdsAndUserId(userId, productsIds) {
         return {
             msg: "Get Favorite Products By Products Ids And User Id Process Has Been Successfully !!",
             error: false,
-            data: await productModel.find({ productId: { $in: productsIds }, userId }),
+            data: await favoriteProductModel.find({ productId: { $in: productsIds }, userId }),
         }
     }
     catch(err) {

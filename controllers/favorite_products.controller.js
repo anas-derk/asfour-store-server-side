@@ -21,7 +21,7 @@ async function postNewFavoriteProducts(req, res) {
 
 async function getFavoriteProductsByProductsIdsAndUserId(req, res) {
     try{
-        res.json(await favoriteProductsOPerationsManagmentFunctions.getFavoriteProductsByProductsIds(req.data._id, req.body.productsIds));
+        res.json(await favoriteProductsOPerationsManagmentFunctions.getFavoriteProductsByProductsIdsAndUserId(req.data._id, req.body.productsIds));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
