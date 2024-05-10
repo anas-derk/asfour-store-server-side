@@ -22,4 +22,14 @@ favoriteProductsRouter.get("/all-favorite-products-inside-the-page",
     favoriteProductsController.getAllFavoriteProductsInsideThePage
 );
 
+favoriteProductsRouter.delete("/:favoriteProductId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Favorite Product Id", fieldValue: req.params.favoriteProductId, dataType: "ObjectId", isRequiredValue: true },
+        ], res, next);
+    },
+    favoriteProductsController.deleteFavoriteProduct
+);
+
 module.exports = favoriteProductsRouter;

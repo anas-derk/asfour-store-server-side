@@ -142,7 +142,7 @@ productsRouter.delete("/:productId",
     validateJWT,
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "string", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
     productsController.deleteProduct

@@ -1,35 +1,43 @@
 // Import Favorite Product Object
 
-const { favoriteProductModel, productModel } = require("../models/all.models");
+const { favoriteProductModel, productModel, userModel } = require("../models/all.models");
 
 async function addNewFavoriteProduct(userId, productId) {
     try{
-        const product = await productModel.findById(productId);
-        if (product) {
-            const favoriteProduct = await favoriteProductModel.findOne({ userId, productId });
-            if (!favoriteProduct) {
-                const newFavoriteProduct = new favoriteProductModel({
-                    name: product.name,
-                    price: product.price,
-                    imagePath: product.imagePath,
-                    productId,
-                    userId
-                });
-                await newFavoriteProduct.save();
+        const user = await userModel.findById(userId);
+        if (user) {
+            const product = await productModel.findById(productId);
+            if (product) {
+                const favoriteProduct = await favoriteProductModel.findOne({ userId, productId });
+                if (!favoriteProduct) {
+                    const newFavoriteProduct = new favoriteProductModel({
+                        name: product.name,
+                        price: product.price,
+                        imagePath: product.imagePath,
+                        productId,
+                        userId
+                    });
+                    await newFavoriteProduct.save();
+                    return {
+                        msg: "Adding New Favorite Product Process Has Been Successfully !!",
+                        error: false,
+                        data: {},
+                    }
+                }
                 return {
-                    msg: "Adding New Favorite Product Process Has Been Successfully !!",
-                    error: false,
+                    msg: "Sorry, This Favorite Product For This User Is Already Exist !!",
+                    error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Favorite Product For This User Is Already Exist !!",
+                msg: "Sorry, This Product Is Not Exist !!",
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Product Is Not Exist !!",
+            msg: "Sorry, This User Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -65,8 +73,38 @@ async function getAllFavoriteProductsInsideThePage(pageNumber, pageSize, filters
     }
 }
 
+async function deleteFavoriteProduct(userId, favoriteProductId) {
+    try{
+        const user = await userModel.findById(userId);
+        if (user) {
+            const favoriteProduct = await favoriteProductModel.findOneAndDelete({ _id: favoriteProductId });
+            if (favoriteProduct) {
+                return {
+                    msg: "Deleting Favorite Product Process Has Been Successfully !!",
+                    error: false,
+                    data: {},
+                }
+            }
+            return {
+                msg: "Sorry, This Favorite Product Is Not Exist !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This User Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 module.exports = {
     addNewFavoriteProduct,
     getFavoriteProductsCount,
-    getAllFavoriteProductsInsideThePage
+    getAllFavoriteProductsInsideThePage,
+    deleteFavoriteProduct
 }

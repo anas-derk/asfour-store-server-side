@@ -38,8 +38,19 @@ async function getAllFavoriteProductsInsideThePage(req, res) {
     }
 }
 
+async function deleteFavoriteProduct(req, res) {
+    try{
+        res.json(await favoriteProductsOPerationsManagmentFunctions.deleteFavoriteProduct(req.data._id, req.params.favoriteProductId));
+    }
+    catch(err) {
+        console.log(err)
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 module.exports = {
     postNewFavoriteProducts,
     getFavoriteProductsCount,
-    getAllFavoriteProductsInsideThePage
+    getAllFavoriteProductsInsideThePage,
+    deleteFavoriteProduct
 }
