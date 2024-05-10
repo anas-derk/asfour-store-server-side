@@ -82,44 +82,6 @@ async function getAllUsers(req, res) {
     }
 }
 
-async function getFavoriteProductsCount(req, res) {
-    try {
-        res.json(await usersOPerationsManagmentFunctions.getFavoriteProductsCount(getFiltersObject(req.query)));
-    }
-    catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
-    }
-}
-
-async function getWalletProductsCount(req, res) {
-    try {
-        res.json(await usersOPerationsManagmentFunctions.getWalletProductsCount(getFiltersObject(req.query)));
-    }
-    catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
-    }
-}
-
-async function getAllFavoriteProductsInsideThePage(req, res) {
-    try{
-        const filters = req.query;
-        res.json(await usersOPerationsManagmentFunctions.getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
-    }
-    catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
-    }
-}
-
-async function getAllWalletProductsInsideThePage(req, res) {
-    try{
-        const filters = req.query;
-        res.json(await usersOPerationsManagmentFunctions.getAllWalletProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
-    }
-    catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
-    }
-}
-
 async function getForgetPassword(req, res) {
     try{
         const email = req.query.email;
@@ -247,25 +209,6 @@ async function putResetPassword(req, res) {
     }
 }
 
-async function deleteProductFromFavoriteUserProducts(req, res) {
-    try{
-        const result = await usersOPerationsManagmentFunctions.deleteProductFromFavoriteUserProducts(req.data._id, req.query.productId);
-        res.json(result);
-    }
-    catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
-    }
-}
-
-async function deleteProductFromUserProductsWallet(req, res) {
-    try{
-        res.json(await usersOPerationsManagmentFunctions.deleteProductFromUserProductsWallet(req.data._id, req.query.productId));
-    }
-    catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
-    }
-}
-
 module.exports = {
     createNewUser,
     postNewFavoriteProduct,
@@ -274,14 +217,8 @@ module.exports = {
     loginWithGoogle,
     getUserInfo,
     getAllUsers,
-    getFavoriteProductsCount,
-    getWalletProductsCount,
-    getAllFavoriteProductsInsideThePage,
-    getAllWalletProductsInsideThePage,
     getForgetPassword,
     putUserInfo,
     putVerificationStatus,
     putResetPassword,
-    deleteProductFromFavoriteUserProducts,
-    deleteProductFromUserProductsWallet,
 }

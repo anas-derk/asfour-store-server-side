@@ -40,48 +40,6 @@ usersRouter.get("/user-info",
 
 usersRouter.get("/all-users", usersController.getAllUsers);
 
-usersRouter.get("/favorite-products-count",
-    async (req, res, next) => {
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Customer Id", fieldValue: req.query.customerId, dataType: "ObjectId", isRequiredValue: true },
-        ], res, next);
-    },
-    usersController.getFavoriteProductsCount
-);
-
-usersRouter.get("/wallet-products-count",
-    async (req, res, next) => {
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Customer Id", fieldValue: req.query.customerId, dataType: "ObjectId", isRequiredValue: true },
-        ], res, next);
-    },
-    usersController.getWalletProductsCount
-);
-
-usersRouter.get("/all-favorite-products-inside-the-page",
-    async (req, res, next) => {
-        const filters = req.query;
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
-            { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "ObjectId", isRequiredValue: true },
-        ], res, next);
-    },
-    usersController.getAllFavoriteProductsInsideThePage
-);
-
-usersRouter.get("/all-wallet-products-inside-the-page",
-    async (req, res, next) => {
-        const filters = req.query;
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: filters.pageNumber, dataType: "string", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: filters.pageSize, dataType: "string", isRequiredValue: true },
-            { fieldName: "Customer Id", fieldValue: filters.customerId, dataType: "ObjectId", isRequiredValue: true },
-        ], res, next);
-    },
-    usersController.getAllWalletProductsInsideThePage
-);
-
 usersRouter.get("/forget-password",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
@@ -148,25 +106,6 @@ usersRouter.put("/reset-password",
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
     usersController.putResetPassword
-);
-
-usersRouter.delete("/favorite-product",
-    validateJWT,
-    async (req, res, next) => {
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: req.query.productId, dataType: "ObjectId", isRequiredValue: true },
-        ], res, next);
-    },
-    usersController.deleteProductFromFavoriteUserProducts
-);
-
-usersRouter.delete("/wallet-product",
-    async (req, res, next) => {
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: req.query.productId, dataType: "ObjectId", isRequiredValue: true },
-        ], res, next);
-    },
-    validateJWT, usersController.deleteProductFromUserProductsWallet
 );
 
 module.exports = usersRouter;

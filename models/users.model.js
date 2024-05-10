@@ -208,92 +208,6 @@ async function getAllUsers() {
     }
 }
 
-async function getFavoriteProductsCount(filters) {
-    try {
-        const user = await userModel.findOne({ _id: filters.customerId });
-        if (user){
-            return {
-                msg: "Get Favorite Products Count Process Has Been Successfully !!",
-                error: false,
-                data: user.favorite_products_list.length,
-            };
-        }
-        return {
-            msg: "Sorry, This User Is Not Found !!",
-            error: true,
-            data: {},
-        };
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
-async function getWalletProductsCount(filters) {
-    try {
-        const user = await userModel.findOne({ _id: filters.customerId });
-        if (user){
-            return {
-                msg: "Get Wallet Products Count Process Has Been Successfully !!",
-                error: false,
-                data: user.wallet_products_list.length,
-            };
-        }
-        return {
-            msg: "Sorry, This User Is Not Found !!",
-            error: true,
-            data: {},
-        };
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
-async function getAllFavoriteProductsInsideThePage(pageNumber, pageSize, filters) {
-    try {
-        const user = await userModel.findOne({ _id: filters.customerId });
-        if (user) {
-            const beginSliceIndex = (pageNumber - 1) * pageSize;
-            return {
-                msg: `Get Favorite Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
-                error: false,
-                data: user.favorite_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize),
-            };
-        }
-        return {
-            msg: "Sorry, This User Is Not Found !!",
-            error: true,
-            data: {},
-        };
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
-async function getAllWalletProductsInsideThePage(pageNumber, pageSize, filters) {
-    try {
-        const user = await userModel.findOne({ _id: filters.customerId });
-        if (user) {
-            const beginSliceIndex = (pageNumber - 1) * pageSize;
-            return {
-                msg: `Get Wallet Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
-                error: false,
-                data: user.wallet_products_list.slice(beginSliceIndex, beginSliceIndex + pageSize),
-            };
-        }
-        return {
-            msg: "Sorry, This User Is Not Found !!",
-            error: true,
-            data: {},
-        };
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
 async function isExistUserAccount(email) {
     try {
         const user = await userModel.findOne({ email });
@@ -412,71 +326,6 @@ async function resetUserPassword(email, newPassword) {
     }
 }
 
-async function deleteProductFromFavoriteUserProducts(userId, productId) {
-    try {
-        const user = await userModel.findById(userId);
-        if (user) {
-            const newFavoriteProductsList = user.favorite_products_list.filter((favorite_product) => favorite_product._id != productId);
-            if (newFavoriteProductsList.length !== user.favorite_products_list.length) {
-                await userModel.updateOne({ _id: userId } , { $set: { favorite_products_list: newFavoriteProductsList } });
-                return {
-                    msg: "Ok !!, Deleting Favorite Product From This User Is Successfuly !!",
-                    error: false,
-                    data: {
-                        newFavoriteProductsList,
-                    },
-                };
-            }
-            return {
-                msg: "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..",
-                error: true,
-                data: {},
-            };
-        }
-        return {
-            msg: "Sorry, The User Is Not Exist !!, Please Send Another User Id ..",
-            error: true,
-            data: {},
-        };
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
-async function deleteProductFromUserProductsWallet(userId, productId) {
-    try {
-        // Check If Email Is Exist
-        const user = await userModel.findById(userId);
-        if (user) {
-            const newProductsWallet = user.wallet_products_list.filter((wallet_product) => wallet_product.productId != productId);
-            if (newProductsWallet.length !== user.wallet_products_list.length) {
-                await userModel.updateOne({ _id: userId } , { $set: { wallet_products_list: newProductsWallet } });
-                return {
-                    msg: "Ok !!, Deleting Wallet Product From This User Is Successfuly !!",
-                    error: false,
-                    data: {
-                        newProductsWallet,
-                    },
-                };
-            }
-            return {
-                msg: "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..",
-                error: true,
-                data: {},
-            };
-        }
-        return {
-            msg: "Sorry, The User Is Not Exist !!, Please Send Another User Id ..",
-            error: true,
-            data: {},
-        };
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
 module.exports = {
     createNewUser,
     addNewFavoriteProduct,
@@ -486,13 +335,7 @@ module.exports = {
     isExistUserAccount,
     isExistUserAndVerificationEmail,
     getAllUsers,
-    getFavoriteProductsCount,
-    getWalletProductsCount,
-    getAllFavoriteProductsInsideThePage,
-    getAllWalletProductsInsideThePage,
     updateUserInfo,
     updateVerificationStatus,
     resetUserPassword,
-    deleteProductFromFavoriteUserProducts,
-    deleteProductFromUserProductsWallet,
 }
