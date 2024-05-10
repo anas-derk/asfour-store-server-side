@@ -214,14 +214,6 @@ const userSchema = mongoose.Schema({
         type: String,
         default: "",
     },
-    favorite_products_list: {
-        type: Array,
-        default: [],
-    },
-    wallet_products_list: {
-        type: Array,
-        default: [],
-    },
     billing_address: {
         first_name: {
             type: String,

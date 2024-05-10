@@ -39,6 +39,34 @@ async function addNewFavoriteProduct(userId, productId) {
     }
 }
 
+async function getFavoriteProductsCount(filters) {
+    try {
+        return {
+            msg: "Get All Favorite Products Process Has Been Successfully !!",
+            error: false,
+            data: await favoriteProductModel.countDocuments(filters),
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
+async function getAllFavoriteProductsInsideThePage(pageNumber, pageSize, filters) {
+    try {
+        return {
+            msg: `Get All Favorite Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: await favoriteProductModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize),
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
 module.exports = {
-    addNewFavoriteProduct
+    addNewFavoriteProduct,
+    getFavoriteProductsCount,
+    getAllFavoriteProductsInsideThePage
 }
