@@ -104,7 +104,9 @@ async function getProductsByIds(productsIds) {
             return {
                 msg: "Get Products By Ids Process Has Been Successfully !!",
                 error: false,
-                data: [],
+                data: {
+                    productByIds: [],
+                },
             }
         } else {
             let groupedProducts = {};
