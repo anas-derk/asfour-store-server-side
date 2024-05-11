@@ -20,11 +20,11 @@ walletRouter.get("/all-wallet-products-inside-the-page",
     walletController.getAllWalletProductsInsideThePage
 );
 
-walletRouter.delete("/:walletProductId",
+walletRouter.delete("/:productId",
     validateJWT,
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Wallet Product Id", fieldValue: req.params.walletProductId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
     walletController.deleteWalletProduct

@@ -49,7 +49,7 @@ async function getAllFavoriteProductsInsideThePage(req, res) {
 
 async function deleteFavoriteProduct(req, res) {
     try{
-        res.json(await favoriteProductsOPerationsManagmentFunctions.deleteFavoriteProduct(req.data._id, req.params.favoriteProductId));
+        res.json(await favoriteProductsOPerationsManagmentFunctions.deleteFavoriteProduct(req.data._id, req.params.productId));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

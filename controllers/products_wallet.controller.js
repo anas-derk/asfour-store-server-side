@@ -31,7 +31,7 @@ async function getAllWalletProductsInsideThePage(req, res) {
 
 async function deleteWalletProduct(req, res) {
     try{
-        res.json(await walletOPerationsManagmentFunctions.deleteWalletProduct(req.data._id, req.params.favoriteProductId));
+        res.json(await walletOPerationsManagmentFunctions.deleteWalletProduct(req.data._id, req.params.productId));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

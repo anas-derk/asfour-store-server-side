@@ -86,11 +86,11 @@ async function getFavoriteProductsByProductsIdsAndUserId(userId, productsIds) {
     }
 }
 
-async function deleteFavoriteProduct(userId, favoriteProductId) {
+async function deleteFavoriteProduct(userId, productId) {
     try{
         const user = await userModel.findById(userId);
         if (user) {
-            const favoriteProduct = await favoriteProductModel.findOneAndDelete({ _id: favoriteProductId });
+            const favoriteProduct = await favoriteProductModel.findOneAndDelete({ productId, userId });
             if (favoriteProduct) {
                 return {
                     msg: "Deleting Favorite Product Process Has Been Successfully !!",

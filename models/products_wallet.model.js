@@ -28,11 +28,11 @@ async function getAllWalletProductsInsideThePage(pageNumber, pageSize, filters) 
     }
 }
 
-async function deleteWalletProduct(userId, walletProductId) {
+async function deleteWalletProduct(userId, productId) {
     try{
         const user = await userModel.findById(userId);
         if (user) {
-            const walletProduct = await productsWalletModel.findOneAndDelete({ _id: walletProductId });
+            const walletProduct = await productsWalletModel.findOneAndDelete({ productId, userId });
             if (walletProduct) {
                 return {
                     msg: "Deleting Product From Wallet Process Has Been Successfully !!",
