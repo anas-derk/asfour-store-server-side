@@ -30,7 +30,7 @@ async function getFavoriteProductsByProductsIdsAndUserId(req, res) {
 
 async function getFavoriteProductsCount(req, res) {
     try {
-        res.json(await favoriteProductsOPerationsManagmentFunctions.getFavoriteProductsCount(getFiltersObject(req.query)));
+        res.json(await favoriteProductsOPerationsManagmentFunctions.getFavoriteProductsCount(getFiltersObject({ ...req.query, userId: req.data._id })));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -40,7 +40,7 @@ async function getFavoriteProductsCount(req, res) {
 async function getAllFavoriteProductsInsideThePage(req, res) {
     try {
         const filters = req.query;
-        res.json(await favoriteProductsOPerationsManagmentFunctions.getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await favoriteProductsOPerationsManagmentFunctions.getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({ ...filters, userId: req.data._id })));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

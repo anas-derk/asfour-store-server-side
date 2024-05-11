@@ -1,6 +1,6 @@
 // Import  Order Model Object
 
-const { orderModel, userModel, adminModel } = require("../models/all.models");
+const { orderModel, userModel, adminModel, productsWalletModel } = require("../models/all.models");
 
 async function getOrdersCount(filters) {
     try {
@@ -54,21 +54,26 @@ async function createNewOrder(orderDetails) {
         if (orderDetails.customerId) {
             const user = await userModel.findOne({ _id: orderDetails.customerId });
             if (user) {
+                let newProductsForUserInsideTheWallet = [];
+                const orderProducts = await productsWalletModel.find({ productId: { $in: orderDetails.order_products.map((product) => product.productId) }, userId: orderDetails.customerId });
                 for (let i = 0; i < orderDetails.order_products.length; i++) {
-                    const wallet_productIndex = user.wallet_products_list.findIndex((wallet_product) => wallet_product.productId == orderDetails.order_products[i].productId);
+                    const wallet_productIndex = orderProducts.findIndex((wallet_product) => wallet_product.productId == orderDetails.order_products[i].productId);
                     if (wallet_productIndex == -1) {
-                        user.wallet_products_list.push({
-                            productId: orderDetails.order_products[i].productId,
+                        newProductsForUserInsideTheWallet.push({
                             name: orderDetails.order_products[i].name,
                             price: orderDetails.order_products[i].unit_price,
-                            discount: orderDetails.order_products[i].discount,
                             imagePath: orderDetails.order_products[i].image_path,
+                            productId: orderDetails.order_products[i].productId,
+                            userId: orderDetails.customerId
                         });
                     }
                 }
-                await userModel.updateOne({ _id: orderDetails.customerId } , { wallet_products_list: user.wallet_products_list });
+                if (newProductsForUserInsideTheWallet.length > 0) {
+                    await productsWalletModel.insertMany(newProductsForUserInsideTheWallet);
+                }
             }
             else {
+                await orderModel.deleteOne({ orderNumber });
                 return {
                     msg: "Sorry, This User Is Not Exist !!",
                     error: true,
