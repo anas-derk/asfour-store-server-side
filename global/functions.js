@@ -16,6 +16,10 @@ function isEmail(email) {
     return email.match(/[^\s@]+@[^\s@]+\.[^\s@]+/);
 }
 
+function isValidPassword(password) {
+    return password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/);
+}
+
 function calcOrderAmount(order_lines) {
     let newOrderAmount = 0;
     for (let i = 0; i < order_lines.length; i++) {
@@ -122,6 +126,7 @@ function validateIsExistValueForFieldsAndDataTypes(fieldsDetails, res, nextFunc)
 
 module.exports = {
     isEmail,
+    isValidPassword,
     calcOrderAmount,
     sendCodeToUserEmail,
     getResponseObject,

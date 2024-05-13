@@ -36,7 +36,25 @@ async function getAdminUserInfo(req, res) {
     }
 }
 
+async function putAdminPassword(req, res) {
+    try{
+        const data = req.query;
+        const result = await adminsOPerationsManagmentFunctions.changeAdminPassword(req.data._id, data.websiteOwnerEmail.trim().toLowerCase(), data.websiteOwnerPassword, data.adminEmail.trim().toLowerCase(), data.newAdminPassword);
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        res.json(result);
+    }
+    catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 module.exports = {
     getAdminLogin,
     getAdminUserInfo,
+    putAdminPassword,
 }

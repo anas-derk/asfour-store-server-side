@@ -1,8 +1,8 @@
 // Import Admin Model Object
 
-const { adminModel, mongoose } = require("./all.models");
+const { adminModel } = require("./all.models");
 
-const { compare } = require("bcryptjs");
+const { compare, hash } = require("bcryptjs");
 
 async function adminLogin(email, password) {
     try {
@@ -63,7 +63,47 @@ async function getAdminUserInfo(userId) {
     }
 }
 
+async function changeAdminPassword(adminId, websiteOwnerEmail, websiteOwnerPassword, adminEmail, newAdminPassword) {
+    try{
+        const websiteOwnerAndAdmin = await adminModel.find({
+            $or: [
+                {
+                    _id: adminId,
+                    email: websiteOwnerEmail
+                },
+                {
+                    email: adminEmail,
+                }
+            ]
+        });
+        if (websiteOwnerAndAdmin.length === 2) {
+            if (await compare(websiteOwnerPassword, websiteOwnerAndAdmin[0].password)) {
+                await adminModel.updateOne({ email: adminEmail }, { password: await hash(newAdminPassword, 10) });
+                return {
+                    msg: "Changing Admin Password Process Has Been Successfully !!",
+                    error: false,
+                    data: {},
+                }
+            }
+            return {
+                msg: "Sorry, The Website Owner Email Or Admin Email Or Password Is Not Valid !!",
+                error: false,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, The Website Owner Email Or Admin Email Or Password Is Not Valid !!",
+            error: true,
+            data: {},
+        }
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 module.exports = {
     adminLogin,
     getAdminUserInfo,
+    changeAdminPassword,
 }

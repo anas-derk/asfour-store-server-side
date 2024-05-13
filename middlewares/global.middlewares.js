@@ -1,4 +1,4 @@
-const { getResponseObject, isEmail } = require("../global/functions");
+const { getResponseObject, isEmail, isValidPassword } = require("../global/functions");
 const { verify } = require("jsonwebtoken");
 
 function validateJWT(req, res, next) {
@@ -21,6 +21,14 @@ function validateEmail(email, res, nextFunc) {
     nextFunc();
 }
 
+function validatePassword(password, res, nextFunc) {
+    if (!isValidPassword(password)) {
+        res.status(400).json(getResponseObject("Sorry, Please Send Valid Password !!", true, {}));
+        return;
+    }
+    nextFunc();
+}
+
 function validateCode(code, res, nextFunc) {
     if (code.length !== 4) {
         res.status(400).json(getResponseObject("Please Send Valid Code !!", true, {}));
@@ -38,6 +46,7 @@ function keyGeneratorForRequestsRateLimit(req) {
 module.exports = {
     validateJWT,
     validateEmail,
+    validatePassword,
     validateCode,
     keyGeneratorForRequestsRateLimit,
 }
