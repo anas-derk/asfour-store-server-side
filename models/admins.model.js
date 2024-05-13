@@ -87,7 +87,7 @@ async function changeAdminPassword(adminId, websiteOwnerEmail, websiteOwnerPassw
             }
             return {
                 msg: "Sorry, The Website Owner Email Or Admin Email Or Password Is Not Valid !!",
-                error: false,
+                error: true,
                 data: {},
             }
         }
