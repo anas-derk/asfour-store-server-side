@@ -85,7 +85,7 @@ async function postNewPaymentOrderByTap(req, res) {
                 order: newOrder.data.orderNumber,
             },
             redirect: {
-                url: `http://localhost:3000/confirmation/${newOrder.data.orderId}?country=${req.query.country}`
+                url: `${process.env.NODE_ENV === "test" ? "http://localhost:3000" : "https://ubuyblues.com"}/confirmation/${newOrder.data.orderId}?country=${req.query.country}`
             }
         }, {
             headers: {
