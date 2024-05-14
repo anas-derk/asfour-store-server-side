@@ -377,7 +377,11 @@ const orderSchema = mongoose.Schema({
     },
     checkout_status: {
         type: String,
-        default: "checkout_incomplete",
+        default: "Checkout Incomplete",
+        enum: [
+            "Checkout Incomplete",
+            "Checkout Successfull"
+        ],
     },
     status: {
         type: String,

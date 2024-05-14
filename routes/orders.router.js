@@ -39,6 +39,8 @@ ordersRouter.get("/order-details/:orderId",
 
 ordersRouter.post("/create-new-order", ordersController.postNewOrder);
 
+ordersRouter.post("/create-payment-order-by-tap", ordersController.postNewPaymentOrderByTap);
+
 ordersRouter.post("/update-order/:orderId",
     validateJWT,
     async (req, res, next) => {
