@@ -134,7 +134,7 @@ async function getAllProductsInsideThePage(req, res) {
         const queryObject = req.query;
         const filtersAndSortDetailsObject = getFiltersAndSortDetailsObject(queryObject);
         let sortDetailsObject = {};
-        if (filtersAndSortDetailsObject.sortDetailsObject) {
+        if (Object.keys(filtersAndSortDetailsObject.sortDetailsObject).length > 0 ) {
             sortDetailsObject[filtersAndSortDetailsObject.sortDetailsObject.sortBy] = Number(filtersAndSortDetailsObject.sortDetailsObject.sortType);
         }
         res.json(await productsManagmentFunctions.getAllProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
