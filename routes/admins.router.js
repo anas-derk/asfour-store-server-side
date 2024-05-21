@@ -15,6 +15,7 @@ adminsRouter.get("/login",
         ], res, next);
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
+    (req, res, next) => validatePassword(req.query.password, res, next),
     adminsController.getAdminLogin
 );
 

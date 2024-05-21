@@ -7,7 +7,7 @@ const { sign } = require("jsonwebtoken");
 async function getAdminLogin(req, res) {
     try{
         const emailAndPassword = req.query;
-        const result = await adminsOPerationsManagmentFunctions.adminLogin(emailAndPassword.email.toLowerCase(), emailAndPassword.password);
+        const result = await adminsOPerationsManagmentFunctions.adminLogin(emailAndPassword.email.trim().toLowerCase(), emailAndPassword.password);
         if (!result.error) {
             res.json({
                 ...result,
@@ -22,7 +22,6 @@ async function getAdminLogin(req, res) {
         res.json(result);
     }
     catch(err) {
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }

@@ -4,7 +4,7 @@ const usersController = require("../controllers/users.controller");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
-const { validateJWT, validateEmail } = require("../middlewares/global.middlewares");
+const { validateJWT, validateEmail, validatePassword } = require("../middlewares/global.middlewares");
 
 const usersMiddlewares = require("../middlewares/users.midddlewares");
 
@@ -17,6 +17,7 @@ usersRouter.get("/login",
         ], res, next);
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
+    (req, res, next) => validatePassword(req.query.password, res, next),
     usersController.login
 );
 
@@ -59,6 +60,7 @@ usersRouter.post("/create-new-user",
         ], res, next);
     },
     (req, res, next) => validateEmail(req.body.email, res, next),
+    (req, res, next) => validatePassword(req.body.password, res, next),
     usersController.createNewUser
 );
 
