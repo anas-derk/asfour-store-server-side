@@ -224,7 +224,10 @@ async function getAllProductsInsideThePage(pageNumber, pageSize, filters, sortDe
         return {
             msg: `Get Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
-            data: await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort(sortDetailsObject),
+            data: {
+                products: await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort(sortDetailsObject),
+                currentDate: new Date()
+            },
         }
     }
     catch (err) {
