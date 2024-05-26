@@ -52,6 +52,7 @@ productsRouter.post("/add-new-product",
             { fieldName: "Price", fieldValue: Number(productInfo.price), dataType: "number", isRequiredValue: true },
             { fieldName: "Description", fieldValue: productInfo.description, dataType: "string", isRequiredValue: true },
             { fieldName: "Category", fieldValue: productInfo.category, dataType: "string", isRequiredValue: true },
+            { fieldName: "CategoryId", fieldValue: productInfo.categoryId, dataType: "string", isRequiredValue: true },
             { fieldName: "discount", fieldValue: Number(productInfo.discount), dataType: "number", isRequiredValue: false },
             { fieldName: "Store Id", fieldValue: productInfo.storeId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
