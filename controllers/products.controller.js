@@ -78,7 +78,7 @@ async function getProductsByIdsAndStoreId(req, res) {
 function getFiltersAndSortDetailsObject(queryObject) {
     let filtersObject = {}, sortDetailsObject = {};
     for (let objectKey in queryObject) {
-        if (objectKey === "category") filtersObject[objectKey] = queryObject[objectKey];
+        if (objectKey === "categoryId") filtersObject[objectKey] = queryObject[objectKey];
         if (objectKey === "storeId") filtersObject[objectKey] = queryObject[objectKey];
         if (objectKey === "name") filtersObject[objectKey] = { $regex: new RegExp(queryObject[objectKey], 'i') }
         if (objectKey === "sortBy") sortDetailsObject[objectKey] = queryObject[objectKey];

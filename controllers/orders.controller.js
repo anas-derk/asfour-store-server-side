@@ -95,7 +95,18 @@ async function postNewPaymentOrderByTap(req, res) {
         res.json(getResponseObject("Creating New Payment Order By Tap Process Has Been Successfully !!", false, response.data));
     }
     catch(err) {
-        console.log(err);
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function postNewPaymentOrderByPilisio(req, res) {
+    try{
+        const orderData = req.body;
+        const newOrder = await ordersManagmentFunctions.createNewOrder(orderData);
+        const response = await get(`${process.env.PILISIO_BASE_API_URL}/invoices/new?source_currency=USD&source_amount=${orderData.order_amount}&order_number=${newOrder.orderNumber}&order_name=order${newOrder.orderNumber}&email=${orderData.billing_address.email}&api_key=${process.env.PILISIO_SECRET_KEY}&allowed_psys_cids=USDT,ETH&success_invoice_url=https://ubuyblues.com/confirmation/${orderData._id}?country=${req.query.country}`)
+        res.json(getResponseObject("Creating New Payment Order By Pilisio Process Has Been Successfully !!", false, response.data));
+    }
+    catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -171,6 +182,7 @@ module.exports = {
     getOrderDetails,
     postNewOrder,
     postNewPaymentOrderByTap,
+    postNewPaymentOrderByPilisio,
     putOrder,
     putOrderProduct,
     deleteOrder,

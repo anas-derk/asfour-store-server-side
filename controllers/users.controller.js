@@ -10,14 +10,6 @@ const {
     isAccountVerificationCodeValid
 } = require("../models/account_codes.model");
 
-function getFiltersObject(filters) {
-    let filtersObject = {};
-    for (let objectKey in filters) {
-        if (objectKey === "customerId") filtersObject[objectKey] = filters[objectKey];
-    }
-    return filtersObject;
-}
-
 async function login(req, res) {
     try{
         const   email = req.query.email,

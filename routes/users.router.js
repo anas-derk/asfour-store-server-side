@@ -107,6 +107,7 @@ usersRouter.put("/reset-password",
         ], res, next);
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
+    (req, res, next) => validatePassword(req.query.newPassword, res, next),
     usersController.putResetPassword
 );
 

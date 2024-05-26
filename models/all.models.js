@@ -155,6 +155,10 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    categoryId: {
+        type: String,
+        required: true,
+    },
     discount: {
         type: Number,
         default: 0,
