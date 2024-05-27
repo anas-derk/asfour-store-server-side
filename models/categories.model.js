@@ -1,6 +1,6 @@
 // Import Category And Admin Model Object
 
-const { categoryModel, adminModel } = require("../models/all.models");
+const { categoryModel, adminModel, productModel } = require("../models/all.models");
 
 async function addNewCategory(authorizationId, storeIdAndCategoryName) {
     try{
@@ -95,6 +95,7 @@ async function deleteCategory(authorizationId, categoryId) {
                         await categoryModel.deleteOne({
                             _id: categoryId,
                         });
+                        await productModel.updateMany({ categoryId }, { category: "uncategorized" });
                         return {
                             msg: "Deleting Category Process Has Been Successfuly ...",
                             error: false,
