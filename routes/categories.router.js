@@ -16,6 +16,15 @@ categoriesRouter.post("/add-new-category",
     categoriesController.postNewCategory
 );
 
+categoriesRouter.get("/category-info/:categoryId",
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Category Id", fieldValue: req.params.categoryId, dataType: "ObjectId", isRequiredValue: true },
+        ], res, next);
+    },
+    categoriesController.getCategoryInfo
+);
+
 categoriesRouter.get("/all-categories", categoriesController.getAllCategories);
 
 categoriesRouter.get("/categories-count", categoriesController.getCategoriesCount);

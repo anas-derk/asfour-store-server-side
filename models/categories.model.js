@@ -56,6 +56,27 @@ async function getAllCategories(filters) {
     }
 }
 
+async function getCategoryInfo(categoryId) {
+    try {
+        const categoryInfo = await categoryModel.findById(categoryId);
+        if (categoryInfo) {
+            return {
+                msg: "Get Category Info Process Has Been Successfuly !!",
+                error: false,
+                data: categoryInfo,
+            }
+        }
+        return {
+            msg: "Sorry, This Category It Not Exist !!",
+            error: true,
+            data: {},
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
 async function getCategoriesCount(filters) {
     try {
         return {
@@ -180,6 +201,7 @@ module.exports = {
     getAllCategories,
     getCategoriesCount,
     getAllCategoriesInsideThePage,
+    getCategoryInfo,
     deleteCategory,
     updateCategory,
 }

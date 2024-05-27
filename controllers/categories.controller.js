@@ -36,6 +36,15 @@ async function getAllCategories(req, res) {
     }
 }
 
+async function getCategoryInfo(req, res) {
+    try {
+        res.json(await categoriesManagmentFunctions.getCategoryInfo(req.params.categoryId));
+    }
+    catch (err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function getCategoriesCount(req, res) {
     try {
         res.json(await categoriesManagmentFunctions.getCategoriesCount(getFiltersObject(req.query)));
@@ -92,6 +101,7 @@ module.exports = {
     getAllCategories,
     getCategoriesCount,
     getAllCategoriesInsideThePage,
+    getCategoryInfo,
     deleteCategory,
     putCategory,
 }
