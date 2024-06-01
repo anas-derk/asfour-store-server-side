@@ -35,8 +35,9 @@ const adminSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    permissions: [
-        {
+    permissions: {
+        type: [
+            {
             name: {
                 type: String,
                 required: true,
@@ -57,6 +58,7 @@ const adminSchema = mongoose.Schema({
                     "Delete Product",
                     "Show And Hide Sections",
                     "Change Bussiness Email Password",
+                    "Add New Admin"
                 ],
             },
             value: {
@@ -64,7 +66,9 @@ const adminSchema = mongoose.Schema({
                 required: true,
             }
         },
-    ],
+        ],
+        required: true,
+    },
     isBlocked: {
         type: Boolean,
         default: false,
@@ -161,7 +165,7 @@ const userInfo = {
         },
     ],
     
-};
+}
 
 async function create_admin_user_account() {
     try {
@@ -171,10 +175,9 @@ async function create_admin_user_account() {
             await mongoose.disconnect();
             return "Sorry, Can't Insert Admin Data To Database Because it is Exist !!!";
         }
-        let password = userInfo.password;
-        let encrypted_password = await hash(password, 10);
+        const encrypted_password = await hash(userInfo.password, 10);
         userInfo.password = encrypted_password;
-        let new_admin_user = new adminModel(userInfo);
+        const new_admin_user = new adminModel(userInfo);
         await new_admin_user.save();
         await mongoose.disconnect();
         return "Ok !!, Create Admin Account Process Has Been Successfuly !!";

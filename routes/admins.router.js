@@ -21,6 +21,22 @@ adminsRouter.get("/login",
 
 adminsRouter.get("/user-info", validateJWT, adminsController.getAdminUserInfo);
 
+adminsRouter.post("/add-new-admin",
+    validateJWT,
+    async (req, res, next) => {
+        const adminInfo = req.body;
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "First Name", fieldValue: adminInfo.firstName, dataType: "string", isRequiredValue: true },
+            { fieldName: "Last Name", fieldValue: adminInfo.lastName, dataType: "string", isRequiredValue: true },
+            { fieldName: "Email", fieldValue: adminInfo.email, dataType: "string", isRequiredValue: true },
+            { fieldName: "Password", fieldValue: adminInfo.password, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    (req, res, next) => validateEmail(req.body.email, res, next),
+    (req, res, next) => validatePassword(req.body.password, res, next),
+    adminsController.postAddNewAdmin
+);
+
 adminsRouter.put("/change-admin-password",
     validateJWT,
     async (req, res, next) => {
