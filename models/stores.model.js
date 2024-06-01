@@ -204,7 +204,7 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
                             blockingDate: Date.now(),
                             status: "blocking"
                         });
-                        await adminModel.updateOne({ email: store.ownerEmail }, {
+                        await adminModel.updateMany({ storeId }, {
                             blockingReason,
                             blockingDate: Date.now(),
                             isBlocked: true
@@ -257,7 +257,7 @@ async function cancelBlockingStore(authorizationId, storeId) {
                             dateOfCancelBlocking: Date.now(),
                             status: "approving"
                         });
-                        await adminModel.updateOne({ email: store.ownerEmail }, {
+                        await adminModel.updateMany({ storeId }, {
                             dateOfCancelBlocking: Date.now(),
                             isBlocked: false
                         });
