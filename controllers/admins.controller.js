@@ -114,11 +114,53 @@ async function putAdminPassword(req, res) {
     }
 }
 
+async function putAdminInfo(req, res) {
+    try{
+        const result = await adminsOPerationsManagmentFunctions.updateAdminInfo(req.data._id, req.params.adminId, req.body);
+        if (result.error) {
+            if (
+                result.msg === "Sorry, Permission Denied !!" ||
+                result.msg === "Sorry, This Admin Is Not Exist !!" ||
+                result.msg === "Sorry, This Account Has Been Blocked !!"
+            ) {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        res.json(result);
+    }
+    catch(err){
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function deleteAdmin(req, res) {
+    try{
+        const result = await adminsOPerationsManagmentFunctions.deleteAdmin(req.data._id, req.params.adminId);
+        if (result.error) {
+            if (
+                result.msg === "Sorry, Permission Denied !!" ||
+                result.msg === "Sorry, This Admin Is Not Exist !!" ||
+                result.msg === "Sorry, This Account Has Been Blocked !!"
+            ) {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        res.json(result);
+    }
+    catch(err){
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 module.exports = {
     getAdminLogin,
     getAdminUserInfo,
+    getAdminsCount,
+    getAllAdminsInsideThePage,
     postAddNewAdmin,
     putAdminPassword,
-    getAdminsCount,
-    getAllAdminsInsideThePage
+    putAdminInfo,
+    deleteAdmin
 }

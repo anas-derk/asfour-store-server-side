@@ -68,4 +68,24 @@ adminsRouter.put("/change-admin-password",
     adminsController.putAdminPassword
 );
 
+adminsRouter.put("/update-admin-info/:adminId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Admin Id", fieldValue: req.params.adminId, dataType: "ObjectId", isRequiredValue: false },
+        ], res, next);
+    },
+    adminsController.putAdminInfo
+);
+
+adminsRouter.delete("/delete-admin/:adminId",
+    validateJWT,
+    async (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Admin Id", fieldValue: req.params.adminId, dataType: "ObjectId", isRequiredValue: false },
+        ], res, next);
+    },
+    adminsController.deleteAdmin
+);
+
 module.exports = adminsRouter;

@@ -119,9 +119,9 @@ async function getAllAdminsInsideThePage(merchantId, pageNumber, pageSize, filte
     }
 }
 
-async function addNewAdmin(authorizationId, adminInfo) {
+async function addNewAdmin(merchantId, adminInfo) {
     try{
-        const admin = await adminModel.findById(authorizationId);
+        const admin = await adminModel.findById(merchantId);
         if (admin) {
             if (admin.isMerchant){
                 if (!admin.isBlocked) {
@@ -282,6 +282,87 @@ async function changeAdminPassword(adminId, websiteOwnerEmail, websiteOwnerPassw
     }
 }
 
+async function updateAdminInfo(merchantId, adminId, newAdminDetails) {
+    try {
+        const admin = await adminModel.findById(merchantId);
+        if (admin) {
+            if (admin.isMerchant){
+                if (!admin.isBlocked) {
+                    const adminDetails = await adminModel.findOneAndUpdate({ _id: adminId }, { ...newAdminDetails });
+                    if (adminDetails) {
+                        return {
+                            msg: "Updating Admin Details Process Has Been Successfully !!",
+                            error: false,
+                            data: {},
+                        }
+                    }
+                    return {
+                        msg: "Sorry, This Admin Is Not Exist !!",
+                        error: true,
+                        data: {},
+                    }
+                }
+                return {
+                    msg: "Sorry, This Account Has Been Blocked !!",
+                    error: true,
+                    data: {
+                        blockingDate: admin.blockingDate,
+                        blockingReason: admin.blockingReason,
+                    },
+                }
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Admin Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    } catch (err) {
+        throw Error(err);
+    }
+}
+
+async function deleteAdmin(merchantId, adminId){
+    try{
+        const admin = await adminModel.findById(merchantId);
+        if (admin) {
+            if (admin.isMerchant){
+                const adminDetails = await adminModel.findOneAndDelete({ _id: adminId });
+                if (adminDetails) {
+                    return {
+                        msg: "Delete Admin Process Has Been Successfully !!",
+                        error: false,
+                        data: {},
+                    }
+                }
+                return {
+                    msg: "Sorry, This Admin Is Not Exist !!",
+                    error: true,
+                    data: {},
+                }
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Admin Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    }
+    catch(err){
+        throw Error(err);
+    }
+}
+
 module.exports = {
     adminLogin,
     getAdminUserInfo,
@@ -289,4 +370,6 @@ module.exports = {
     getAllAdminsInsideThePage,
     addNewAdmin,
     changeAdminPassword,
+    updateAdminInfo,
+    deleteAdmin
 }
