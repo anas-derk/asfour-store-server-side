@@ -35,6 +35,50 @@ async function getAdminUserInfo(req, res) {
     }
 }
 
+function getFiltersObject(filters) {
+    let filtersObject = {};
+    for (let objectKey in filters) {
+        if (objectKey === "_id") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "firstName") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "lastName") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "email") filtersObject[objectKey] = filters[objectKey];
+    }
+    return filtersObject;
+}
+
+async function getAdminsCount(req, res) {
+    try{
+        const result = await adminsOPerationsManagmentFunctions.getAdminsCount(req.data._id, getFiltersObject(req.query));
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Merchant Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        res.json(result);
+    }
+    catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function getAllAdminsInsideThePage(req, res) {
+    try{
+        const filters = req.query;
+        const result = await adminsOPerationsManagmentFunctions.getAllAdminsInsideThePage(req.data._id, filters.pageNumber, filters.pageSize, getFiltersObject(filters));
+        if (result.error) {
+            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Merchant Is Not Exist !!") {
+                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return;
+            }
+        }
+        res.json(result);
+    }
+    catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function postAddNewAdmin(req, res) {
     try{
         const result = await adminsOPerationsManagmentFunctions.addNewAdmin(req.data._id, req.body);
@@ -75,4 +119,6 @@ module.exports = {
     getAdminUserInfo,
     postAddNewAdmin,
     putAdminPassword,
+    getAdminsCount,
+    getAllAdminsInsideThePage
 }

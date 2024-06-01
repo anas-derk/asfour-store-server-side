@@ -65,6 +65,60 @@ async function getAdminUserInfo(userId) {
     }
 }
 
+async function getAdminsCount(merchantId, filters) {
+    try {
+        const merchant = await adminModel.findById(merchantId);
+        if (merchant) {
+            if (merchant.isMerchant) {
+                return {
+                    msg: "Get Admins Count Process Has Been Successfully !!",
+                    error: false,
+                    data: await adminModel.countDocuments({ ...filters, storeId: merchant.storeId }),
+                }
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Merchant Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    } catch (err) {
+        throw Error(err);
+    }
+}
+
+async function getAllAdminsInsideThePage(merchantId, pageNumber, pageSize, filters) {
+    try {
+        const merchant = await adminModel.findById(merchantId);
+        if (merchant) {
+            if (merchant.isMerchant) {
+                return {
+                    msg: `Get All Admins Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+                    error: false,
+                    data: await adminModel.find({ ...filters, storeId: merchant.storeId }).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ creatingOrderDate: -1 }),
+                }
+            }
+            return {
+                msg: "Sorry, Permission Denied !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, This Merchant Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    } catch (err) {
+        throw Error(err);
+    }
+}
+
 async function addNewAdmin(authorizationId, adminInfo) {
     try{
         const admin = await adminModel.findById(authorizationId);
@@ -231,6 +285,8 @@ async function changeAdminPassword(adminId, websiteOwnerEmail, websiteOwnerPassw
 module.exports = {
     adminLogin,
     getAdminUserInfo,
+    getAdminsCount,
+    getAllAdminsInsideThePage,
     addNewAdmin,
     changeAdminPassword,
 }

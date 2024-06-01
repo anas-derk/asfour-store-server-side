@@ -21,6 +21,20 @@ adminsRouter.get("/login",
 
 adminsRouter.get("/user-info", validateJWT, adminsController.getAdminUserInfo);
 
+adminsRouter.get("/admins-count", validateJWT, adminsController.getAdminsCount);
+
+adminsRouter.get("/all-admins-inside-the-page",
+    validateJWT,
+    async (req, res, next) => {
+        const filters = req.query;
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: Number(filters.pageNumber), dataType: "number", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: Number(filters.pageSize), dataType: "number", isRequiredValue: true },
+        ], res, next);
+    },
+    adminsController.getAllAdminsInsideThePage
+);
+
 adminsRouter.post("/add-new-admin",
     validateJWT,
     async (req, res, next) => {
