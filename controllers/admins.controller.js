@@ -82,7 +82,6 @@ async function getAllAdminsInsideThePage(req, res) {
 async function postAddNewAdmin(req, res) {
     try{
         const result = await adminsOPerationsManagmentFunctions.addNewAdmin(req.data._id, req.body);
-        console.log(result)
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
@@ -92,7 +91,6 @@ async function postAddNewAdmin(req, res) {
         res.json(result);
     }
     catch(err) {
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }

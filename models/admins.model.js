@@ -4,6 +4,8 @@ const { adminModel } = require("./all.models");
 
 const { compare, hash } = require("bcryptjs");
 
+const { mongoose } = require("../server");
+
 async function adminLogin(email, password) {
     try {
         const admin = await adminModel.findOne({ email });
@@ -332,6 +334,13 @@ async function deleteAdmin(merchantId, adminId){
         const admin = await adminModel.findById(merchantId);
         if (admin) {
             if (admin.isMerchant){
+                if ((new mongoose.Types.ObjectId(adminId)).equals(merchantId)) {
+                    return {
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
+                        data: {},
+                    }
+                }
                 const adminDetails = await adminModel.findOneAndDelete({ _id: adminId });
                 if (adminDetails) {
                     return {
