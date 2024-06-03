@@ -20,7 +20,7 @@ require("dotenv").config();
 
 /* Start Running The Server */
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5200;
 
 app.listen(PORT, async () => {
 

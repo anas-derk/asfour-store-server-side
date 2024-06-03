@@ -20,7 +20,7 @@ const globalPasswordModel = mongoose.model("global_password", globalPasswordSche
 const cryptoJS = require("crypto-js");
 
 const userInfo = {
-    email: "info@asfourintlco.com",
+    email: process.env.BUSSINESS_EMAIL,
     password: "Solaiman@Asfour@3853",
 };
 
