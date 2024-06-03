@@ -47,9 +47,10 @@ function transporterObj(bussinessEmailPassword) {
     return transporter;
 }
 
-async function sendCodeToUserEmail(email) {
+async function sendVerificationCodeToUserEmail(email) {
+    console.log(process.env.BUSSINESS_EMAIL)
     const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
-    console.log("send code" + " " + result);
+    console.log("send code" + " " + result.data);
     if (!result.error) {
         const generator = new CodeGenerator();
         const generatedCode = generator.generateCodes("####")[0];
@@ -134,7 +135,7 @@ module.exports = {
     isValidPassword,
     isValidName,
     calcOrderAmount,
-    sendCodeToUserEmail,
+    sendVerificationCodeToUserEmail,
     getResponseObject,
     checkIsExistValueForFieldsAndDataTypes,
     validateIsExistValueForFieldsAndDataTypes,

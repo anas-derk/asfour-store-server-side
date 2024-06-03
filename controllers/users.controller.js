@@ -1,4 +1,4 @@
-const { getResponseObject, sendCodeToUserEmail } = require("../global/functions");
+const { getResponseObject, sendVerificationCodeToUserEmail } = require("../global/functions");
 
 const usersOPerationsManagmentFunctions = require("../models/users.model");
 
@@ -77,9 +77,7 @@ async function getAllUsers(req, res) {
 async function getForgetPassword(req, res) {
     try{
         const email = req.query.email;
-        console.log(email);
         let result = await usersOPerationsManagmentFunctions.isExistUserAccount(email);
-        console.log(result);
         if (!result.error) {
             if (!result.data.isVerified) {
                 res.json({
@@ -94,7 +92,7 @@ async function getForgetPassword(req, res) {
                 res.json(result);
                 return;
             }
-            result = await sendCodeToUserEmail(email);
+            result = await sendVerificationCodeToUserEmail(email);
             if (!result.error) {
                 res.json(await addNewAccountVerificationCode(email, result.data, "to reset password"));
                 return;
@@ -127,7 +125,7 @@ async function postAccountVerificationCode(req, res) {
                 res.json(result);
                 return;
             }
-            result = await sendCodeToUserEmail(email);
+            result = await sendVerificationCodeToUserEmail(email);
             if (!result.error) {
                 res.json(await addNewAccountVerificationCode(email, result.data, "to activate account"));
                 return;
@@ -136,7 +134,6 @@ async function postAccountVerificationCode(req, res) {
         res.json(result);
     }
     catch(err) {
-        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -181,7 +178,7 @@ async function putVerificationStatus(req, res) {
 async function putResetPassword(req, res) {
     try{
         const emailAndCodeAndNewPassword = req.query;
-        let result = await isAccountVerificationCodeValid(emailAndCodeAndNewPassword.email, emailAndCodeAndNewPassword.code, "to reset password");
+        const result = await isAccountVerificationCodeValid(emailAndCodeAndNewPassword.email, emailAndCodeAndNewPassword.code, "to reset password");
         if (!result.error) {
             res.json(await usersOPerationsManagmentFunctions.resetUserPassword(emailAndCodeAndNewPassword.email, emailAndCodeAndNewPassword.newPassword));
             return;
