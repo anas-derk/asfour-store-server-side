@@ -76,8 +76,8 @@ async function getAllUsers(req, res) {
 
 async function getForgetPassword(req, res) {
     try{
-        console.log(email);
         const email = req.query.email;
+        console.log(email);
         let result = await usersOPerationsManagmentFunctions.isExistUserAccount(email);
         console.log(result);
         if (!result.error) {
