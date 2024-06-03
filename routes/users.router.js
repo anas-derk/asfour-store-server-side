@@ -64,16 +64,6 @@ usersRouter.post("/create-new-user",
     usersController.createNewUser
 );
 
-usersRouter.post("/add-favorite-product",
-    validateJWT,
-    async (req, res, next) => {
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Product Id", fieldValue: req.query.productId, dataType: "ObjectId", isRequiredValue: true },
-        ], res, next);
-    },
-    usersController.postNewFavoriteProduct
-);
-
 usersRouter.post("/send-account-verification-code",
     usersMiddlewares.sendingVerificationCodeLimiterMiddleware,
     async (req, res, next) => {

@@ -49,6 +49,7 @@ function transporterObj(bussinessEmailPassword) {
 
 async function sendCodeToUserEmail(email) {
     const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
+    console.log("send code" + " " + result);
     if (!result.error) {
         const generator = new CodeGenerator();
         const generatedCode = generator.generateCodes("####")[0];

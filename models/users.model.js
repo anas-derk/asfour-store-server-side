@@ -37,45 +37,6 @@ async function createNewUser(email, password) {
     }
 }
 
-async function addNewFavoriteProduct(userId, productId) {
-    try {
-        // Check If Email Is Exist
-        const user = await userModel.findById(userId);
-        if (user) {
-            const product = await productModel.findById(productId);
-            if (product) {
-                const favorite_productIndex = user.favorite_products_list.findIndex((favorite_product) => favorite_product._id == productId);
-                if (favorite_productIndex == -1) {
-                    await userModel.updateOne({ _id: userId } , { $push: { favorite_products_list: product } });
-                    return {
-                        msg: "Ok !!, Adding New Favorite Product To This User Process Has Been Successfuly !!",
-                        error: false,
-                        data: {},
-                    };
-                }
-                return {
-                    msg: "Sorry, The Product Are Already Exist !!, Please Send Another Product Id !!",
-                    error: true,
-                    data: {},
-                };
-            }
-            return {
-                msg: "Sorry, The Product Is Not Exist !!, Please Send Another Product Id ..",
-                error: true,
-                data: {},
-            };
-        }
-        return {
-            msg: "Sorry, The User Is Not Exist !!, Please Send Another User Id ..",
-            error: true,
-            data: {},
-        };
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
 async function login(email, password) {
     try {
         // Check If Email Is Exist
@@ -327,7 +288,6 @@ async function resetUserPassword(email, newPassword) {
 
 module.exports = {
     createNewUser,
-    addNewFavoriteProduct,
     login,
     loginWithGoogle,
     getUserInfo,

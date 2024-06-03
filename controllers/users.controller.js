@@ -76,8 +76,10 @@ async function getAllUsers(req, res) {
 
 async function getForgetPassword(req, res) {
     try{
+        console.log(email);
         const email = req.query.email;
         let result = await usersOPerationsManagmentFunctions.isExistUserAccount(email);
+        console.log(result);
         if (!result.error) {
             if (!result.data.isVerified) {
                 res.json({
@@ -109,16 +111,6 @@ async function createNewUser(req, res) {
     try {
         const emailAndPassword = req.body;
         res.json(await usersOPerationsManagmentFunctions.createNewUser(emailAndPassword.email.toLowerCase(), emailAndPassword.password));
-    }
-    catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
-    }
-}
-
-async function postNewFavoriteProduct(req, res) {
-    try{
-        const productId = req.query.productId;
-        res.json(await usersOPerationsManagmentFunctions.addNewFavoriteProduct(req.data._id, productId));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -203,7 +195,6 @@ async function putResetPassword(req, res) {
 
 module.exports = {
     createNewUser,
-    postNewFavoriteProduct,
     postAccountVerificationCode,
     login,
     loginWithGoogle,
