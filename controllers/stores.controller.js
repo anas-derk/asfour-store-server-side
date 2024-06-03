@@ -1,4 +1,4 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, sendApproveStoreEmail } = require("../global/functions");
 
 const storesManagmentFunctions = require("../models/stores.model");
 
@@ -81,11 +81,12 @@ async function postApproveStore(req, res) {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
             }
+            res.json(result);
+            return;
         }
-        res.json(result);
+        res.json(await sendApproveStoreEmail(result.data.email, req.query.password, result.data.adminId, req.params.storeId, "en"));
     }
     catch(err) {
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }

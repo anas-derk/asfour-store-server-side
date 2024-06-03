@@ -2,7 +2,7 @@ const storesRouter = require("express").Router();
 
 const storesController = require("../controllers/stores.controller");
 
-const { validateJWT } = require("../middlewares/global.middlewares");
+const { validateJWT, validatePassword } = require("../middlewares/global.middlewares");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
@@ -72,6 +72,7 @@ storesRouter.post("/approve-store/:storeId",
             { fieldName: "Password", fieldValue: req.query.password, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
+    (req, res, next) => validatePassword(req.query.password, res, next),
     storesController.postApproveStore
 );
 

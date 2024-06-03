@@ -130,7 +130,10 @@ async function approveStore(authorizationId, storeId, password) {
                     return {
                         msg: `Approve Store: ( Store Id: ${ storeId }) And Create Merchant Account Process Has Been Successfully !!`,
                         error: false,
-                        data: {},
+                        data: {
+                            adminId: newMerchant._id,
+                            email: store.ownerEmail,
+                        },
                     };
                 }
                 return {
