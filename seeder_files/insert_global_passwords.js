@@ -19,23 +19,23 @@ const globalPasswordModel = mongoose.model("global_password", globalPasswordSche
 
 const cryptoJS = require("crypto-js");
 
-const userInfo = {
+const bussinessInfo = {
     email: process.env.BUSSINESS_EMAIL,
-    password: "Solaiman@Asfour@3853",
+    password: process.env.BUSSINESS_EMAIL_PASSWORD,
 };
 
 async function create_global_password() {
     try {
         await mongoose.connect(process.env.DB_URL);
-        let user = await globalPasswordModel.findOne({ email: userInfo.email });
+        let user = await globalPasswordModel.findOne({ email: bussinessInfo.email });
         if (user) {
             await mongoose.disconnect();
             return "Sorry, Can't Insert Global Password To Database Because it is Exist !!!";
         } else {
-            let password = userInfo.password;
-            let encrypted_password = cryptoJS.AES.encrypt(password, process.env.secretKey).toString();
-            userInfo.password = encrypted_password;
-            let new_global_password = new globalPasswordModel(userInfo);
+            const password = bussinessInfo.password;
+            const encrypted_password = cryptoJS.AES.encrypt(password, process.env.secretKey).toString();
+            bussinessInfo.password = encrypted_password;
+            const new_global_password = new globalPasswordModel(bussinessInfo);
             await new_global_password.save();
             await mongoose.disconnect();
             return "Ok !!, Create Global Password Has Been Successfuly !!";
