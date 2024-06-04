@@ -84,7 +84,7 @@ async function postApproveStore(req, res) {
             res.json(result);
             return;
         }
-        res.json(await sendApproveStoreEmail(result.data.email, req.query.password, result.data.adminId, req.params.storeId, "en"));
+        res.json(await sendApproveStoreEmail(result.data.email, req.query.password, result.data.adminId, req.params.storeId, result.data.language));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -118,7 +118,7 @@ async function putBlockingStore(req, res) {
             res.json(result);
             return;
         }
-        res.json(await sendBlockStoreEmail(result.data.email, result.data.adminId, req.params.storeId, "en"));
+        res.json(await sendBlockStoreEmail(result.data.email, result.data.adminId, req.params.storeId, result.data.language));
     }
     catch(err){
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -180,7 +180,7 @@ async function deleteStore(req, res) {
             return;
         }
         unlinkSync(result.data.storeImagePath);
-        res.json(await sendDeleteStoreEmail(result.data.email, result.data.adminId, req.params.storeId, "en"));
+        res.json(await sendDeleteStoreEmail(result.data.email, result.data.adminId, req.params.storeId, result.data.language));
     }
     catch(err){
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -199,7 +199,7 @@ async function deleteRejectStore(req, res) {
             return;
         }
         unlinkSync(result.data.storeImagePath); 
-        res.json(await sendRejectStoreEmail(result.data.ownerEmail));
+        res.json(await sendRejectStoreEmail(result.data.ownerEmail, result.data.language));
     }
     catch(err){
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

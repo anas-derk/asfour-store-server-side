@@ -2,7 +2,7 @@ const storesRouter = require("express").Router();
 
 const storesController = require("../controllers/stores.controller");
 
-const { validateJWT, validatePassword } = require("../middlewares/global.middlewares");
+const { validateJWT, validatePassword, validateEmail, validateLanguage } = require("../middlewares/global.middlewares");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
@@ -61,6 +61,20 @@ storesRouter.post("/create-new-store",
             cb(null, true);
         }
     }).single("storeImg"),
+    async (req, res, next) => {
+        const storeDetails = req.body;
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Name", fieldValue: storeDetails.name, dataType: "string", isRequiredValue: true },
+            { fieldName: "Owner First Name", fieldValue: storeDetails.ownerFirstName, dataType: "string", isRequiredValue: true },
+            { fieldName: "Owner Last Name", fieldValue: storeDetails.ownerLastName, dataType: "string", isRequiredValue: true },
+            { fieldName: "Owner Email", fieldValue: storeDetails.ownerEmail, dataType: "string", isRequiredValue: true },
+            { fieldName: "Products Type", fieldValue: storeDetails.productsType, dataType: "string", isRequiredValue: true },
+            { fieldName: "Products Description", fieldValue: storeDetails.productsDescription, dataType: "string", isRequiredValue: true },
+            { fieldName: "Language", fieldValue: storeDetails.language, dataType: "string", isRequiredValue: true },
+        ], res, next);
+    },
+    (req, res, next) => validateEmail(req.body.ownerEmail, res, next),
+    (req, res, next) => validateLanguage(req.body.language, res, next),
     storesController.postNewStore
 );
 

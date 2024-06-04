@@ -133,6 +133,7 @@ async function approveStore(authorizationId, storeId, password) {
                         data: {
                             adminId: newMerchant._id,
                             email: store.ownerEmail,
+                            language: store.language
                         },
                     };
                 }
@@ -218,7 +219,8 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
                             error: false,
                             data: {
                                 adminId: merchant._id,
-                                email: merchant.email
+                                email: merchant.email,
+                                language: store.language
                             }
                         }
                     }
@@ -345,7 +347,8 @@ async function deleteStore(authorizationId, storeId){
                             data: {
                                 storeImagePath: store.imagePath,
                                 adminId: merchant._id,
-                                email: merchant.email
+                                email: merchant.email,
+                                language: store.language
                             },
                         }
                     }
@@ -390,7 +393,8 @@ async function rejectStore(authorizationId, storeId){
                         error: false,
                         data: {
                             storeImagePath: store.imagePath,
-                            ownerEmail: store.ownerEmail
+                            ownerEmail: store.ownerEmail,
+                            language: store.language
                         },
                     };
                 }

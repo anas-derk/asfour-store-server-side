@@ -24,6 +24,10 @@ function isValidName(name) {
     return name.match(/^([\u0600-\u06FF\s]+|[a-zA-Z\s]+)$/);
 }
 
+function isValidLanguage(language) {
+    return ["ar", "en", "de", "tr"].includes(language);
+}
+
 function calcOrderAmount(order_lines) {
     let newOrderAmount = 0;
     for (let i = 0; i < order_lines.length; i++) {
@@ -257,6 +261,7 @@ module.exports = {
     isEmail,
     isValidPassword,
     isValidName,
+    isValidLanguage,
     calcOrderAmount,
     sendVerificationCodeToUserEmail,
     sendCongratulationsOnCreatingNewAccountEmail,
