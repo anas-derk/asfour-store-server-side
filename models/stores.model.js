@@ -330,28 +330,36 @@ async function deleteStore(authorizationId, storeId){
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
             if (admin.isWebsiteOwner) {
-                const store = await storeModel.findOneAndDelete({ _id: storeId });
+                const store = await storeModel.findOne({ _id: storeId });
                 if (store) {
-                    await categoryModel.deleteMany({ storeId });
-                    await productModel.deleteMany({ storeId });
-                    await brandModel.deleteMany({ storeId });
-                    const merchant = await adminModel.findOne({ storeId, isMerchant: true });
-                    await adminModel.deleteMany({ storeId });
+                    if (!store.isMainStore) {
+                        await storeModel.deleteOne({ _id: storeId });
+                        await categoryModel.deleteMany({ storeId });
+                        await productModel.deleteMany({ storeId });
+                        await brandModel.deleteMany({ storeId });
+                        const merchant = await adminModel.findOne({ storeId, isMerchant: true });
+                        await adminModel.deleteMany({ storeId });
+                        return {
+                            msg: "Delete Store Process Has Been Successfully !!",
+                            error: false,
+                            data: {
+                                storeImagePath: store.imagePath,
+                                adminId: merchant._id,
+                                email: merchant.email
+                            },
+                        }
+                    }
                     return {
-                        msg: `Delete Store Process Has Been Successfully !!`,
-                        error: false,
-                        data: {
-                            storeImagePath: store.imagePath,
-                            adminId: merchant._id,
-                            email: merchant.email
-                        },
-                    };
+                        msg: "Sorry, Permission Denied !!",
+                        error: true,
+                        data: {},
+                    }
                 }
                 return {
                     msg: "Sorry, This Store Is Not Found !!",
                     error: true,
                     data: {},
-                };
+                }
             }
             return {
                 msg: "Sorry, Permission Denied !!",

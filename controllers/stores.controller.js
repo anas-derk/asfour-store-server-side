@@ -1,4 +1,4 @@
-const { getResponseObject, sendApproveStoreEmail, sendRejectStoreEmail, sendBlockStoreEmail } = require("../global/functions");
+const { getResponseObject, sendApproveStoreEmail, sendRejectStoreEmail, sendBlockStoreEmail, sendDeleteStoreEmail } = require("../global/functions");
 
 const storesManagmentFunctions = require("../models/stores.model");
 
