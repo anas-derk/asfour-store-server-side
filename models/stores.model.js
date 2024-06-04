@@ -375,6 +375,7 @@ async function rejectStore(authorizationId, storeId){
                         error: false,
                         data: {
                             storeImagePath: store.imagePath,
+                            ownerEmail: store.ownerEmail
                         },
                     };
                 }

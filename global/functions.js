@@ -52,7 +52,7 @@ async function sendVerificationCodeToUserEmail(email) {
     if (!result.error) {
         const generator = new CodeGenerator();
         const generatedCode = generator.generateCodes("####")[0];
-        const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_template.ejs"), "utf-8");
+        const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_templates", "email_template.ejs"), "utf-8");
         const compiledTemplate = compile(templateContent);
         const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ generatedCode });
         const mailConfigurations = {
@@ -78,20 +78,42 @@ async function sendVerificationCodeToUserEmail(email) {
 async function sendApproveStoreEmail(email, password, adminId, storeId, language) {
     const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
     if (!result.error) {
-        const templateContent =  readFileSync(join(__dirname, "..", "assets", "accept_add_store_request.ejs"), "utf-8");
+        const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_templates", "accept_add_store_request.ejs"), "utf-8");
         const compiledTemplate = compile(templateContent);
         const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ password, adminId, storeId, language });
         const mailConfigurations = {
             from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
             to: email,
-            subject: "Accept The Store Addition Request At Ubuyblues",
+            subject: "Approve The Store Addition Request At Ubuyblues",
             html: htmlContentAfterCompilingEjsTemplateFile,
         };
         return new Promise((resolve, reject) => {
             transporterObj(result.data).sendMail(mailConfigurations, function (error, info) {
                 if (error) reject(error);
                 resolve({
-                    msg: "Sending Approve Request Email On Store Process Has Been Successfully !!",
+                    msg: "Sending Approve Email On Store Process Has Been Successfully !!",
+                    error: false,
+                    data: {},
+                });
+            });
+        });
+    }
+    return result;
+}
+
+async function sendRejectStoreEmail(email, language) {
+    const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
+    if (!result.error) {
+        return new Promise((resolve, reject) => {
+            transporterObj(result.data).sendMail({
+                from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
+                to: email,
+                subject: "Reject The Store Addition Request At Ubuyblues",
+                html: readFileSync(join(__dirname, "..", "assets", "email_templates", "reject_add_store_request.ejs"), "utf-8"),
+            }, function (error, info) {
+                if (error) reject(error);
+                resolve({
+                    msg: "Sending Reject Email On Store Process Has Been Successfully !!",
                     error: false,
                     data: {},
                 });
@@ -161,6 +183,7 @@ module.exports = {
     calcOrderAmount,
     sendVerificationCodeToUserEmail,
     sendApproveStoreEmail,
+    sendRejectStoreEmail,
     getResponseObject,
     checkIsExistValueForFieldsAndDataTypes,
     validateIsExistValueForFieldsAndDataTypes,
