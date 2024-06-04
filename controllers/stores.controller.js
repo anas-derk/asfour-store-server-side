@@ -179,8 +179,8 @@ async function deleteStore(req, res) {
             res.json(result);
             return;
         }
-        res.json(await sendDeleteStoreEmail(result.data.email, result.data.adminId, req.params.storeId, "en"));
         unlinkSync(result.data.storeImagePath);
+        res.json(await sendDeleteStoreEmail(result.data.email, result.data.adminId, req.params.storeId, "en"));
     }
     catch(err){
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -198,8 +198,8 @@ async function deleteRejectStore(req, res) {
             res.json(result);
             return;
         }
-        res.json(await sendRejectStoreEmail(result.data.ownerEmail));
         unlinkSync(result.data.storeImagePath); 
+        res.json(await sendRejectStoreEmail(result.data.ownerEmail));
     }
     catch(err){
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
