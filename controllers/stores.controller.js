@@ -1,4 +1,4 @@
-const { getResponseObject, sendApproveStoreEmail, sendRejectStoreEmail } = require("../global/functions");
+const { getResponseObject, sendApproveStoreEmail, sendRejectStoreEmail, sendBlockStoreEmail } = require("../global/functions");
 
 const storesManagmentFunctions = require("../models/stores.model");
 
@@ -115,11 +115,12 @@ async function putBlockingStore(req, res) {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
             }
+            res.json(result);
+            return;
         }
-        res.json(result);
+        res.json(await sendBlockStoreEmail(result.data.email, result.data.adminId, req.params.storeId, "en"));
     }
     catch(err){
-        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }

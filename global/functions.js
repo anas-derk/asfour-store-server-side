@@ -123,6 +123,32 @@ async function sendRejectStoreEmail(email, language) {
     return result;
 }
 
+async function sendBlockStoreEmail(email, adminId, storeId, language) {
+    const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
+    if (!result.error) {
+        const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_templates", "block_store.ejs"), "utf-8");
+        const compiledTemplate = compile(templateContent);
+        const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ adminId, storeId, language });
+        const mailConfigurations = {
+            from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
+            to: email,
+            subject: "Block Store On Ubuyblues",
+            html: htmlContentAfterCompilingEjsTemplateFile,
+        };
+        return new Promise((resolve, reject) => {
+            transporterObj(result.data).sendMail(mailConfigurations, function (error, info) {
+                if (error) reject(error);
+                resolve({
+                    msg: "Sending Block Email The Store Process Has Been Successfully !!",
+                    error: false,
+                    data: {},
+                });
+            });
+        });
+    }
+    return result;
+}
+
 function getResponseObject(msg, isError, data) {
     return {
         msg,
@@ -184,6 +210,7 @@ module.exports = {
     sendVerificationCodeToUserEmail,
     sendApproveStoreEmail,
     sendRejectStoreEmail,
+    sendBlockStoreEmail,
     getResponseObject,
     checkIsExistValueForFieldsAndDataTypes,
     validateIsExistValueForFieldsAndDataTypes,

@@ -212,11 +212,15 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
                             blockingDate: Date.now(),
                             isBlocked: true
                         });
+                        const merchant = await adminModel.findOne({ storeId, isMerchant: true });
                         return {
                             msg: `Blocking For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
                             error: false,
-                            data: {},
-                        };
+                            data: {
+                                adminId: merchant._id,
+                                email: merchant.email
+                            }
+                        }
                     }
                     if (store.status === "blocking") {
                         return {

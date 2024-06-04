@@ -6,8 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         <% if (lang="en" ) { %>
-            Reject The Store Addition Request At Ubuyblues
-            <% } else if (lang="ar" ) %>
+            Block Store In Ubuyblues
+            <% } else if (lang="ar" ) { %>
+                الموافقة على طلب إضافة متجر في Ubuyblues
+            <% } else if (lang="de") { %>
+                Akzeptieren Sie die Anfrage zur Hinzufügung eines Geschäfts bei Ubuyblues
+            <% } else { %>
+                Ubuyblues'daki mağaza ekleme talebini kabul et
+            <% } %>
     </title>
 
 </head>
@@ -19,12 +25,14 @@
     </section>
     <section class="content"
         style="width: 80%; border: 1px solid #6A017A; margin: auto; padding: 20px; line-height: 2;">
-        <h2 style="text-align: center;">Reject The Store Addition Request At Ubuyblues</h2>
+        <h2 style="text-align: center;">Store Blocked On Ubuyblues</h2>
         <h3>Dear <span style="font-weight: bold; color: #6A017A">Merchant</span>,</h3>
-        <p>
-            We regret to inform you that your merchant account application has not been approved at this time. We
-            appreciate your interest in joining our site and wish you success in the future
+        <p>We Regret To Inform You That Your Merchant Account Has Been Blocked On Our Site .
         </p>
+        <h4>Your Account ID: <%= adminId %></h4>
+        <h4>Your Store ID: <%= storeId %></h4>
+        <p>This decision is based on site policies which must be adhered to.</p>
+        <p>Thank you for your understanding .</p>
         <h4>Best regards,</h4>
         <h4 style="line-height: 0; color: #6A017A;">The Ubuyblues Team</h4>
     </section>
