@@ -1,4 +1,4 @@
-const { getResponseObject, sendVerificationCodeToUserEmail } = require("../global/functions");
+const { getResponseObject, sendVerificationCodeToUserEmail, sendCongratulationsOnCreatingNewAccountEmail } = require("../global/functions");
 
 const usersOPerationsManagmentFunctions = require("../models/users.model");
 
@@ -108,7 +108,12 @@ async function getForgetPassword(req, res) {
 async function createNewUser(req, res) {
     try {
         const emailAndPassword = req.body;
-        res.json(await usersOPerationsManagmentFunctions.createNewUser(emailAndPassword.email.toLowerCase(), emailAndPassword.password));
+        const result = await usersOPerationsManagmentFunctions.createNewUser(emailAndPassword.email.toLowerCase(), emailAndPassword.password);
+        if (result.error) {
+            res.json(result);
+            return;
+        }
+        res.json(await sendCongratulationsOnCreatingNewAccountEmail(emailAndPassword.email));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

@@ -81,14 +81,13 @@ async function sendApproveStoreEmail(email, password, adminId, storeId, language
         const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_templates", "accept_add_store_request.ejs"), "utf-8");
         const compiledTemplate = compile(templateContent);
         const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ password, adminId, storeId, language });
-        const mailConfigurations = {
-            from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
-            to: email,
-            subject: "Approve The Store Addition Request At Ubuyblues",
-            html: htmlContentAfterCompilingEjsTemplateFile,
-        };
         return new Promise((resolve, reject) => {
-            transporterObj(result.data).sendMail(mailConfigurations, function (error, info) {
+            transporterObj(result.data).sendMail({
+                from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
+                to: email,
+                subject: "Approve The Store Addition Request At Ubuyblues",
+                html: htmlContentAfterCompilingEjsTemplateFile,
+            }, function (error, info) {
                 if (error) reject(error);
                 resolve({
                     msg: "Sending Approve Email On Store Process Has Been Successfully !!",
@@ -101,15 +100,43 @@ async function sendApproveStoreEmail(email, password, adminId, storeId, language
     return result;
 }
 
+async function sendCongratulationsOnCreatingNewAccountEmail(email, language) {
+    const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
+    if (!result.error) {
+        const templateContent = readFileSync(join(__dirname, "..", "assets", "email_templates", "congratulations_creating_new_account.ejs"), "utf-8");
+        const compiledTemplate = compile(templateContent);
+        const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ email, language });
+        return new Promise((resolve, reject) => {
+            transporterObj(result.data).sendMail({
+                from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
+                to: email,
+                subject: "Congratulations From Ubuyblues",
+                html: htmlContentAfterCompilingEjsTemplateFile,
+            }, function (error, info) {
+                if (error) reject(error);
+                resolve({
+                    msg: "Sending Congratulations Email To User Process Has Been Successfully !!",
+                    error: false,
+                    data: {},
+                });
+            });
+        });
+    }
+    return result;
+}
+
 async function sendRejectStoreEmail(email, language) {
     const result = await getPasswordForBussinessEmail(process.env.BUSSINESS_EMAIL);
     if (!result.error) {
+        const templateContent = readFileSync(join(__dirname, "..", "assets", "email_templates", "reject_add_store_request.ejs"), "utf-8");
+        const compiledTemplate = compile(templateContent);
+        const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ language });
         return new Promise((resolve, reject) => {
             transporterObj(result.data).sendMail({
                 from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
                 to: email,
                 subject: "Reject The Store Addition Request At Ubuyblues",
-                html: readFileSync(join(__dirname, "..", "assets", "email_templates", "reject_add_store_request.ejs"), "utf-8"),
+                html: htmlContentAfterCompilingEjsTemplateFile,
             }, function (error, info) {
                 if (error) reject(error);
                 resolve({
@@ -129,14 +156,13 @@ async function sendBlockStoreEmail(email, adminId, storeId, language) {
         const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_templates", "block_store.ejs"), "utf-8");
         const compiledTemplate = compile(templateContent);
         const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ adminId, storeId, language });
-        const mailConfigurations = {
-            from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
-            to: email,
-            subject: "Block Store On Ubuyblues",
-            html: htmlContentAfterCompilingEjsTemplateFile,
-        };
         return new Promise((resolve, reject) => {
-            transporterObj(result.data).sendMail(mailConfigurations, function (error, info) {
+            transporterObj(result.data).sendMail({
+                from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
+                to: email,
+                subject: "Block Store On Ubuyblues",
+                html: htmlContentAfterCompilingEjsTemplateFile,
+            }, function (error, info) {
                 if (error) reject(error);
                 resolve({
                     msg: "Sending Block Email The Store Process Has Been Successfully !!",
@@ -155,14 +181,13 @@ async function sendDeleteStoreEmail(email, adminId, storeId, language) {
         const templateContent =  readFileSync(join(__dirname, "..", "assets", "email_templates", "delete_store.ejs"), "utf-8");
         const compiledTemplate = compile(templateContent);
         const htmlContentAfterCompilingEjsTemplateFile = compiledTemplate({ adminId, storeId, language });
-        const mailConfigurations = {
-            from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
-            to: email,
-            subject: "Delete Store On Ubuyblues",
-            html: htmlContentAfterCompilingEjsTemplateFile,
-        };
         return new Promise((resolve, reject) => {
-            transporterObj(result.data).sendMail(mailConfigurations, function (error, info) {
+            transporterObj(result.data).sendMail({
+                from: `Ubuyblues <${process.env.BUSSINESS_EMAIL}>`,
+                to: email,
+                subject: "Delete Store On Ubuyblues",
+                html: htmlContentAfterCompilingEjsTemplateFile,
+            }, function (error, info) {
                 if (error) reject(error);
                 resolve({
                     msg: "Sending Delete Email The Store Process Has Been Successfully !!",
@@ -234,6 +259,7 @@ module.exports = {
     isValidName,
     calcOrderAmount,
     sendVerificationCodeToUserEmail,
+    sendCongratulationsOnCreatingNewAccountEmail,
     sendApproveStoreEmail,
     sendRejectStoreEmail,
     sendBlockStoreEmail,
