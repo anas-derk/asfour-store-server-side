@@ -176,11 +176,11 @@ async function deleteStore(req, res) {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
             }
+            res.json(result);
+            return;
         }
-        else {
-            unlinkSync(result.data.storeImagePath);
-        }
-        res.json(result);
+        res.json(await sendDeleteStoreEmail(result.data.email, result.data.adminId, req.params.storeId, "en"));
+        unlinkSync(result.data.storeImagePath);
     }
     catch(err){
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

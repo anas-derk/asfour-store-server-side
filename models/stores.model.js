@@ -335,12 +335,15 @@ async function deleteStore(authorizationId, storeId){
                     await categoryModel.deleteMany({ storeId });
                     await productModel.deleteMany({ storeId });
                     await brandModel.deleteMany({ storeId });
-                    await adminModel.deleteOne({ storeId });
+                    const merchant = await adminModel.findOne({ storeId, isMerchant: true });
+                    await adminModel.deleteMany({ storeId });
                     return {
                         msg: `Delete Store Process Has Been Successfully !!`,
                         error: false,
                         data: {
                             storeImagePath: store.imagePath,
+                            adminId: merchant._id,
+                            email: merchant.email
                         },
                     };
                 }
