@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <% if (language="en" ) { %>
+    <% if (language==="en" ) { %>
         <title>
             Accept The Store Addition Request At Ubuyblues
         </title>
-        <% } else if (language="ar" ) { %>
+        <% } else if (language==="ar" ) { %>
             <title>الموافقة على طلب إضافة متجر لدى Ubuyblues</title>
-            <% } else if (language="de" ) { %>
+            <% } else if (language==="de" ) { %>
                 <title>الموافقة على طلب إضافة متجر لدى Ubuyblues</title>
-                <% } else if (language="tr" ) { %>
+                <% } else if (language==="tr" ) { %>
                     <title>الموافقة على طلب إضافة متجر لدى Ubuyblues</title>
                     <% } else { %>
                         <title>الموافقة على طلب إضافة متجر لدى Ubuyblues</title>
@@ -26,34 +26,37 @@
     </section>
     <section class="content"
         style="width: 80%; border: 1px solid #6A017A; margin: auto; padding: 20px; line-height: 2;">
-        <% if (language="en" ) { %>
-            <title>
-                Accept The Store Addition Request At Ubuyblues
-            </title>
-            <% } else if (language="ar" ) { %>
-                <h2 style="text-align: center;">الموافقة على طلب إضافة متجر لدى Ubuyblues</h2>
-                <% } else if (language="de" ) { %>
+            <% if (language==="en" ) { %>
+                <h2 style="text-align: center;">
+                    Accept The Store Addition Request At Ubuyblues
+                </h2>
+                <% } else if (language==="ar" ) { %>
                     <h2 style="text-align: center;">الموافقة على طلب إضافة متجر لدى Ubuyblues</h2>
-                    <% } else if (language="tr" ) { %>
+                    <% } else if (language==="de" ) { %>
                         <h2 style="text-align: center;">الموافقة على طلب إضافة متجر لدى Ubuyblues</h2>
-                        <% } else { %>
+                        <% } else if (language==="tr" ) { %>
                             <h2 style="text-align: center;">الموافقة على طلب إضافة متجر لدى Ubuyblues</h2>
-                            <% } %>    
-        <h3>Dear <span style="font-weight: bold; color: #6A017A">Merchant</span>,</h3>
-        <p>We are pleased to inform you that your request to open a merchant account on our website has been approved .
-        </p>
-        <h4>Admin Dashboard Login Link: <a href="https://dashboard.ubuyblues.com/login">Admin Dashboard Login</a></h4>
-        <h4>Your Account ID: <%= adminId %>
-        </h4>
-        <h4>Your Store ID: <%= storeId %>
-        </h4>
-        <h4>Your Account Password: <%= password %>
-        </h4>
-        <p>We look forward to collaborating with you and hope that your experience with us will be exceptional and
-            successful .</p>
-        <p>Thank you for joining us, and we wish you all the best .</p>
-        <h4>Best regards,</h4>
-        <h4 style="line-height: 0; color: #6A017A;">The Ubuyblues Team</h4>
+                            <% } else { %>
+                                <h2 style="text-align: center;">الموافقة على طلب إضافة متجر لدى Ubuyblues</h2>
+                                <% } %>
+                                    <h3>Dear <span style="font-weight: bold; color: #6A017A">Merchant</span>,</h3>
+                                    <p>We are pleased to inform you that your request to open a merchant account on our
+                                        website has been approved .
+                                    </p>
+                                    <h4>Admin Dashboard Login Link: <a
+                                            href="https://dashboard.ubuyblues.com/login">Admin Dashboard Login</a></h4>
+                                    <h4>Your Account ID: <%= adminId %>
+                                    </h4>
+                                    <h4>Your Store ID: <%= storeId %>
+                                    </h4>
+                                    <h4>Your Account Password: <%= password %>
+                                    </h4>
+                                    <p>We look forward to collaborating with you and hope that your experience with us
+                                        will be exceptional and
+                                        successful .</p>
+                                    <p>Thank you for joining us, and we wish you all the best .</p>
+                                    <h4>Best regards,</h4>
+                                    <h4 style="line-height: 0; color: #6A017A;">The Ubuyblues Team</h4>
     </section>
 </body>
 
