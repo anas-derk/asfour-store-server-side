@@ -116,6 +116,7 @@ async function createNewUser(req, res) {
         res.json(await sendCongratulationsOnCreatingNewAccountEmail(emailAndPassword.email));
     }
     catch(err) {
+        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
