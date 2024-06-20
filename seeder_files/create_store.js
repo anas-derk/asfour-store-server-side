@@ -64,7 +64,7 @@ const storeInfo = {
     imagePath: "assets/images/stores/UbuyBlues_Logo_merged_Purple.jpg",
     ownerFirstName: "Soliman",
     ownerLastName: "Asfour",
-    ownerEmail: "admin@gmail.com",
+    ownerEmail: process.env.MAIN_ADMIN_EMAIL,
     isApproved: true,
     productsType: "Multiple",
     productsDescription: "Welcome To Ubuyblues Store",
