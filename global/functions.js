@@ -39,14 +39,17 @@ function calcOrderAmount(order_lines) {
 function transporterObj(bussinessEmailPassword) {
     // إنشاء ناقل بيانات لسيرفر SMTP مع إعداده 
     const transporter = createTransport({
-        host: "smtppro.zoho.com",
-        port: 465,
-        secure: true,
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        secure: false,
         requireTLS: true,
         auth: {
             user: process.env.BUSSINESS_EMAIL,
             pass: bussinessEmailPassword,
-        }
+        },
+        tls: {
+            ciphers: "SSLv3",
+        },
     });
     return transporter;
 }
