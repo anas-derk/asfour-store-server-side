@@ -245,45 +245,6 @@ async function addNewAdmin(merchantId, adminInfo) {
     }
 }
 
-async function changeAdminPassword(adminId, websiteOwnerEmail, websiteOwnerPassword, adminEmail, newAdminPassword) {
-    try{
-        const websiteOwnerAndAdmin = await adminModel.find({
-            $or: [
-                {
-                    _id: adminId,
-                    email: websiteOwnerEmail
-                },
-                {
-                    email: adminEmail,
-                }
-            ]
-        });
-        if (websiteOwnerAndAdmin.length === 2) {
-            if (await compare(websiteOwnerPassword, websiteOwnerAndAdmin[0].password)) {
-                await adminModel.updateOne({ email: adminEmail }, { password: await hash(newAdminPassword, 10) });
-                return {
-                    msg: "Changing Admin Password Process Has Been Successfully !!",
-                    error: false,
-                    data: {},
-                }
-            }
-            return {
-                msg: "Sorry, The Website Owner Email Or Admin Email Or Password Is Not Valid !!",
-                error: true,
-                data: {},
-            }
-        }
-        return {
-            msg: "Sorry, The Website Owner Email Or Admin Email Or Password Is Not Valid !!",
-            error: true,
-            data: {},
-        }
-    }
-    catch(err) {
-        throw Error(err);
-    }
-}
-
 async function updateAdminInfo(merchantId, adminId, newAdminDetails) {
     try {
         const admin = await adminModel.findById(merchantId);
@@ -378,7 +339,6 @@ module.exports = {
     getAdminsCount,
     getAllAdminsInsideThePage,
     addNewAdmin,
-    changeAdminPassword,
     updateAdminInfo,
     deleteAdmin
 }

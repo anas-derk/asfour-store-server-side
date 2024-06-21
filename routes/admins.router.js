@@ -51,23 +51,6 @@ adminsRouter.post("/add-new-admin",
     adminsController.postAddNewAdmin
 );
 
-adminsRouter.put("/change-admin-password",
-    validateJWT,
-    async (req, res, next) => {
-        const data = req.query;
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Website Owner Email", fieldValue: data.websiteOwnerEmail, dataType: "string", isRequiredValue: true },
-            { fieldName: "Website Owner Password", fieldValue: data.websiteOwnerPassword, dataType: "string", isRequiredValue: true },
-            { fieldName: "Admin Email", fieldValue: data.adminEmail, dataType: "string", isRequiredValue: true },
-            { fieldName: "New Admin Password", fieldValue: data.newAdminPassword, dataType: "string", isRequiredValue: true },
-        ], res, next);
-    },
-    (req, res, next) => validateEmail(req.query.adminEmail, res, next),
-    (req, res, next) => validateEmail(req.query.websiteOwnerEmail, res, next),
-    (req, res, next) => validatePassword(req.query.newAdminPassword, res, next),
-    adminsController.putAdminPassword
-);
-
 adminsRouter.put("/update-admin-info/:adminId",
     validateJWT,
     async (req, res, next) => {

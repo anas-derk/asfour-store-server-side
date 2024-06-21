@@ -93,11 +93,12 @@ usersRouter.put("/update-verification-status",
 
 usersRouter.put("/reset-password",
     async (req, res, next) => {
+        const userData = req.query;
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Email", fieldValue: req.query.email, dataType: "string", isRequiredValue: true },
+            { fieldName: "Email", fieldValue: userData.email, dataType: "string", isRequiredValue: true },
             { fieldName: "User Type", fieldValue: userData.userType, dataType: "string", isRequiredValue: true },
-            { fieldName: "Code", fieldValue: req.query.code, dataType: "string", isRequiredValue: true },
-            { fieldName: "New Password", fieldValue: req.query.newPassword, dataType: "string", isRequiredValue: true },
+            { fieldName: "Code", fieldValue: userData.code, dataType: "string", isRequiredValue: true },
+            { fieldName: "New Password", fieldValue: userData.newPassword, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
