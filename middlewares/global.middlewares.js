@@ -21,6 +21,14 @@ function validateEmail(email, res, nextFunc) {
     nextFunc();
 }
 
+function validateUserType(userType, res, nextFunc) {
+    if (userType !== "user" && userType !== "admin") {
+        res.status(400).json(getResponseObject("Sorry, Please Send Valid User Type !!", true, {}));
+        return;
+    }
+    nextFunc();
+}
+
 function validatePassword(password, res, nextFunc) {
     if (!isValidPassword(password)) {
         res.status(400).json(getResponseObject("Sorry, Please Send Valid Password !!", true, {}));
@@ -54,6 +62,7 @@ function keyGeneratorForRequestsRateLimit(req) {
 module.exports = {
     validateJWT,
     validateEmail,
+    validateUserType,
     validatePassword,
     validateCode,
     validateLanguage,

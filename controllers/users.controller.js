@@ -76,8 +76,8 @@ async function getAllUsers(req, res) {
 
 async function getForgetPassword(req, res) {
     try{
-        const email = req.query.email;
-        let result = await usersOPerationsManagmentFunctions.isExistUserAccount(email);
+        const { email, userType } = req.query;
+        let result = await usersOPerationsManagmentFunctions.isExistUserAccount(email, userType);
         if (!result.error) {
             if (!result.data.isVerified) {
                 res.json({
@@ -182,10 +182,10 @@ async function putVerificationStatus(req, res) {
 
 async function putResetPassword(req, res) {
     try{
-        const emailAndCodeAndNewPassword = req.query;
-        const result = await isAccountVerificationCodeValid(emailAndCodeAndNewPassword.email, emailAndCodeAndNewPassword.code, "to reset password");
+        const { email, userType, code, newPassword } = req.query;
+        const result = await isAccountVerificationCodeValid(email, code, "to reset password");
         if (!result.error) {
-            res.json(await usersOPerationsManagmentFunctions.resetUserPassword(emailAndCodeAndNewPassword.email, emailAndCodeAndNewPassword.newPassword));
+            res.json(await usersOPerationsManagmentFunctions.resetUserPassword(email, userType, newPassword));
             return;
         }
         res.json(result);

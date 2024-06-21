@@ -1,6 +1,6 @@
 // Import User And Product Model Object
 
-const { userModel, productModel, accountVerificationCodesModel } = require("../models/all.models");
+const { userModel, productModel, accountVerificationCodesModel, adminModel } = require("../models/all.models");
 
 // require bcryptjs module for password encrypting
 
@@ -169,24 +169,41 @@ async function getAllUsers() {
     }
 }
 
-async function isExistUserAccount(email) {
+async function isExistUserAccount(email, userType) {
     try {
-        const user = await userModel.findOne({ email });
-        if (user) {
+        if (userType === "user") {
+            const user = await userModel.findOne({ email });
+            if (user) {
+                return {
+                    msg: "User Is Exist !!",
+                    error: false,
+                    data: {
+                        _id: user._id,
+                        isVerified: user.isVerified,
+                    },
+                }
+            }
             return {
-                msg: "User Is Exist !!",
+                msg: "Sorry, This User Is Not Found !!",
+                error: true,
+                data: {},
+            }
+        }
+        const admin = await adminModel.findOne({ email });
+        if (admin) {
+            return {
+                msg: "Admin Is Exist !!",
                 error: false,
                 data: {
-                    _id: user._id,
-                    isVerified: user.isVerified,
+                    _id: admin._id,
                 },
-            };
+            }
         }
         return {
-            msg: "Sorry, This User Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Found !!",
             error: true,
             data: {},
-        };
+        }
     } catch (err) {
         throw Error(err);
     }
@@ -266,10 +283,25 @@ async function updateVerificationStatus(email) {
     }
 }
 
-async function resetUserPassword(email, newPassword) {
+async function resetUserPassword(email, userType, newPassword) {
     try {
-        const user = await userModel.findOneAndUpdate({ email }, { password: await hash(newPassword, 10) });
-        if (user) {
+        if (userType === "user") {
+            const user = await userModel.findOneAndUpdate({ email }, { password: await hash(newPassword, 10) });
+            if (user) {
+                return {
+                    msg: "Reseting Password Process Has Been Successfully !!",
+                    error: false,
+                    data: {},
+                };
+            }
+            return {
+                msg: "Sorry, This User Is Not Found !!",
+                error: true,
+                data: {},
+            }
+        }
+        const admin = await adminModel.findOneAndUpdate({ email }, { password: await hash(newPassword, 10) });
+        if (admin) {
             return {
                 msg: "Reseting Password Process Has Been Successfully !!",
                 error: false,
@@ -277,10 +309,10 @@ async function resetUserPassword(email, newPassword) {
             };
         }
         return {
-            msg: "Sorry, This User Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Found !!",
             error: true,
             data: {},
-        };
+        }
     } catch (err) {
         throw Error(err);
     }

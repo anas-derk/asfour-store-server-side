@@ -4,7 +4,7 @@ const usersController = require("../controllers/users.controller");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
-const { validateJWT, validateEmail, validatePassword } = require("../middlewares/global.middlewares");
+const { validateJWT, validateEmail, validatePassword, validateUserType } = require("../middlewares/global.middlewares");
 
 const usersMiddlewares = require("../middlewares/users.midddlewares");
 
@@ -43,11 +43,14 @@ usersRouter.get("/all-users", usersController.getAllUsers);
 
 usersRouter.get("/forget-password",
     async (req, res, next) => {
+        const userData = req.query;
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Email", fieldValue: req.query.email, dataType: "string", isRequiredValue: true },
+            { fieldName: "Email", fieldValue: userData.email, dataType: "string", isRequiredValue: true },
+            { fieldName: "User Type", fieldValue: userData.userType, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
+    (req, res, next) => validateUserType(req.query.userType, res, next),
     usersController.getForgetPassword
 );
 
@@ -92,11 +95,13 @@ usersRouter.put("/reset-password",
     async (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Email", fieldValue: req.query.email, dataType: "string", isRequiredValue: true },
+            { fieldName: "User Type", fieldValue: userData.userType, dataType: "string", isRequiredValue: true },
             { fieldName: "Code", fieldValue: req.query.code, dataType: "string", isRequiredValue: true },
             { fieldName: "New Password", fieldValue: req.query.newPassword, dataType: "string", isRequiredValue: true },
         ], res, next);
     },
     (req, res, next) => validateEmail(req.query.email, res, next),
+    (req, res, next) => validateUserType(req.query.userType, res, next),
     (req, res, next) => validatePassword(req.query.newPassword, res, next),
     usersController.putResetPassword
 );
