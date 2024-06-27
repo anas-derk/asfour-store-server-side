@@ -17,11 +17,10 @@ async function addNewFavoriteProduct(userId, productId) {
                         productId,
                         userId
                     });
-                    await newFavoriteProduct.save();
                     return {
                         msg: "Adding New Favorite Product Process Has Been Successfully !!",
                         error: false,
-                        data: {},
+                        data: await newFavoriteProduct.save(),
                     }
                 }
                 return {
