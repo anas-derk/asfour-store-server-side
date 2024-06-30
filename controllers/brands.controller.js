@@ -38,9 +38,9 @@ async function postNewBrand(req, res) {
     }
 }
 
-async function getAllBrandsByStoreId(req, res) {
+async function getLastSevenBrandsByStoreId(req, res) {
     try{
-        res.json(await brandsManagmentFunctions.getAllBrands(getFiltersObject(req.query)));
+        res.json(await brandsManagmentFunctions.getLastSevenBrandsByStoreId(getFiltersObject(req.query)));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -129,7 +129,7 @@ async function putBrandImage(req, res) {
 module.exports = {
     postNewBrand,
     getBrandsCount,
-    getAllBrandsByStoreId,
+    getLastSevenBrandsByStoreId,
     getAllBrandsInsideThePage,
     deleteBrand,
     putBrandInfo,

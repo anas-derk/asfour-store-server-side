@@ -50,7 +50,7 @@ brandsRouter.post("/add-new-brand",
     brandsController.postNewBrand
 );
 
-brandsRouter.get("/all-brands-by-store-id", brandsController.getAllBrandsByStoreId);
+brandsRouter.get("/last-seven-brands-by-store-id", brandsController.getLastSevenBrandsByStoreId);
 
 brandsRouter.get("/brands-count", brandsController.getBrandsCount);
 

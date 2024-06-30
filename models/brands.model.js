@@ -32,7 +32,7 @@ async function addNewBrand(authorizationId, brandInfo) {
     }
 }
 
-async function getAllBrands(filters) {
+async function getLastSevenBrandsByStoreId(filters) {
     try {
         if (filters["isMainStore"]) {
             const mainStoreDetails = await storeModel.findOne({ isMainStore: true });
@@ -41,7 +41,7 @@ async function getAllBrands(filters) {
         return {
             msg: "Get All Brands Process Has Been Successfully !!",
             error: false,
-            data: await brandModel.find(filters),
+            data: await brandModel.find(filters).limit(7),
         }
     }
     catch (err) {
@@ -215,7 +215,7 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
 
 module.exports = {
     addNewBrand,
-    getAllBrands,
+    getLastSevenBrandsByStoreId,
     getBrandsCount,
     getAllBrandsInsideThePage,
     deleteBrand,
