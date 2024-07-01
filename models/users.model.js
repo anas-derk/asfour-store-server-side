@@ -1,6 +1,6 @@
-// Import User And Product Model Object
+// Import User, Account Verification Codes And Product Model Object
 
-const { userModel, productModel, accountVerificationCodesModel, adminModel } = require("../models/all.models");
+const { userModel, accountVerificationCodesModel, adminModel } = require("../models/all.models");
 
 // require bcryptjs module for password encrypting
 
@@ -117,13 +117,13 @@ async function getUserInfo(userId) {
                 msg: "Get User Info Process Has Been Successfully !!",
                 error: false,
                 data: user,
-            };
+            }
         }
         return {
             msg: "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..",
             error: true,
             data: {},
-        };
+        }
     } catch (err) {
         throw Error(err);
     }

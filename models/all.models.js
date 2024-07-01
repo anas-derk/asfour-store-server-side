@@ -186,6 +186,20 @@ const productSchema = mongoose.Schema({
         type: Number,
         default: 0,
     },
+    quantity: {
+        type: Number,
+        default: 1,
+    },
+    ratings: {
+        type: Object,
+        default: {
+            oneStar: 0,
+            twoStars: 0,
+            threeStars: 0,
+            fourStars: 0,
+            fiveStars: 0
+        }
+    },
     postOfDate: {
         type: Date,
         default: Date.now(),
@@ -693,6 +707,28 @@ const productsWalletShema = mongoose.Schema({
 
 const productsWalletModel = mongoose.model("products_wallet", productsWalletShema);
 
+// Create Product Rating Schema
+
+const productsRatingShema = mongoose.Schema({
+    userId: {
+        type: String,
+        required: true,
+    },
+    productId: {
+        type: String,
+        required: true,
+    },
+    rating: {
+        type: Number,
+        required: true,
+        enum: [1,2,3,4,5]
+    }
+});
+
+// Create Products Rating Model From Products Rating Schema
+
+const productsRatingModel = mongoose.model("products_rating", productsRatingShema);
+
 module.exports = {
     mongoose,
     adminModel,
@@ -708,5 +744,6 @@ module.exports = {
     subscriptionModel,
     referalModel,
     favoriteProductModel,
-    productsWalletModel
+    productsWalletModel,
+    productsRatingModel
 }
