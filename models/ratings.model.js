@@ -51,6 +51,44 @@ async function selectProductRating(userId, ratingInfo) {
     }
 }
 
+async function getProductRatingByUserId(userId, productId) {
+    try{
+        const user = await userModel.findById(userId);
+        if (user) {
+            const product = await productModel.findById(productId);
+            if (product) {
+                const ratingInfo = await productsRatingModel.findOne({ userId, productId });
+                if (ratingInfo) {
+                    return {
+                        msg: "Get Product Rating By User Process Has Been Successfully !!",
+                        error: false,
+                        data: ratingInfo.rating,
+                    }
+                }
+                return {
+                    msg: "Sorry, This Product Can't Exist Any Rating By This User !!",
+                    error: true,
+                    data: {},
+                }
+            }
+            return {
+                msg: "Sorry, This Product Is Not Found !!",
+                error: true,
+                data: {},
+            }
+        }
+        return {
+            msg: "Sorry, The User Is Not Exist !!",
+            error: true,
+            data: {},
+        }
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 module.exports = {
-    selectProductRating
+    selectProductRating,
+    getProductRatingByUserId
 }
