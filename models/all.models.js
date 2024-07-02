@@ -193,11 +193,11 @@ const productSchema = mongoose.Schema({
     ratings: {
         type: Object,
         default: {
-            oneStar: 0,
-            twoStars: 0,
-            threeStars: 0,
-            fourStars: 0,
-            fiveStars: 0
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0
         }
     },
     postOfDate: {

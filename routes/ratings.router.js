@@ -4,6 +4,6 @@ const ratingsController = require("../controllers/ratings.controller");
 
 const { validateJWT } = require("../middlewares/global.middlewares");
 
-ratingsRouter.post("/add-new-product-rating", validateJWT, ratingsController.postAddNewProductRating);
+ratingsRouter.post("/select-product-rating", validateJWT, ratingsController.postSelectProductRating);
 
 module.exports = ratingsRouter;

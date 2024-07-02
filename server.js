@@ -98,6 +98,8 @@ app.listen(PORT, async () => {
 
     app.use("/wallet", require("./routes/products_wallet.router"));
 
+    app.use("/ratings", require("./routes/ratings.router"));
+
     /* End Handle The Routes */
 });
 

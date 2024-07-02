@@ -2,15 +2,18 @@
 
 const { userModel, productModel, productsRatingModel } = require("../models/all.models");
 
-async function addNewProductRating(userId, ratingInfo) {
+async function selectProductRating(userId, ratingInfo) {
     try{
         const user = await userModel.findById(userId);
         if (user) {
             const product = await productModel.findById(ratingInfo.productId);
             if (product) {
-                const rating = await productsRatingModel.findOne({ userId, productId: ratingInfo.productId });
-                if (rating) {
+                const ratingDetails = await productsRatingModel.findOne({ userId, productId: ratingInfo.productId });
+                if (ratingDetails) {
                     await productsRatingModel.updateOne({ userId, productId: ratingInfo.productId }, { rating: ratingInfo.rating });
+                    product.ratings[ratingDetails.rating] = product.ratings[ratingDetails.rating] - 1;
+                    product.ratings[ratingInfo.rating] = product.ratings[ratingInfo.rating] + 1;
+                    await productModel.updateOne({ _id: ratingInfo.productId }, { ratings: product.ratings });
                     return {
                         msg: "Updating Product Rating By This User Process Has Been Successfully !!",
                         error: false,
@@ -19,10 +22,12 @@ async function addNewProductRating(userId, ratingInfo) {
                 }
                 const newRating = new productsRatingModel({
                     userId,
-                    ratingInfo
+                    productId: ratingInfo.productId,
+                    rating: ratingInfo.rating
                 });
                 await newRating.save();
-                await productModel.updateOne({ _id: ratingInfo.productId });
+                product.ratings[ratingInfo.rating] = product.ratings[ratingInfo.rating] + 1;
+                await productModel.updateOne({ _id: ratingInfo.productId }, { ratings: product.ratings });
                 return {
                     msg: "Adding New Product Rating By This User Process Has Been Successfully !!",
                     error: false,
@@ -47,5 +52,5 @@ async function addNewProductRating(userId, ratingInfo) {
 }
 
 module.exports = {
-    addNewProductRating
+    selectProductRating
 }

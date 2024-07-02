@@ -3,9 +3,9 @@ const { getResponseObject } = require("../global/functions");
 const ratingOPerationsManagmentFunctions = require("../models/ratings.model");
 
 
-async function postAddNewProductRating(req, res){
+async function postSelectProductRating(req, res){
     try{
-        res.json(await ratingOPerationsManagmentFunctions.addNewProductRating(req.data._id, req.body));
+        res.json(await ratingOPerationsManagmentFunctions.selectProductRating(req.data._id, req.body));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -13,5 +13,5 @@ async function postAddNewProductRating(req, res){
 }
 
 module.exports = {
-    postAddNewProductRating,
+    postSelectProductRating,
 }
